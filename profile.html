@@ -1,0 +1,1237 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Profile | VoteSecure</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+
+                <a href="index.html" class="sidebar-logo">
+
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-check-to-slot"></i>
+                    </div>
+
+                    <div>
+                        <strong>VoteSecure</strong>
+                        <span>Online Voting</span>
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-menu">
+
+                <p class="menu-title">
+                    Main Menu
+                </p>
+
+                <a
+                    href="index.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="index.html#elections"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>Elections</span>
+                </a>
+
+                <a
+                    href="vote.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    <span>Cast Vote</span>
+                </a>
+
+                <a
+                    href="results.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Results</span>
+                </a>
+
+                <a
+                    href="profile.html"
+                    class="menu-item active"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="menu-item"
+                    onclick="showNotification('Settings will be available soon.', 'warning'); return false;"
+                >
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-item logout-item"
+                    onclick="logout(); return false;"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-footer">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>
+                    © 2026 VoteSecure
+                </span>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+        <main class="main">
+
+            <!-- Topbar -->
+            <header class="topbar">
+
+                <div class="topbar-left">
+
+                    <button
+                        class="mobile-menu-btn"
+                        id="mobileMenuBtn"
+                        aria-label="Open menu"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div class="page-title">
+
+                        <h1>
+                            My Profile
+                        </h1>
+
+                        <span>
+                            Manage your voter information
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="topbar-actions">
+
+                    <!-- Search -->
+                    <div class="search-box">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search elections..."
+                        >
+
+                    </div>
+
+
+                    <!-- Notifications -->
+                    <button
+                        class="notification-btn"
+                        onclick="showNotification('You have 3 new notifications.')"
+                        aria-label="Notifications"
+                    >
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span class="notification-badge">
+                            3
+                        </span>
+
+                    </button>
+
+
+                    <!-- User -->
+                    <a
+                        href="profile.html"
+                        class="topbar-user"
+                    >
+
+                        <img
+                            src="https://i.pravatar.cc/100?img=12"
+                            alt="User"
+                        >
+
+                        <div class="topbar-user-info">
+
+                            <strong id="topbarUserName">
+                                Sameer Ahmad
+                            </strong>
+
+                            <span>
+                                Verified Voter
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 PAGE CONTENT
+            ========================== -->
+            <div class="page-content">
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+
+                    <a href="index.html">
+                        Dashboard
+                    </a>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                    <span>
+                        My Profile
+                    </span>
+
+                </div>
+
+
+                <!-- Profile Header -->
+                <section class="profile-header-card">
+
+                    <div class="profile-cover"></div>
+
+                    <div class="profile-header-content">
+
+                        <div class="profile-avatar-wrapper">
+
+                            <img
+                                src="https://i.pravatar.cc/150?img=12"
+                                alt="Profile Avatar"
+                                id="profileAvatar"
+                                class="profile-avatar"
+                            >
+
+                            <span class="avatar-verified">
+                                <i class="fa-solid fa-check"></i>
+                            </span>
+
+                        </div>
+
+
+                        <div class="profile-main-info">
+
+                            <div class="profile-name-row">
+
+                                <h2 id="profileName">
+                                    Sameer Ahmad
+                                </h2>
+
+                                <span class="verified-pill">
+
+                                    <i class="fa-solid fa-circle-check"></i>
+
+                                    Verified Voter
+
+                                </span>
+
+                            </div>
+
+                            <p id="profileEmail">
+                                voter@example.com
+                            </p>
+
+                            <span class="profile-member">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                Member since 2026
+
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="edit-profile-btn"
+                            onclick="toggleEditMode()"
+                        >
+
+                            <i class="fa-solid fa-pen"></i>
+
+                            Edit Profile
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================
+                     PROFILE GRID
+                ========================== -->
+                <div class="profile-grid">
+
+                    <!-- Personal Information -->
+                    <section class="profile-card">
+
+                        <div class="profile-card-header">
+
+                            <div>
+
+                                <span class="section-label">
+                                    Account
+                                </span>
+
+                                <h3>
+                                    Personal Information
+                                </h3>
+
+                            </div>
+
+                            <i class="fa-solid fa-user-pen"></i>
+
+                        </div>
+
+
+                        <form
+                            id="profileForm"
+                            onsubmit="saveProfile(event)"
+                        >
+
+                            <!-- Full Name -->
+                            <div class="profile-field">
+
+                                <label>
+                                    Full Name
+                                </label>
+
+                                <div class="profile-input">
+
+                                    <i class="fa-regular fa-user"></i>
+
+                                    <input
+                                        type="text"
+                                        id="fullName"
+                                        value="Sameer Ahmad"
+                                        disabled
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Email -->
+                            <div class="profile-field">
+
+                                <label>
+                                    Email Address
+                                </label>
+
+                                <div class="profile-input">
+
+                                    <i class="fa-regular fa-envelope"></i>
+
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value="voter@example.com"
+                                        disabled
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Department -->
+                            <div class="profile-field">
+
+                                <label>
+                                    Department
+                                </label>
+
+                                <div class="profile-input">
+
+                                    <i class="fa-solid fa-building-columns"></i>
+
+                                    <select
+                                        id="department"
+                                        disabled
+                                    >
+
+                                        <option value="Computer Science">
+                                            Computer Science
+                                        </option>
+
+                                        <option value="Electronics">
+                                            Electronics
+                                        </option>
+
+                                        <option value="Mechanical">
+                                            Mechanical
+                                        </option>
+
+                                        <option value="Civil">
+                                            Civil
+                                        </option>
+
+                                        <option value="Electrical">
+                                            Electrical
+                                        </option>
+
+                                        <option value="Information Technology">
+                                            Information Technology
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Voter ID -->
+                            <div class="profile-field">
+
+                                <label>
+                                    Voter ID
+                                </label>
+
+                                <div class="profile-input">
+
+                                    <i class="fa-solid fa-id-card"></i>
+
+                                    <input
+                                        type="text"
+                                        value="VS-2026-00128"
+                                        disabled
+                                    >
+
+                                    <span class="field-verified">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        Verified
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Save -->
+                            <div
+                                class="profile-edit-actions"
+                                id="profileEditActions"
+                                style="display: none;"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="cancel-btn"
+                                    onclick="cancelEdit()"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    class="save-profile-btn"
+                                >
+                                    <i class="fa-solid fa-check"></i>
+                                    Save Changes
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </section>
+
+
+                    <!-- Voting Activity -->
+                    <section class="profile-card">
+
+                        <div class="profile-card-header">
+
+                            <div>
+
+                                <span class="section-label">
+                                    Activity
+                                </span>
+
+                                <h3>
+                                    Voting Activity
+                                </h3>
+
+                            </div>
+
+                            <i class="fa-solid fa-chart-simple"></i>
+
+                        </div>
+
+
+                        <div class="activity-stat">
+
+                            <div class="activity-icon blue">
+                                <i class="fa-solid fa-check-to-slot"></i>
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Votes Cast
+                                </span>
+
+                                <strong id="profileVotes">
+                                    0
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="activity-stat">
+
+                            <div class="activity-icon green">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Account Status
+                                </span>
+
+                                <strong class="status-text">
+                                    Verified
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="activity-stat">
+
+                            <div class="activity-icon purple">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Security Status
+                                </span>
+
+                                <strong class="status-text">
+                                    Protected
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="activity-stat">
+
+                            <div class="activity-icon orange">
+                                <i class="fa-regular fa-clock"></i>
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Last Activity
+                                </span>
+
+                                <strong id="lastActivity">
+                                    No recent activity
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- =========================
+                     SECURITY CARD
+                ========================== -->
+                <section class="profile-security-card">
+
+                    <div class="security-large-icon">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+                    <div class="security-large-content">
+
+                        <h3>
+                            Account Security
+                        </h3>
+
+                        <p>
+                            Your account is protected with
+                            secure authentication and voter
+                            verification.
+                        </p>
+
+                        <div class="security-status-list">
+
+                            <span>
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Email Verified
+
+                            </span>
+
+                            <span>
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Voter Verified
+
+                            </span>
+
+                            <span>
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Account Protected
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="security-btn"
+                        onclick="showNotification('Security settings will be available soon.', 'warning')"
+                    >
+
+                        Manage Security
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </section>
+
+
+                <!-- =========================
+                     DANGER ZONE
+                ========================== -->
+                <section class="danger-card">
+
+                    <div>
+
+                        <h3>
+                            Sign out of your account
+                        </h3>
+
+                        <p>
+                            You can safely sign out from
+                            your current session.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="logout()"
+                    >
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+
+                        Logout
+
+                    </button>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+
+    <!-- Main JavaScript -->
+    <script src="js/app.js"></script>
+
+
+    <script>
+
+        let originalProfileData = {};
+
+
+        /* =========================
+           LOAD PROFILE
+        ========================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                loadProfile();
+
+            }
+        );
+
+
+        function loadProfile() {
+
+            const storedUser =
+                localStorage.getItem("user");
+
+            const storedName =
+                localStorage.getItem("userName");
+
+            const storedEmail =
+                localStorage.getItem("userEmail");
+
+            const storedDepartment =
+                localStorage.getItem("department");
+
+
+            let name =
+                storedName || "Sameer Ahmad";
+
+            let email =
+                storedEmail || "voter@example.com";
+
+            let department =
+                storedDepartment || "Computer Science";
+
+
+            if (storedUser) {
+
+                try {
+
+                    const user =
+                        JSON.parse(storedUser);
+
+                    name =
+                        user.fullName || name;
+
+                    email =
+                        user.email || email;
+
+                    department =
+                        user.department || department;
+
+                } catch (error) {
+
+                    console.warn(
+                        "Could not read saved profile."
+                    );
+
+                }
+
+            }
+
+
+            /* Topbar */
+
+            const topbarName =
+                document.getElementById(
+                    "topbarUserName"
+                );
+
+            if (topbarName) {
+                topbarName.textContent = name;
+            }
+
+
+            /* Profile header */
+
+            const profileName =
+                document.getElementById(
+                    "profileName"
+                );
+
+            if (profileName) {
+                profileName.textContent = name;
+            }
+
+
+            const profileEmail =
+                document.getElementById(
+                    "profileEmail"
+                );
+
+            if (profileEmail) {
+                profileEmail.textContent = email;
+            }
+
+
+            /* Form */
+
+            const fullName =
+                document.getElementById(
+                    "fullName"
+                );
+
+            if (fullName) {
+                fullName.value = name;
+            }
+
+
+            const emailInput =
+                document.getElementById(
+                    "email"
+                );
+
+            if (emailInput) {
+                emailInput.value = email;
+            }
+
+
+            const departmentInput =
+                document.getElementById(
+                    "department"
+                );
+
+            if (departmentInput) {
+                departmentInput.value = department;
+            }
+
+
+            originalProfileData = {
+
+                name: name,
+
+                email: email,
+
+                department: department
+
+            };
+
+
+            /* Voting status */
+
+            const hasVoted =
+                localStorage.getItem(
+                    "voteSubmitted"
+                ) === "true";
+
+
+            const votesElement =
+                document.getElementById(
+                    "profileVotes"
+                );
+
+            if (votesElement) {
+
+                votesElement.textContent =
+                    hasVoted ? "1" : "0";
+
+            }
+
+
+            /* Last activity */
+
+            const lastVote =
+                localStorage.getItem(
+                    "lastVote"
+                );
+
+            const lastActivity =
+                document.getElementById(
+                    "lastActivity"
+                );
+
+            if (
+                lastVote &&
+                lastActivity
+            ) {
+
+                try {
+
+                    const vote =
+                        JSON.parse(lastVote);
+
+                    if (vote.submittedAt) {
+
+                        const date =
+                            new Date(
+                                vote.submittedAt
+                            );
+
+                        lastActivity.textContent =
+                            date.toLocaleDateString(
+                                "en-GB",
+                                {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric"
+                                }
+                            );
+
+                    }
+
+                } catch (error) {
+
+                    lastActivity.textContent =
+                        "Recent activity";
+
+                }
+
+            }
+
+        }
+
+
+        /* =========================
+           EDIT PROFILE
+        ========================== */
+
+        function toggleEditMode() {
+
+            const inputs =
+                document.querySelectorAll(
+                    "#profileForm input:not([type='text'][value='VS-2026-00128']), #profileForm select"
+                );
+
+
+            inputs.forEach(
+                input => {
+
+                    input.disabled = false;
+
+                }
+            );
+
+
+            /*
+             * Voter ID must remain disabled.
+             */
+            const allInputs =
+                document.querySelectorAll(
+                    "#profileForm input"
+                );
+
+            allInputs.forEach(
+                input => {
+
+                    if (
+                        input.value ===
+                        "VS-2026-00128"
+                    ) {
+
+                        input.disabled = true;
+
+                    }
+
+                }
+            );
+
+
+            const actions =
+                document.getElementById(
+                    "profileEditActions"
+                );
+
+            if (actions) {
+
+                actions.style.display =
+                    "flex";
+
+            }
+
+        }
+
+
+        /* =========================
+           CANCEL EDIT
+        ========================== */
+
+        function cancelEdit() {
+
+            const fullName =
+                document.getElementById(
+                    "fullName"
+                );
+
+            const email =
+                document.getElementById(
+                    "email"
+                );
+
+            const department =
+                document.getElementById(
+                    "department"
+                );
+
+
+            if (fullName) {
+                fullName.value =
+                    originalProfileData.name;
+            }
+
+            if (email) {
+                email.value =
+                    originalProfileData.email;
+            }
+
+            if (department) {
+                department.value =
+                    originalProfileData.department;
+            }
+
+
+            disableProfileEditing();
+
+        }
+
+
+        /* =========================
+           SAVE PROFILE
+        ========================== */
+
+        function saveProfile(event) {
+
+            event.preventDefault();
+
+
+            const fullName =
+                document.getElementById(
+                    "fullName"
+                ).value.trim();
+
+
+            const email =
+                document.getElementById(
+                    "email"
+                ).value.trim();
+
+
+            const department =
+                document.getElementById(
+                    "department"
+                ).value;
+
+
+            if (!fullName) {
+
+                showNotification(
+                    "Please enter your full name.",
+                    "warning"
+                );
+
+                return;
+
+            }
+
+
+            if (!email) {
+
+                showNotification(
+                    "Please enter your email.",
+                    "warning"
+                );
+
+                return;
+
+            }
+
+
+            const updatedUser = {
+
+                fullName: fullName,
+
+                email: email,
+
+                department: department
+
+            };
+
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify(updatedUser)
+            );
+
+            localStorage.setItem(
+                "userName",
+                fullName
+            );
+
+            localStorage.setItem(
+                "userEmail",
+                email
+            );
+
+            localStorage.setItem(
+                "department",
+                department
+            );
+
+
+            originalProfileData = {
+
+                name: fullName,
+
+                email: email,
+
+                department: department
+
+            };
+
+
+            document.getElementById(
+                "profileName"
+            ).textContent = fullName;
+
+
+            document.getElementById(
+                "profileEmail"
+            ).textContent = email;
+
+
+            document.getElementById(
+                "topbarUserName"
+            ).textContent = fullName;
+
+
+            disableProfileEditing();
+
+
+            showNotification(
+                "Profile updated successfully."
+            );
+
+        }
+
+
+        /* =========================
+           DISABLE EDITING
+        ========================== */
+
+        function disableProfileEditing() {
+
+            const fullName =
+                document.getElementById(
+                    "fullName"
+                );
+
+            const email =
+                document.getElementById(
+                    "email"
+                );
+
+            const department =
+                document.getElementById(
+                    "department"
+                );
+
+
+            if (fullName) {
+                fullName.disabled = true;
+            }
+
+            if (email) {
+                email.disabled = true;
+            }
+
+            if (department) {
+                department.disabled = true;
+            }
+
+
+            const actions =
+                document.getElementById(
+                    "profileEditActions"
+                );
+
+            if (actions) {
+
+                actions.style.display =
+                    "none";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
+```
