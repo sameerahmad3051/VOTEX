@@ -1,0 +1,1081 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="VoteSecure - Secure Online Voting System"
+    >
+
+    <title>VoteSecure | Dashboard</title>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         APP CONTAINER
+    ====================================================== -->
+
+    <div id="app">
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="sidebar">
+
+            <!-- Logo -->
+            <div class="sidebar-logo">
+
+                <div class="logo-icon">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                </div>
+
+                <div class="logo-text">
+                    <h2>VoteSecure</h2>
+                    <span>Online Voting</span>
+                </div>
+
+            </div>
+
+
+            <!-- Main Menu -->
+            <div class="sidebar-section">
+
+                <p class="sidebar-title">
+                    MAIN MENU
+                </p>
+
+                <nav class="sidebar-menu">
+
+                    <a
+                        href="index.html"
+                        class="menu-item active"
+                    >
+                        <i class="fa-solid fa-grid-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a
+                        href="index.html#elections"
+                        class="menu-item"
+                    >
+                        <i class="fa-solid fa-landmark"></i>
+                        <span>Elections</span>
+                    </a>
+
+                    <a
+                        href="vote.html"
+                        class="menu-item"
+                    >
+                        <i class="fa-solid fa-check-to-slot"></i>
+                        <span>Cast Vote</span>
+                    </a>
+
+                    <a
+                        href="results.html"
+                        class="menu-item"
+                    >
+                        <i class="fa-solid fa-chart-column"></i>
+                        <span>Results</span>
+                    </a>
+
+                    <a
+                        href="profile.html"
+                        class="menu-item"
+                    >
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+
+                </nav>
+
+            </div>
+
+
+            <!-- Account -->
+            <div class="sidebar-section sidebar-account">
+
+                <p class="sidebar-title">
+                    ACCOUNT
+                </p>
+
+                <a
+                    href="#"
+                    class="menu-item"
+                    onclick="return false;"
+                >
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-item logout-link"
+                    onclick="logout(); return false;"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+
+            </div>
+
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+
+                <div class="security-badge">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <div>
+                        <strong>Secure Voting</strong>
+                        <small>Your vote is protected</small>
+                    </div>
+
+                </div>
+
+                <p>
+                    © 2026 VoteSecure
+                </p>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="main">
+
+            <!-- =================================================
+                 TOPBAR
+            ================================================== -->
+
+            <header class="topbar">
+
+                <!-- Mobile Menu -->
+                <button
+                    class="mobile-menu-btn"
+                    id="mobileMenuBtn"
+                    type="button"
+                    aria-label="Open menu"
+                >
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+
+                <!-- Search -->
+                <div class="topbar-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search elections..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- Topbar Right -->
+                <div class="topbar-right">
+
+                    <!-- Notification -->
+                    <button
+                        class="notification-btn"
+                        type="button"
+                        onclick="showNotification('You have 3 new notifications.')"
+                        aria-label="Notifications"
+                    >
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span class="notification-badge">
+                            3
+                        </span>
+
+                    </button>
+
+
+                    <!-- Divider -->
+                    <div class="topbar-divider"></div>
+
+
+                    <!-- User -->
+                    <a
+                        href="profile.html"
+                        class="topbar-user"
+                    >
+
+                        <img
+                            src="https://i.pravatar.cc/100?img=12"
+                            alt="User Avatar"
+                        >
+
+                        <div class="topbar-user-info">
+
+                            <strong id="topbarUserName">
+                                Sameer Ahmad
+                            </strong>
+
+                            <span>
+                                Verified Voter
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 PAGE CONTENT
+            ================================================== -->
+
+            <div class="page-content">
+
+
+                <!-- =================================================
+                     WELCOME SECTION
+                ================================================== -->
+
+                <section class="welcome-section">
+
+                    <div class="welcome-content">
+
+                        <span class="welcome-label">
+                            <i class="fa-solid fa-sparkles"></i>
+                            Welcome back
+                        </span>
+
+                        <h1>
+                            Hello,
+                            <span id="welcomeUserName">
+                                Sameer
+                            </span>
+                            👋
+                        </h1>
+
+                        <p>
+                            Manage your elections and cast your vote
+                            securely from your dashboard.
+                        </p>
+
+                    </div>
+
+
+                    <div class="welcome-date">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                        <div>
+                            <span>Today</span>
+                            <strong id="currentDate">
+                                21 September 2026
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     HERO BANNER
+                ================================================== -->
+
+                <section class="hero-banner">
+
+                    <div class="hero-content">
+
+                        <div class="hero-badge">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Secure Online Voting
+                        </div>
+
+                        <h2>
+                            Your Vote Matters.
+                            <br>
+                            <span>Vote Securely. Vote Online.</span>
+                        </h2>
+
+                        <p>
+                            Make your voice heard in the upcoming
+                            elections. Your vote is private, secure,
+                            and protected.
+                        </p>
+
+                        <button
+                            class="primary-btn hero-btn"
+                            type="button"
+                            onclick="goToVote()"
+                        >
+                            <i class="fa-solid fa-check-to-slot"></i>
+                            Cast Your Vote
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                    </div>
+
+
+                    <div class="hero-visual">
+
+                        <div class="hero-shield">
+
+                            <div class="shield-ring"></div>
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                            <span>
+                                100%
+                                <small>Secure</small>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     STATISTICS
+                ================================================== -->
+
+                <section class="stats-grid">
+
+                    <!-- Total Elections -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-landmark"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <span>Total Elections</span>
+
+                            <strong>
+                                04
+                            </strong>
+
+                            <small class="positive">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                2 active now
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Active Elections -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <span>Active Elections</span>
+
+                            <strong>
+                                02
+                            </strong>
+
+                            <small>
+                                Currently open
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Votes Cast -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-check-to-slot"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <span>Votes Cast</span>
+
+                            <strong id="voteCount">
+                                00
+                            </strong>
+
+                            <small>
+                                Your submitted votes
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Total Voters -->
+                    <div class="stat-card">
+
+                        <div class="stat-icon orange">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div class="stat-info">
+
+                            <span>Total Voters</span>
+
+                            <strong>
+                                12.8K
+                            </strong>
+
+                            <small class="positive">
+                                <i class="fa-solid fa-arrow-up"></i>
+                                8.4% this year
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     ELECTIONS + QUICK VOTE
+                ================================================== -->
+
+                <section class="dashboard-grid">
+
+
+                    <!-- Current Elections -->
+                    <div
+                        class="dashboard-card elections-card"
+                        id="elections"
+                    >
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    ELECTIONS
+                                </span>
+
+                                <h2>
+                                    Current Elections
+                                </h2>
+
+                            </div>
+
+                            <a
+                                href="#elections"
+                                class="view-all"
+                            >
+                                View All
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+
+                        </div>
+
+
+                        <div class="elections-list">
+
+
+                            <!-- Election 1 -->
+                            <div class="election">
+
+                                <div class="election-icon blue-bg">
+                                    <i class="fa-solid fa-user-group"></i>
+                                </div>
+
+                                <div class="election-info">
+
+                                    <h3>
+                                        Student Council Election 2026
+                                    </h3>
+
+                                    <p>
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Ends on 25 Sep 2026
+                                    </p>
+
+                                </div>
+
+                                <div class="election-status active">
+                                    <span></span>
+                                    Active
+                                </div>
+
+                            </div>
+
+
+                            <!-- Election 2 -->
+                            <div class="election">
+
+                                <div class="election-icon purple-bg">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </div>
+
+                                <div class="election-info">
+
+                                    <h3>
+                                        Department Representative
+                                    </h3>
+
+                                    <p>
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Ends on 30 Sep 2026
+                                    </p>
+
+                                </div>
+
+                                <div class="election-status active">
+                                    <span></span>
+                                    Active
+                                </div>
+
+                            </div>
+
+
+                            <!-- Election 3 -->
+                            <div class="election">
+
+                                <div class="election-icon orange-bg">
+                                    <i class="fa-solid fa-globe"></i>
+                                </div>
+
+                                <div class="election-info">
+
+                                    <h3>
+                                        University General Election
+                                    </h3>
+
+                                    <p>
+                                        <i class="fa-regular fa-calendar"></i>
+                                        Starts on 05 Oct 2026
+                                    </p>
+
+                                </div>
+
+                                <div class="election-status upcoming">
+                                    Upcoming
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Quick Vote -->
+                    <div class="dashboard-card quick-vote-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    QUICK VOTE
+                                </span>
+
+                                <h2>
+                                    Student Council
+                                </h2>
+
+                            </div>
+
+                            <span class="live-badge">
+                                <span></span>
+                                LIVE
+                            </span>
+
+                        </div>
+
+
+                        <div class="quick-vote-list">
+
+
+                            <!-- Candidate 1 -->
+                            <div class="quick-candidate">
+
+                                <img
+                                    src="https://i.pravatar.cc/100?img=11"
+                                    alt="Aarav Sharma"
+                                >
+
+                                <div class="quick-candidate-info">
+
+                                    <strong>
+                                        Aarav Sharma
+                                    </strong>
+
+                                    <span>
+                                        Computer Science
+                                    </span>
+
+                                </div>
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </div>
+
+
+                            <!-- Candidate 2 -->
+                            <div class="quick-candidate">
+
+                                <img
+                                    src="https://i.pravatar.cc/100?img=47"
+                                    alt="Priya Verma"
+                                >
+
+                                <div class="quick-candidate-info">
+
+                                    <strong>
+                                        Priya Verma
+                                    </strong>
+
+                                    <span>
+                                        Electronics
+                                    </span>
+
+                                </div>
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </div>
+
+
+                            <!-- Candidate 3 -->
+                            <div class="quick-candidate">
+
+                                <img
+                                    src="https://i.pravatar.cc/100?img=13"
+                                    alt="Rohan Mehta"
+                                >
+
+                                <div class="quick-candidate-info">
+
+                                    <strong>
+                                        Rohan Mehta
+                                    </strong>
+
+                                    <span>
+                                        Mechanical
+                                    </span>
+
+                                </div>
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="vote.html"
+                            class="secondary-btn full-btn"
+                        >
+                            View Candidates
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     LOWER DASHBOARD
+                ================================================== -->
+
+                <section class="dashboard-grid lower-grid">
+
+
+                    <!-- Voting Activity -->
+                    <div class="dashboard-card activity-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <span class="card-label">
+                                    VOTING ACTIVITY
+                                </span>
+
+                                <h2>
+                                    Election Participation
+                                </h2>
+
+                            </div>
+
+                            <select
+                                class="period-select"
+                                aria-label="Select period"
+                            >
+                                <option>
+                                    This Year
+                                </option>
+
+                                <option>
+                                    This Month
+                                </option>
+
+                                <option>
+                                    This Week
+                                </option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="activity-chart">
+
+                            <div class="chart-y-axis">
+                                <span>100%</span>
+                                <span>75%</span>
+                                <span>50%</span>
+                                <span>25%</span>
+                                <span>0%</span>
+                            </div>
+
+
+                            <div class="chart-area">
+
+                                <div class="chart-grid-line"></div>
+                                <div class="chart-grid-line"></div>
+                                <div class="chart-grid-line"></div>
+                                <div class="chart-grid-line"></div>
+                                <div class="chart-grid-line"></div>
+
+
+                                <div class="chart-bars">
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 48%;"
+                                        ></div>
+                                        <span>Jan</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 62%;"
+                                        ></div>
+                                        <span>Feb</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 55%;"
+                                        ></div>
+                                        <span>Mar</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 72%;"
+                                        ></div>
+                                        <span>Apr</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 66%;"
+                                        ></div>
+                                        <span>May</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 84%;"
+                                        ></div>
+                                        <span>Jun</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 77%;"
+                                        ></div>
+                                        <span>Jul</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 91%;"
+                                        ></div>
+                                        <span>Aug</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 73%;"
+                                        ></div>
+                                        <span>Sep</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 0%;"
+                                        ></div>
+                                        <span>Oct</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 0%;"
+                                        ></div>
+                                        <span>Nov</span>
+                                    </div>
+
+                                    <div class="bar-wrapper">
+                                        <div
+                                            class="chart-bar"
+                                            style="height: 0%;"
+                                        ></div>
+                                        <span>Dec</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Security Card -->
+                    <div class="dashboard-card security-card">
+
+                        <div class="security-card-top">
+
+                            <div class="security-icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+
+                            <span class="verified-status">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Verified
+                            </span>
+
+                        </div>
+
+                        <h2>
+                            Your Vote is Secure
+                        </h2>
+
+                        <p>
+                            Your voting information is protected with
+                            industry-standard security and encryption.
+                        </p>
+
+
+                        <div class="security-items">
+
+                            <div>
+                                <i class="fa-solid fa-lock"></i>
+                                <span>Encrypted Data</span>
+                            </div>
+
+                            <div>
+                                <i class="fa-solid fa-user-shield"></i>
+                                <span>Private Voting</span>
+                            </div>
+
+                            <div>
+                                <i class="fa-solid fa-fingerprint"></i>
+                                <span>Verified Identity</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     UPCOMING ELECTIONS
+                ================================================== -->
+
+                <section class="dashboard-card upcoming-section">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span class="card-label">
+                                UPCOMING
+                            </span>
+
+                            <h2>
+                                Upcoming Elections
+                            </h2>
+
+                        </div>
+
+                        <a
+                            href="#elections"
+                            class="view-all"
+                        >
+                            View All
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="upcoming-grid">
+
+
+                        <div class="upcoming-election">
+
+                            <div class="upcoming-date">
+
+                                <strong>
+                                    05
+                                </strong>
+
+                                <span>
+                                    OCT
+                                </span>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    University General Election
+                                </h3>
+
+                                <p>
+                                    <i class="fa-solid fa-users"></i>
+                                    12,800 eligible voters
+                                </p>
+
+                            </div>
+
+                            <span class="upcoming-tag">
+                                Upcoming
+                            </span>
+
+                        </div>
+
+
+                        <div class="upcoming-election">
+
+                            <div class="upcoming-date">
+
+                                <strong>
+                                    12
+                                </strong>
+
+                                <span>
+                                    OCT
+                                </span>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    Student Senate Election
+                                </h3>
+
+                                <p>
+                                    <i class="fa-solid fa-users"></i>
+                                    8,450 eligible voters
+                                </p>
+
+                            </div>
+
+                            <span class="upcoming-tag">
+                                Upcoming
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
+```
