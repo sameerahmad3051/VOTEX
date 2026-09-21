@@ -1,0 +1,819 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Election Results | VoteSecure</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+
+                <a href="index.html" class="sidebar-logo">
+
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-check-to-slot"></i>
+                    </div>
+
+                    <div>
+                        <strong>VoteSecure</strong>
+                        <span>Online Voting</span>
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-menu">
+
+                <p class="menu-title">
+                    Main Menu
+                </p>
+
+                <a
+                    href="index.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="index.html#elections"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>Elections</span>
+                </a>
+
+                <a
+                    href="vote.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    <span>Cast Vote</span>
+                </a>
+
+                <a
+                    href="results.html"
+                    class="menu-item active"
+                >
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Results</span>
+                </a>
+
+                <a
+                    href="profile.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="menu-item"
+                    onclick="showNotification('Settings will be available soon.', 'warning'); return false;"
+                >
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-item logout-item"
+                    onclick="logout(); return false;"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-footer">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>
+                    © 2026 VoteSecure
+                </span>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN
+        ========================== -->
+        <main class="main">
+
+            <!-- Topbar -->
+            <header class="topbar">
+
+                <div class="topbar-left">
+
+                    <button
+                        class="mobile-menu-btn"
+                        id="mobileMenuBtn"
+                        aria-label="Open menu"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div class="page-title">
+
+                        <h1>
+                            Election Results
+                        </h1>
+
+                        <span>
+                            Student Council Election 2026
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="topbar-actions">
+
+                    <!-- Search -->
+                    <div class="search-box">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search elections..."
+                        >
+
+                    </div>
+
+
+                    <!-- Notification -->
+                    <button
+                        class="notification-btn"
+                        onclick="showNotification('You have 3 new notifications.')"
+                        aria-label="Notifications"
+                    >
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span class="notification-badge">
+                            3
+                        </span>
+
+                    </button>
+
+
+                    <!-- User -->
+                    <a
+                        href="profile.html"
+                        class="topbar-user"
+                    >
+
+                        <img
+                            src="https://i.pravatar.cc/100?img=12"
+                            alt="User"
+                        >
+
+                        <div class="topbar-user-info">
+
+                            <strong id="topbarUserName">
+                                Sameer Ahmad
+                            </strong>
+
+                            <span>
+                                Verified Voter
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 PAGE CONTENT
+            ========================== -->
+            <div class="page-content">
+
+                <!-- Header -->
+                <div class="results-page-header">
+
+                    <div>
+
+                        <div class="breadcrumb">
+
+                            <a href="index.html">
+                                Dashboard
+                            </a>
+
+                            <i class="fa-solid fa-chevron-right"></i>
+
+                            <span>
+                                Results
+                            </span>
+
+                        </div>
+
+                        <h2>
+                            Student Council Election 2026
+                        </h2>
+
+                        <p>
+                            Current election results and
+                            voting statistics.
+                        </p>
+
+                    </div>
+
+
+                    <div class="election-status live">
+
+                        <span class="status-dot"></span>
+
+                        Live Results
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     RESULT STATISTICS
+                ========================== -->
+                <div class="stats-grid results-stats">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-check-to-slot"></i>
+                        </div>
+
+                        <div class="stat-content">
+
+                            <span>
+                                Total Votes
+                            </span>
+
+                            <strong id="totalVotes">
+                                11,780
+                            </strong>
+
+                            <small>
+                                Votes recorded
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div class="stat-content">
+
+                            <span>
+                                Candidates
+                            </span>
+
+                            <strong>
+                                03
+                            </strong>
+
+                            <small>
+                                Contesting
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+
+                        <div class="stat-content">
+
+                            <span>
+                                Voter Turnout
+                            </span>
+
+                            <strong>
+                                72%
+                            </strong>
+
+                            <small>
+                                Participation
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon orange">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+
+                        <div class="stat-content">
+
+                            <span>
+                                Days Remaining
+                            </span>
+
+                            <strong>
+                                09
+                            </strong>
+
+                            <small>
+                                Until election closes
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     RESULTS LAYOUT
+                ========================== -->
+                <div class="results-layout">
+
+                    <!-- Main Results -->
+                    <section class="results-card">
+
+                        <div class="results-card-header">
+
+                            <div>
+
+                                <span class="section-label">
+                                    Current Standing
+                                </span>
+
+                                <h3>
+                                    Candidate Results
+                                </h3>
+
+                            </div>
+
+                            <span class="live-label">
+
+                                <span class="live-dot"></span>
+
+                                Updating Live
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- Candidate Result 1 -->
+                        <div class="result-candidate">
+
+                            <div class="result-top">
+
+                                <div class="result-person">
+
+                                    <div class="result-rank first">
+                                        1
+                                    </div>
+
+                                    <img
+                                        src="https://i.pravatar.cc/100?img=11"
+                                        alt="Aarav Sharma"
+                                    >
+
+                                    <div>
+
+                                        <h4>
+                                            Aarav Sharma
+                                        </h4>
+
+                                        <span>
+                                            Computer Science Department
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="result-votes">
+
+                                    <strong>
+                                        4,850
+                                    </strong>
+
+                                    <span>
+                                        41.2%
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="progress-container">
+
+                                <div
+                                    class="progress-bar"
+                                    style="width: 41.2%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Candidate Result 2 -->
+                        <div class="result-candidate">
+
+                            <div class="result-top">
+
+                                <div class="result-person">
+
+                                    <div class="result-rank">
+                                        2
+                                    </div>
+
+                                    <img
+                                        src="https://i.pravatar.cc/100?img=47"
+                                        alt="Priya Verma"
+                                    >
+
+                                    <div>
+
+                                        <h4>
+                                            Priya Verma
+                                        </h4>
+
+                                        <span>
+                                            Electronics Department
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="result-votes">
+
+                                    <strong>
+                                        3,920
+                                    </strong>
+
+                                    <span>
+                                        33.3%
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="progress-container">
+
+                                <div
+                                    class="progress-bar"
+                                    style="width: 33.3%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Candidate Result 3 -->
+                        <div class="result-candidate">
+
+                            <div class="result-top">
+
+                                <div class="result-person">
+
+                                    <div class="result-rank">
+                                        3
+                                    </div>
+
+                                    <img
+                                        src="https://i.pravatar.cc/100?img=13"
+                                        alt="Rohan Mehta"
+                                    >
+
+                                    <div>
+
+                                        <h4>
+                                            Rohan Mehta
+                                        </h4>
+
+                                        <span>
+                                            Mechanical Department
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="result-votes">
+
+                                    <strong>
+                                        3,010
+                                    </strong>
+
+                                    <span>
+                                        25.5%
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="progress-container">
+
+                                <div
+                                    class="progress-bar"
+                                    style="width: 25.5%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Results Footer -->
+                        <div class="results-footer">
+
+                            <i class="fa-solid fa-circle-info"></i>
+
+                            <span>
+                                Results are updated automatically
+                                as votes are counted.
+                            </span>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================
+                         SIDE SUMMARY
+                    ========================== -->
+                    <aside class="results-summary-card">
+
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                        <h3>
+                            Election Summary
+                        </h3>
+
+                        <p>
+                            Student Council Election 2026
+                        </p>
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Election Status
+                            </span>
+
+                            <strong class="text-green">
+                                Active
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Start Date
+                            </span>
+
+                            <strong>
+                                16 Sep 2026
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                End Date
+                            </span>
+
+                            <strong>
+                                25 Sep 2026
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Registered Voters
+                            </span>
+
+                            <strong>
+                                16,360
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Votes Counted
+                            </span>
+
+                            <strong>
+                                11,780
+                            </strong>
+
+                        </div>
+
+
+                        <div class="turnout-section">
+
+                            <div class="turnout-header">
+
+                                <span>
+                                    Voter Turnout
+                                </span>
+
+                                <strong>
+                                    72%
+                                </strong>
+
+                            </div>
+
+                            <div class="turnout-progress">
+
+                                <div
+                                    style="width: 72%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="vote.html"
+                            class="results-vote-btn"
+                        >
+
+                            <i class="fa-solid fa-check-to-slot"></i>
+
+                            Cast Your Vote
+
+                        </a>
+
+                    </aside>
+
+                </div>
+
+
+                <!-- =========================
+                     INFORMATION CARD
+                ========================== -->
+                <div class="results-info-card">
+
+                    <div class="info-card-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+
+                    <div class="info-card-content">
+
+                        <h4>
+                            Transparent & Secure Results
+                        </h4>
+
+                        <p>
+                            VoteSecure records votes securely
+                            and displays aggregated election
+                            results without exposing individual
+                            voter choices.
+                        </p>
+
+                    </div>
+
+                    <div class="verified-badge">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Verified
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+
+    <!-- Main JavaScript -->
+    <script src="js/app.js"></script>
+
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const userName =
+                    localStorage.getItem("userName");
+
+                const nameElement =
+                    document.getElementById(
+                        "topbarUserName"
+                    );
+
+                if (
+                    userName &&
+                    nameElement
+                ) {
+
+                    nameElement.textContent =
+                        userName;
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
+```

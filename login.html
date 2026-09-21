@@ -1,0 +1,429 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | VoteSecure</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <!-- Left Side -->
+        <div class="auth-brand">
+
+            <div class="auth-brand-content">
+
+                <div class="brand-logo">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                </div>
+
+                <h1>VoteSecure</h1>
+
+                <p class="brand-tagline">
+                    Secure. Simple. Transparent.
+                </p>
+
+                <div class="brand-message">
+                    <h2>
+                        Your Vote.
+                        <br>
+                        Your Voice.
+                    </h2>
+
+                    <p>
+                        Participate in elections securely
+                        and make your voice count.
+                    </p>
+                </div>
+
+                <div class="security-points">
+
+                    <div class="security-point">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Secure Voting</span>
+                    </div>
+
+                    <div class="security-point">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Protected Data</span>
+                    </div>
+
+                    <div class="security-point">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Verified Voters</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Side -->
+        <div class="auth-form-wrapper">
+
+            <div class="auth-form-card">
+
+                <div class="auth-mobile-logo">
+                    <div class="brand-logo">
+                        <i class="fa-solid fa-check-to-slot"></i>
+                    </div>
+
+                    <h1>VoteSecure</h1>
+                </div>
+
+
+                <!-- Header -->
+                <div class="auth-header">
+
+                    <span class="auth-welcome">
+                        Welcome back
+                    </span>
+
+                    <h2>
+                        Sign in to your account
+                    </h2>
+
+                    <p>
+                        Enter your credentials to continue
+                        to your voting dashboard.
+                    </p>
+
+                </div>
+
+
+                <!-- Login Form -->
+                <form
+                    id="loginForm"
+                    class="auth-form"
+                    onsubmit="handleLogin(event)"
+                >
+
+                    <!-- Email -->
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-regular fa-envelope"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="form-group">
+
+                        <div class="label-row">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <a
+                                href="#"
+                                class="forgot-password"
+                                onclick="showNotification('Password reset will be available soon.', 'warning'); return false;"
+                            >
+                                Forgot password?
+                            </a>
+
+                        </div>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('password', this)"
+                                aria-label="Show password"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Remember Me -->
+                    <div class="remember-row">
+
+                        <label class="checkbox-label">
+
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                            >
+
+                            <span class="custom-checkbox"></span>
+
+                            <span>
+                                Remember me
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- Submit -->
+                    <button
+                        type="submit"
+                        class="auth-submit-btn"
+                        id="loginButton"
+                    >
+
+                        <span>
+                            Sign In
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+
+
+                <!-- Register -->
+                <div class="auth-register">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                    <a href="register.html">
+                        Create an account
+                    </a>
+
+                </div>
+
+
+                <!-- Security -->
+                <div class="auth-security">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <span>
+                        Your information is encrypted
+                        and securely protected.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+
+
+    <script>
+        function togglePassword(inputId, button) {
+
+            const input = document.getElementById(inputId);
+
+            if (!input) {
+                return;
+            }
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                button.innerHTML =
+                    '<i class="fa-regular fa-eye-slash"></i>';
+
+                button.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+            } else {
+
+                input.type = "password";
+
+                button.innerHTML =
+                    '<i class="fa-regular fa-eye"></i>';
+
+                button.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+            }
+        }
+
+
+        function handleLogin(event) {
+
+            event.preventDefault();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            const rememberMe =
+                document.getElementById("rememberMe").checked;
+
+            const loginButton =
+                document.getElementById("loginButton");
+
+
+            if (!email || !password) {
+
+                showNotification(
+                    "Please enter your email and password.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            loginButton.disabled = true;
+
+            loginButton.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
+
+            /*
+             * Temporary frontend login.
+             *
+             * Backend authentication will replace this
+             * when the Node.js/Express backend is connected.
+             */
+
+            setTimeout(() => {
+
+                localStorage.setItem(
+                    "loggedIn",
+                    "true"
+                );
+
+                localStorage.setItem(
+                    "userName",
+                    email.split("@")[0]
+                );
+
+                localStorage.setItem(
+                    "userEmail",
+                    email
+                );
+
+
+                if (rememberMe) {
+
+                    localStorage.setItem(
+                        "rememberMe",
+                        "true"
+                    );
+
+                } else {
+
+                    localStorage.removeItem(
+                        "rememberMe"
+                    );
+                }
+
+
+                showNotification(
+                    "Login successful! Redirecting...",
+                    "success"
+                );
+
+
+                setTimeout(() => {
+
+                    window.location.href = "index.html";
+
+                }, 800);
+
+            }, 700);
+        }
+
+
+        /*
+         * If already logged in, don't show login page.
+         */
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                if (
+                    localStorage.getItem("loggedIn") === "true"
+                ) {
+
+                    window.location.href = "index.html";
+                }
+
+            }
+        );
+    </script>
+
+</body>
+</html>
+```

@@ -1,0 +1,705 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Cast Your Vote | VoteSecure</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+
+                <a href="index.html" class="sidebar-logo">
+
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-check-to-slot"></i>
+                    </div>
+
+                    <div>
+                        <strong>VoteSecure</strong>
+                        <span>Online Voting</span>
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-menu">
+
+                <p class="menu-title">
+                    Main Menu
+                </p>
+
+                <a
+                    href="index.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    href="index.html#elections"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>Elections</span>
+                </a>
+
+                <a
+                    href="vote.html"
+                    class="menu-item active"
+                >
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    <span>Cast Vote</span>
+                </a>
+
+                <a
+                    href="results.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Results</span>
+                </a>
+
+                <a
+                    href="profile.html"
+                    class="menu-item"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="menu-item"
+                    onclick="showNotification('Settings will be available soon.', 'warning'); return false;"
+                >
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+                <a
+                    href="#"
+                    class="menu-item logout-item"
+                    onclick="logout(); return false;"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-footer">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>© 2026 VoteSecure</span>
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN
+        ========================== -->
+        <main class="main">
+
+            <!-- Topbar -->
+            <header class="topbar">
+
+                <div class="topbar-left">
+
+                    <button
+                        class="mobile-menu-btn"
+                        id="mobileMenuBtn"
+                        aria-label="Open menu"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div class="page-title">
+                        <h1>Cast Your Vote</h1>
+                        <span>
+                            Student Council Election 2026
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="topbar-actions">
+
+                    <!-- Search -->
+                    <div class="search-box">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search elections..."
+                        >
+
+                    </div>
+
+
+                    <!-- Notification -->
+                    <button
+                        class="notification-btn"
+                        onclick="showNotification('You have 3 new notifications.')"
+                        aria-label="Notifications"
+                    >
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span class="notification-badge">
+                            3
+                        </span>
+
+                    </button>
+
+
+                    <!-- User -->
+                    <a
+                        href="profile.html"
+                        class="topbar-user"
+                    >
+
+                        <img
+                            src="https://i.pravatar.cc/100?img=12"
+                            alt="User"
+                        >
+
+                        <div class="topbar-user-info">
+
+                            <strong id="topbarUserName">
+                                Sameer Ahmad
+                            </strong>
+
+                            <span>
+                                Verified Voter
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 PAGE CONTENT
+            ========================== -->
+            <div class="page-content">
+
+                <!-- Election Header -->
+                <div class="vote-page-header">
+
+                    <div>
+
+                        <div class="breadcrumb">
+                            <a href="index.html">
+                                Dashboard
+                            </a>
+
+                            <i class="fa-solid fa-chevron-right"></i>
+
+                            <span>
+                                Cast Vote
+                            </span>
+                        </div>
+
+                        <h2>
+                            Student Council Election 2026
+                        </h2>
+
+                        <p>
+                            Choose one candidate and submit
+                            your vote securely.
+                        </p>
+
+                    </div>
+
+
+                    <div class="election-status active">
+
+                        <span class="status-dot"></span>
+
+                        Election Active
+
+                    </div>
+
+                </div>
+
+
+                <!-- Election Information -->
+                <div class="vote-info-grid">
+
+                    <div class="vote-info-card">
+
+                        <div class="vote-info-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+
+                        <div>
+                            <span>Election Ends</span>
+                            <strong>25 Sep 2026</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="vote-info-card">
+
+                        <div class="vote-info-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+                            <span>Total Candidates</span>
+                            <strong>3 Candidates</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="vote-info-card">
+
+                        <div class="vote-info-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div>
+                            <span>Voting Status</span>
+                            <strong>Secure & Verified</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     VOTING CARD
+                ========================== -->
+                <div class="vote-layout">
+
+                    <section class="vote-card">
+
+                        <div class="vote-card-header">
+
+                            <div>
+
+                                <span class="section-label">
+                                    Student Council
+                                </span>
+
+                                <h3>
+                                    Choose Your Candidate
+                                </h3>
+
+                                <p>
+                                    Select one candidate from
+                                    the list below.
+                                </p>
+
+                            </div>
+
+                            <span class="vote-step">
+                                Step 1 of 2
+                            </span>
+
+                        </div>
+
+
+                        <!-- Candidates -->
+                        <div
+                            class="candidate-list"
+                            id="candidateList"
+                        >
+
+                            <!-- Candidate 1 -->
+                            <div
+                                class="candidate"
+                                data-candidate-id="1"
+                                onclick="selectCandidate(1)"
+                            >
+
+                                <div class="candidate-radio">
+                                    <span class="radio"></span>
+                                </div>
+
+                                <img
+                                    src="https://i.pravatar.cc/100?img=11"
+                                    alt="Aarav Sharma"
+                                    class="candidate-avatar"
+                                >
+
+                                <div class="candidate-info">
+
+                                    <h4>
+                                        Aarav Sharma
+                                    </h4>
+
+                                    <p>
+                                        Computer Science Department
+                                    </p>
+
+                                </div>
+
+                                <div class="candidate-arrow">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Candidate 2 -->
+                            <div
+                                class="candidate"
+                                data-candidate-id="2"
+                                onclick="selectCandidate(2)"
+                            >
+
+                                <div class="candidate-radio">
+                                    <span class="radio"></span>
+                                </div>
+
+                                <img
+                                    src="https://i.pravatar.cc/100?img=47"
+                                    alt="Priya Verma"
+                                    class="candidate-avatar"
+                                >
+
+                                <div class="candidate-info">
+
+                                    <h4>
+                                        Priya Verma
+                                    </h4>
+
+                                    <p>
+                                        Electronics Department
+                                    </p>
+
+                                </div>
+
+                                <div class="candidate-arrow">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Candidate 3 -->
+                            <div
+                                class="candidate"
+                                data-candidate-id="3"
+                                onclick="selectCandidate(3)"
+                            >
+
+                                <div class="candidate-radio">
+                                    <span class="radio"></span>
+                                </div>
+
+                                <img
+                                    src="https://i.pravatar.cc/100?img=13"
+                                    alt="Rohan Mehta"
+                                    class="candidate-avatar"
+                                >
+
+                                <div class="candidate-info">
+
+                                    <h4>
+                                        Rohan Mehta
+                                    </h4>
+
+                                    <p>
+                                        Mechanical Department
+                                    </p>
+
+                                </div>
+
+                                <div class="candidate-arrow">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Submit Area -->
+                        <div class="vote-submit-area">
+
+                            <div class="vote-warning">
+
+                                <i class="fa-solid fa-circle-info"></i>
+
+                                <span>
+                                    You can vote only once.
+                                    Your vote cannot be changed
+                                    after submission.
+                                </span>
+
+                            </div>
+
+                            <button
+                                type="button"
+                                class="submit-vote-btn"
+                                id="submitVoteButton"
+                                onclick="submitVote()"
+                            >
+                                <i class="fa-solid fa-check"></i>
+                                <span>Submit Vote</span>
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================
+                         SECURITY CARD
+                    ========================== -->
+                    <aside class="voting-security-card">
+
+                        <div class="security-card-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <h3>
+                            Your Vote is Secure
+                        </h3>
+
+                        <p>
+                            VoteSecure protects your voting
+                            information using secure
+                            authentication and encrypted
+                            communication.
+                        </p>
+
+
+                        <div class="security-feature">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <div>
+                                <strong>
+                                    Private
+                                </strong>
+
+                                <span>
+                                    Your choice remains protected.
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="security-feature">
+
+                            <i class="fa-solid fa-fingerprint"></i>
+
+                            <div>
+                                <strong>
+                                    Verified
+                                </strong>
+
+                                <span>
+                                    Only verified voters can vote.
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="security-feature">
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <div>
+                                <strong>
+                                    One Vote
+                                </strong>
+
+                                <span>
+                                    Duplicate voting is prevented.
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="security-card-footer">
+
+                            <i class="fa-solid fa-shield"></i>
+
+                            <span>
+                                Secure Voting System
+                            </span>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+
+                <!-- Help Section -->
+                <div class="vote-help-card">
+
+                    <div class="help-icon">
+                        <i class="fa-regular fa-circle-question"></i>
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Need help?
+                        </h4>
+
+                        <p>
+                            Make sure you select the candidate
+                            you want before submitting your vote.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="showNotification('Voting support will be available soon.', 'warning')"
+                    >
+                        Contact Support
+                    </button>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+
+    <!-- Main JavaScript -->
+    <script src="js/app.js"></script>
+
+
+    <script>
+
+        /*
+         * Display logged-in user's name.
+         */
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const userName =
+                    localStorage.getItem("userName");
+
+                const nameElement =
+                    document.getElementById(
+                        "topbarUserName"
+                    );
+
+                if (
+                    userName &&
+                    nameElement
+                ) {
+
+                    nameElement.textContent =
+                        userName;
+                }
+
+
+                /*
+                 * Prevent voting if the user has
+                 * already submitted a vote.
+                 */
+                if (
+                    localStorage.getItem(
+                        "voteSubmitted"
+                    ) === "true"
+                ) {
+
+                    const button =
+                        document.getElementById(
+                            "submitVoteButton"
+                        );
+
+                    if (button) {
+
+                        button.disabled = true;
+
+                        button.innerHTML =
+                            '<i class="fa-solid fa-circle-check"></i>' +
+                            '<span>Vote Already Submitted</span>';
+                    }
+
+
+                    document
+                        .querySelectorAll(".candidate")
+                        .forEach(function (candidate) {
+
+                            candidate.style.pointerEvents =
+                                "none";
+
+                            candidate.classList.add(
+                                "vote-disabled"
+                            );
+
+                        });
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
+```

@@ -1,0 +1,678 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Account | VoteSecure</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <!-- =========================
+             LEFT BRAND SECTION
+        ========================== -->
+        <div class="auth-brand">
+
+            <div class="auth-brand-content">
+
+                <div class="brand-logo">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                </div>
+
+                <h1>VoteSecure</h1>
+
+                <p class="brand-tagline">
+                    Secure. Simple. Transparent.
+                </p>
+
+                <div class="brand-message">
+
+                    <h2>
+                        Create Your
+                        <br>
+                        Voting Account.
+                    </h2>
+
+                    <p>
+                        Register once and participate
+                        in secure online elections.
+                    </p>
+
+                </div>
+
+                <div class="security-points">
+
+                    <div class="security-point">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>Verified Identity</span>
+                    </div>
+
+                    <div class="security-point">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Secure Account</span>
+                    </div>
+
+                    <div class="security-point">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>One Person, One Vote</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             RIGHT FORM SECTION
+        ========================== -->
+        <div class="auth-form-wrapper">
+
+            <div class="auth-form-card">
+
+                <!-- Mobile Logo -->
+                <div class="auth-mobile-logo">
+
+                    <div class="brand-logo">
+                        <i class="fa-solid fa-check-to-slot"></i>
+                    </div>
+
+                    <h1>VoteSecure</h1>
+
+                </div>
+
+
+                <!-- Header -->
+                <div class="auth-header">
+
+                    <span class="auth-welcome">
+                        Get started
+                    </span>
+
+                    <h2>
+                        Create your account
+                    </h2>
+
+                    <p>
+                        Enter your details to register as
+                        a verified voter.
+                    </p>
+
+                </div>
+
+
+                <!-- =========================
+                     REGISTER FORM
+                ========================== -->
+                <form
+                    id="registerForm"
+                    class="auth-form"
+                    onsubmit="handleRegister(event)"
+                >
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+
+                        <label for="fullName">
+                            Full Name
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-regular fa-user"></i>
+
+                            <input
+                                type="text"
+                                id="fullName"
+                                name="fullName"
+                                placeholder="Enter your full name"
+                                autocomplete="name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="form-group">
+
+                        <label for="registerEmail">
+                            Email Address
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-regular fa-envelope"></i>
+
+                            <input
+                                type="email"
+                                id="registerEmail"
+                                name="email"
+                                placeholder="Enter your email"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Department -->
+                    <div class="form-group">
+
+                        <label for="department">
+                            Department
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-building-columns"></i>
+
+                            <select
+                                id="department"
+                                name="department"
+                                required
+                            >
+
+                                <option
+                                    value=""
+                                    selected
+                                    disabled
+                                >
+                                    Select your department
+                                </option>
+
+                                <option value="Computer Science">
+                                    Computer Science
+                                </option>
+
+                                <option value="Electronics">
+                                    Electronics
+                                </option>
+
+                                <option value="Mechanical">
+                                    Mechanical
+                                </option>
+
+                                <option value="Civil">
+                                    Civil
+                                </option>
+
+                                <option value="Electrical">
+                                    Electrical
+                                </option>
+
+                                <option value="Information Technology">
+                                    Information Technology
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="form-group">
+
+                        <label for="registerPassword">
+                            Password
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                                type="password"
+                                id="registerPassword"
+                                name="password"
+                                placeholder="Create a password"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('registerPassword', this)"
+                                aria-label="Show password"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+
+                        </div>
+
+                        <small class="input-help">
+                            Password must contain at least 6 characters.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Confirm your password"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('confirmPassword', this)"
+                                aria-label="Show password"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Terms -->
+                    <div class="terms-row">
+
+                        <label class="checkbox-label">
+
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                required
+                            >
+
+                            <span class="custom-checkbox"></span>
+
+                            <span>
+                                I agree to the
+                                <a
+                                    href="#"
+                                    onclick="showNotification('Terms and conditions will be available soon.', 'warning'); return false;"
+                                >
+                                    Terms & Conditions
+                                </a>
+                                and
+                                <a
+                                    href="#"
+                                    onclick="showNotification('Privacy policy will be available soon.', 'warning'); return false;"
+                                >
+                                    Privacy Policy
+                                </a>
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- Submit -->
+                    <button
+                        type="submit"
+                        class="auth-submit-btn"
+                        id="registerButton"
+                    >
+
+                        <span>
+                            Create Account
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+
+
+                <!-- Login -->
+                <div class="auth-register">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                    <a href="login.html">
+                        Sign in
+                    </a>
+
+                </div>
+
+
+                <!-- Security -->
+                <div class="auth-security">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <span>
+                        Your personal information is securely
+                        protected.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+
+    <!-- Main JavaScript -->
+    <script src="js/app.js"></script>
+
+
+    <script>
+
+        /* =========================
+           PASSWORD TOGGLE
+        ========================== */
+
+        function togglePassword(inputId, button) {
+
+            const input =
+                document.getElementById(inputId);
+
+            if (!input) {
+                return;
+            }
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                button.innerHTML =
+                    '<i class="fa-regular fa-eye-slash"></i>';
+
+                button.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+            } else {
+
+                input.type = "password";
+
+                button.innerHTML =
+                    '<i class="fa-regular fa-eye"></i>';
+
+                button.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+            }
+        }
+
+
+        /* =========================
+           REGISTER HANDLER
+        ========================== */
+
+        function handleRegister(event) {
+
+            event.preventDefault();
+
+
+            const fullName =
+                document
+                    .getElementById("fullName")
+                    .value
+                    .trim();
+
+
+            const email =
+                document
+                    .getElementById("registerEmail")
+                    .value
+                    .trim();
+
+
+            const department =
+                document
+                    .getElementById("department")
+                    .value;
+
+
+            const password =
+                document
+                    .getElementById("registerPassword")
+                    .value;
+
+
+            const confirmPassword =
+                document
+                    .getElementById("confirmPassword")
+                    .value;
+
+
+            const terms =
+                document
+                    .getElementById("terms")
+                    .checked;
+
+
+            const registerButton =
+                document.getElementById(
+                    "registerButton"
+                );
+
+
+            /* =========================
+               VALIDATION
+            ========================== */
+
+            if (!fullName) {
+
+                showNotification(
+                    "Please enter your full name.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            if (!email) {
+
+                showNotification(
+                    "Please enter your email address.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            if (!department) {
+
+                showNotification(
+                    "Please select your department.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            if (password.length < 6) {
+
+                showNotification(
+                    "Password must contain at least 6 characters.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            if (password !== confirmPassword) {
+
+                showNotification(
+                    "Passwords do not match.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            if (!terms) {
+
+                showNotification(
+                    "Please accept the Terms & Conditions.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            /* =========================
+               LOADING STATE
+            ========================== */
+
+            registerButton.disabled = true;
+
+            registerButton.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Creating account...';
+
+
+            /*
+             * Temporary frontend registration.
+             *
+             * This will later be replaced by the
+             * Node.js / Express backend API.
+             */
+
+            setTimeout(() => {
+
+                const user = {
+
+                    fullName: fullName,
+
+                    email: email,
+
+                    department: department
+
+                };
+
+
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(user)
+                );
+
+
+                localStorage.setItem(
+                    "userName",
+                    fullName
+                );
+
+
+                localStorage.setItem(
+                    "userEmail",
+                    email
+                );
+
+
+                localStorage.setItem(
+                    "department",
+                    department
+                );
+
+
+                showNotification(
+                    "Account created successfully!",
+                    "success"
+                );
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "login.html";
+
+                }, 1000);
+
+
+            }, 800);
+        }
+
+
+        /* =========================
+           CHECK EXISTING SESSION
+        ========================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                if (
+                    localStorage.getItem("loggedIn") === "true"
+                ) {
+
+                    window.location.href =
+                        "index.html";
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
+```
