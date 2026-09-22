@@ -128,11 +128,7 @@
                 <!-- =========================
                      REGISTER FORM
                 ========================== -->
-                <form
-                    id="registerForm"
-                    class="auth-form"
-                    onsubmit="handleRegister(event)"
-                >
+               <form class="auth-form" onsubmit="handleRegister(event)">
 
                     <!-- Full Name -->
                     <div class="form-group">
@@ -150,7 +146,6 @@
                                 id="fullName"
                                 name="fullName"
                                 placeholder="Enter your full name"
-                                autocomplete="name"
                                 required
                             >
 
@@ -175,7 +170,6 @@
                                 id="registerEmail"
                                 name="email"
                                 placeholder="Enter your email"
-                                autocomplete="email"
                                 required
                             >
 
@@ -352,16 +346,9 @@
                     <!-- Submit -->
                     <button
                         type="submit"
-                        class="auth-submit-btn"
-                        id="registerButton"
+                        class="auth-submit-btn"                    
                     >
-
-                        <span>
                             Create Account
-                        </span>
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
                     </button>
 
                 </form>
@@ -415,264 +402,89 @@
 
 
     <script>
-
-        /* =========================
-           PASSWORD TOGGLE
-        ========================== */
-
-        function togglePassword(inputId, button) {
-
-            const input =
-                document.getElementById(inputId);
-
-            if (!input) {
-                return;
-            }
-
-            if (input.type === "password") {
-
-                input.type = "text";
-
-                button.innerHTML =
-                    '<i class="fa-regular fa-eye-slash"></i>';
-
-                button.setAttribute(
-                    "aria-label",
-                    "Hide password"
-                );
-
-            } else {
-
-                input.type = "password";
-
-                button.innerHTML =
-                    '<i class="fa-regular fa-eye"></i>';
-
-                button.setAttribute(
-                    "aria-label",
-                    "Show password"
-                );
-            }
-        }
-
-
-        /* =========================
-           REGISTER HANDLER
-        ========================== */
-
-        function handleRegister(event) {
-
-            event.preventDefault();
-
-
-            const fullName =
-                document
-                    .getElementById("fullName")
-                    .value
-                    .trim();
-
-
-            const email =
-                document
-                    .getElementById("registerEmail")
-                    .value
-                    .trim();
-
-
-            const department =
-                document
-                    .getElementById("department")
-                    .value;
-
-
-            const password =
-                document
-                    .getElementById("registerPassword")
-                    .value;
-
-
-            const confirmPassword =
-                document
-                    .getElementById("confirmPassword")
-                    .value;
-
-
-            const terms =
-                document
-                    .getElementById("terms")
-                    .checked;
-
-
-            const registerButton =
-                document.getElementById(
-                    "registerButton"
-                );
-
-
-            /* =========================
-               VALIDATION
-            ========================== */
-
-            if (!fullName) {
-
-                showNotification(
-                    "Please enter your full name.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            if (!email) {
-
-                showNotification(
-                    "Please enter your email address.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            if (!department) {
-
-                showNotification(
-                    "Please select your department.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            if (password.length < 6) {
-
-                showNotification(
-                    "Password must contain at least 6 characters.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            if (password !== confirmPassword) {
-
-                showNotification(
-                    "Passwords do not match.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            if (!terms) {
-
-                showNotification(
-                    "Please accept the Terms & Conditions.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            /* =========================
-               LOADING STATE
-            ========================== */
-
-            registerButton.disabled = true;
-
-            registerButton.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Creating account...';
-
-
-            /*
-             * Temporary frontend registration.
-             *
-             * This will later be replaced by the
-             * Node.js / Express backend API.
-             */
-
-            setTimeout(() => {
-
-                const user = {
-
-                    fullName: fullName,
-
+async function handleRegister(event) {
+    event.preventDefault();
+
+    console.log("Registration button clicked");
+
+    // Get form values using the ACTUAL IDs from register.html
+    const name = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("registerEmail").value.trim();
+    const department = document.getElementById("department").value;
+    const password = document.getElementById("registerPassword").value;
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    // Basic validation
+    if (!name || !email || !department || !password || !confirmPassword) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    if (password.length < 6) {
+        alert("Password must contain at least 6 characters.");
+        return;
+    }
+
+    try {
+        console.log("Sending registration request...");
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/auth/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
                     email: email,
-
-                    department: department
-
-                };
-
-
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(user)
-                );
-
-
-                localStorage.setItem(
-                    "userName",
-                    fullName
-                );
-
-
-                localStorage.setItem(
-                    "userEmail",
-                    email
-                );
-
-
-                localStorage.setItem(
-                    "department",
-                    department
-                );
-
-
-                showNotification(
-                    "Account created successfully!",
-                    "success"
-                );
-
-
-                setTimeout(() => {
-
-                    window.location.href =
-                        "login.html";
-
-                }, 1000);
-
-
-            }, 800);
-        }
-
-
-        /* =========================
-           CHECK EXISTING SESSION
-        ========================== */
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
-
-                if (
-                    localStorage.getItem("loggedIn") === "true"
-                ) {
-
-                    window.location.href =
-                        "index.html";
-
-                }
-
+                    department: department,
+                    password: password
+                })
             }
         );
 
-    </script>
+        const data = await response.json();
 
+        console.log("Server response:", data);
+
+        if (!response.ok) {
+            alert(data.message || "Registration failed.");
+            return;
+        }
+
+        // Save login information
+        localStorage.setItem("accessToken", data.token);
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("userName", data.user.name);
+        localStorage.setItem("userEmail", data.user.email);
+        localStorage.setItem(
+            "department",
+            data.user.department || ""
+        );
+
+        alert("Registration successful!");
+
+        // Go to dashboard
+        window.location.href = "index.html";
+
+    } catch (error) {
+        console.error("Registration error:", error);
+
+        alert(
+            "Cannot connect to backend. " +
+            "Please make sure Flask is running."
+        );
+    }
+}
+</script>
 </body>
 </html>
 ```

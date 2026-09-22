@@ -117,11 +117,7 @@
 
 
                 <!-- Login Form -->
-                <form
-                    id="loginForm"
-                    class="auth-form"
-                    onsubmit="handleLogin(event)"
-                >
+                <form class="auth-form"    onsubmit="handleLogin(event)"    >
 
                     <!-- Email -->
                     <div class="form-group">
@@ -281,148 +277,84 @@
 
 
     <script>
-        function togglePassword(inputId, button) {
+async function handleLogin(event) {
+    event.preventDefault();
 
-            const input = document.getElementById(inputId);
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-            if (!input) {
-                return;
-            }
+    if (!email || !password) {
+        alert("Please enter email and password.");
+        return;
+    }
 
-            if (input.type === "password") {
-
-                input.type = "text";
-
-                button.innerHTML =
-                    '<i class="fa-regular fa-eye-slash"></i>';
-
-                button.setAttribute(
-                    "aria-label",
-                    "Hide password"
-                );
-
-            } else {
-
-                input.type = "password";
-
-                button.innerHTML =
-                    '<i class="fa-regular fa-eye"></i>';
-
-                button.setAttribute(
-                    "aria-label",
-                    "Show password"
-                );
-            }
-        }
-
-
-        function handleLogin(event) {
-
-            event.preventDefault();
-
-            const email =
-                document.getElementById("email").value.trim();
-
-            const password =
-                document.getElementById("password").value;
-
-            const rememberMe =
-                document.getElementById("rememberMe").checked;
-
-            const loginButton =
-                document.getElementById("loginButton");
-
-
-            if (!email || !password) {
-
-                showNotification(
-                    "Please enter your email and password.",
-                    "warning"
-                );
-
-                return;
-            }
-
-
-            loginButton.disabled = true;
-
-            loginButton.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
-
-
-            /*
-             * Temporary frontend login.
-             *
-             * Backend authentication will replace this
-             * when the Node.js/Express backend is connected.
-             */
-
-            setTimeout(() => {
-
-                localStorage.setItem(
-                    "loggedIn",
-                    "true"
-                );
-
-                localStorage.setItem(
-                    "userName",
-                    email.split("@")[0]
-                );
-
-                localStorage.setItem(
-                    "userEmail",
-                    email
-                );
-
-
-                if (rememberMe) {
-
-                    localStorage.setItem(
-                        "rememberMe",
-                        "true"
-                    );
-
-                } else {
-
-                    localStorage.removeItem(
-                        "rememberMe"
-                    );
-                }
-
-
-                showNotification(
-                    "Login successful! Redirecting...",
-                    "success"
-                );
-
-
-                setTimeout(() => {
-
-                    window.location.href = "index.html";
-
-                }, 800);
-
-            }, 700);
-        }
-
-
-        /*
-         * If already logged in, don't show login page.
-         */
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
-
-                if (
-                    localStorage.getItem("loggedIn") === "true"
-                ) {
-
-                    window.location.href = "index.html";
-                }
-
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/auth/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
             }
         );
-    </script>
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.message || "Login failed.");
+            return;
+        }
+
+        // Save authentication information
+        localStorage.setItem(
+            "accessToken",
+            data.token
+        );
+
+        localStorage.setItem(
+            "loggedIn",
+            "true"
+        );
+
+        localStorage.setItem(
+            "userId",
+            data.user.id
+        );
+
+        localStorage.setItem(
+            "userName",
+            data.user.name
+        );
+
+        localStorage.setItem(
+            "userEmail",
+            data.user.email
+        );
+
+        localStorage.setItem(
+            "department",
+            data.user.department || ""
+        );
+
+        // Go to dashboard
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        console.error("Login error:", error);
+
+        alert(
+            "Unable to connect to the server. " +
+            "Please make sure the Flask backend is running."
+        );
+    }
+}
+</script>
 
 </body>
 </html>

@@ -9,7 +9,9 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from database.database import db
-
+from routes.elections import elections_bp
+from routes.votes import votes_bp
+from routes.votes import votes_bp
 
 # ------------------------------------------------------------
 # LOAD ENVIRONMENT VARIABLES
@@ -168,6 +170,8 @@ if __name__ == "__main__":
     print("=" * 55)
     print()
     app.register_blueprint(auth_bp)
+    app.register_blueprint(elections_bp)
+    app.register_blueprint(votes_bp)
     app.run(
         host="127.0.0.1",
         port=int(os.getenv("PORT", 5000)),
