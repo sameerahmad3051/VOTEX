@@ -19,7 +19,7 @@ sys.path.insert(0, BASE_DIR)
 from flask import Flask
 from dotenv import load_dotenv
 
-from database.database import (
+from database import (
     db,
     User,
     Election,
