@@ -3,7 +3,7 @@
 # ============================================================
 
 import os
-
+from routes.auth import auth_bp
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     print()
     print("=" * 55)
     print()
-
+    app.register_blueprint(auth_bp)
     app.run(
         host="127.0.0.1",
         port=int(os.getenv("PORT", 5000)),
