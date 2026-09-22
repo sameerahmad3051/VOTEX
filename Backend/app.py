@@ -7,8 +7,8 @@ import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+from database.database import db
 
 
 # ------------------------------------------------------------
@@ -59,8 +59,21 @@ app.config["JWT_SECRET_KEY"] = os.getenv(
 # ------------------------------------------------------------
 # EXTENSIONS
 # ------------------------------------------------------------
+from database.database import (
+    db,
+    User,
+    Election,
+    Candidate,
+    Vote
+)
 
-db = SQLAlchemy(app)
+db.init_app(app)
+
+db.UniqueConstraint(
+    "user_id",
+    "election_id",
+    name="unique_user_election_vote"
+)
 
 jwt = JWTManager(app)
 
