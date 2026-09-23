@@ -1,12 +1,21 @@
-javascript
 /* =========================================================
    VOTESECURE - APP.JS
    Premium Online Voting System
+   Backend: Flask + SQLite + JWT
 ========================================================= */
 
 
 /* =========================================================
-   1. GLOBAL DATA
+   1. CONFIGURATION
+========================================================= */
+
+const API_URL = "http://127.0.0.1:5000";
+
+const ELECTION_ID = 1;
+
+
+/* =========================================================
+   2. GLOBAL DATA
 ========================================================= */
 
 const candidates = [
@@ -14,21 +23,21 @@ const candidates = [
         id: 1,
         name: "Aarav Sharma",
         department: "Computer Science",
-        votes: 4850,
+        votes: 0,
         image: "https://i.pravatar.cc/100?img=11"
     },
     {
         id: 2,
         name: "Priya Verma",
         department: "Electronics",
-        votes: 3920,
+        votes: 0,
         image: "https://i.pravatar.cc/100?img=47"
     },
     {
         id: 3,
         name: "Rohan Mehta",
         department: "Mechanical",
-        votes: 3010,
+        votes: 0,
         image: "https://i.pravatar.cc/100?img=13"
     }
 ];
@@ -37,10 +46,12 @@ let selectedCandidateId = null;
 
 
 /* =========================================================
-   2. DOM READY
+   3. DOM READY
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("VoteSecure application starting...");
 
     initializeApp();
 
@@ -48,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* =========================================================
-   3. INITIALIZE APPLICATION
+   4. INITIALIZE APPLICATION
 ========================================================= */
 
 function initializeApp() {
@@ -69,11 +80,21 @@ function initializeApp() {
 
     initializeActiveMenu();
 
+    /*
+     * If vote.html is open,
+     * load candidates from Flask backend.
+     */
+    if (document.getElementById("candidateList")) {
+
+        loadVoteCandidates();
+
+    }
+
 }
 
 
 /* =========================================================
-   4. USER INITIALIZATION
+   5. USER INITIALIZATION
 ========================================================= */
 
 function initializeUser() {
@@ -93,8 +114,10 @@ function initializeUser() {
         document.getElementById("topbarUserName");
 
     if (topbarUserName) {
+
         topbarUserName.textContent =
-            escapeHTML(storedUserName);
+            storedUserName;
+
     }
 
 
@@ -104,25 +127,77 @@ function initializeUser() {
         document.getElementById("welcomeUserName");
 
     if (welcomeUserName) {
+
         welcomeUserName.textContent =
-            escapeHTML(shortName);
+            shortName;
+
     }
 
 
-    /* Store default user */
+    /* Save default username */
 
     if (!localStorage.getItem("userName")) {
+
         localStorage.setItem(
             "userName",
             storedUserName
         );
+
+    }
+
+
+    /* Profile name */
+
+    const profileName =
+        document.getElementById("profileName");
+
+    if (profileName) {
+
+        profileName.textContent =
+            storedUserName;
+
+    }
+
+
+    /* Profile email */
+
+    const profileEmail =
+        document.getElementById("profileEmail");
+
+    const storedEmail =
+        localStorage.getItem("userEmail");
+
+    if (profileEmail && storedEmail) {
+
+        profileEmail.textContent =
+            storedEmail;
+
+    }
+
+
+    /* Profile department */
+
+    const profileDepartment =
+        document.getElementById("profileDepartment");
+
+    const storedDepartment =
+        localStorage.getItem("department");
+
+    if (
+        profileDepartment &&
+        storedDepartment
+    ) {
+
+        profileDepartment.textContent =
+            storedDepartment;
+
     }
 
 }
 
 
 /* =========================================================
-   5. DATE
+   6. DATE
 ========================================================= */
 
 function initializeDate() {
@@ -152,7 +227,7 @@ function initializeDate() {
 
 
 /* =========================================================
-   6. VOTE COUNT
+   7. VOTE COUNT
 ========================================================= */
 
 function initializeVoteCount() {
@@ -165,7 +240,9 @@ function initializeVoteCount() {
     }
 
     const voteSubmitted =
-        localStorage.getItem("voteSubmitted") === "true";
+        localStorage.getItem(
+            "voteSubmitted"
+        ) === "true";
 
     voteCount.textContent =
         voteSubmitted ? "01" : "00";
@@ -174,7 +251,7 @@ function initializeVoteCount() {
 
 
 /* =========================================================
-   7. SEARCH
+   8. SEARCH
 ========================================================= */
 
 function initializeSearch() {
@@ -200,28 +277,30 @@ function initializeSearch() {
                     ".election"
                 );
 
-            elections.forEach(election => {
+            elections.forEach(
+                election => {
 
-                const text =
-                    election.textContent
-                        .toLowerCase();
+                    const text =
+                        election.textContent
+                            .toLowerCase();
 
-                if (
-                    searchTerm === "" ||
-                    text.includes(searchTerm)
-                ) {
+                    if (
+                        searchTerm === "" ||
+                        text.includes(searchTerm)
+                    ) {
 
-                    election.style.display =
-                        "flex";
+                        election.style.display =
+                            "flex";
 
-                } else {
+                    } else {
 
-                    election.style.display =
-                        "none";
+                        election.style.display =
+                            "none";
+
+                    }
 
                 }
-
-            });
+            );
 
         }
     );
@@ -230,7 +309,7 @@ function initializeSearch() {
 
 
 /* =========================================================
-   8. MOBILE SIDEBAR
+   9. MOBILE SIDEBAR
 ========================================================= */
 
 function initializeMobileMenu() {
@@ -247,10 +326,9 @@ function initializeMobileMenu() {
         return;
     }
 
-
     mobileMenuBtn.addEventListener(
         "click",
-        () => {
+        function () {
 
             sidebar.classList.toggle(
                 "open"
@@ -260,39 +338,41 @@ function initializeMobileMenu() {
     );
 
 
-    /* Close sidebar after clicking menu */
+    /* Close sidebar after menu click */
 
     const menuItems =
         document.querySelectorAll(
             ".sidebar .menu-item"
         );
 
-    menuItems.forEach(item => {
+    menuItems.forEach(
+        item => {
 
-        item.addEventListener(
-            "click",
-            () => {
+            item.addEventListener(
+                "click",
+                function () {
 
-                if (
-                    window.innerWidth <= 950
-                ) {
+                    if (
+                        window.innerWidth <= 950
+                    ) {
 
-                    sidebar.classList.remove(
-                        "open"
-                    );
+                        sidebar.classList.remove(
+                            "open"
+                        );
+
+                    }
 
                 }
+            );
 
-            }
-        );
-
-    });
+        }
+    );
 
 }
 
 
 /* =========================================================
-   9. ACTIVE MENU
+   10. ACTIVE MENU
 ========================================================= */
 
 function initializeActiveMenu() {
@@ -308,39 +388,44 @@ function initializeActiveMenu() {
             ".sidebar .menu-item"
         );
 
-    menuItems.forEach(item => {
+    menuItems.forEach(
+        item => {
 
-        const href =
-            item.getAttribute("href");
+            const href =
+                item.getAttribute("href");
 
-        if (!href) {
-            return;
-        }
+            if (!href) {
+                return;
+            }
 
-        const cleanHref =
-            href
-                .split("#")[0]
-                .toLowerCase();
+            const cleanHref =
+                href
+                    .split("#")[0]
+                    .toLowerCase();
 
-        if (
-            currentPage &&
-            cleanHref === currentPage
-        ) {
+            if (
+                currentPage &&
+                cleanHref === currentPage
+            ) {
 
-            menuItems.forEach(
-                menu => menu.classList.remove(
+                menuItems.forEach(
+                    menu =>
+                        menu.classList.remove(
+                            "active"
+                        )
+                );
+
+                item.classList.add(
                     "active"
-                )
-            );
+                );
 
-            item.classList.add("active");
+            }
 
         }
+    );
 
-    });
 
-
-    /* Dashboard should remain active on index */
+    /* Dashboard active */
 
     if (
         currentPage === "" ||
@@ -348,9 +433,10 @@ function initializeActiveMenu() {
     ) {
 
         menuItems.forEach(
-            menu => menu.classList.remove(
-                "active"
-            )
+            menu =>
+                menu.classList.remove(
+                    "active"
+                )
         );
 
         const dashboard =
@@ -359,7 +445,11 @@ function initializeActiveMenu() {
             );
 
         if (dashboard) {
-            dashboard.classList.add("active");
+
+            dashboard.classList.add(
+                "active"
+            );
+
         }
 
     }
@@ -368,28 +458,27 @@ function initializeActiveMenu() {
 
 
 /* =========================================================
-   10. CANDIDATE INTERACTIONS
+   11. QUICK CANDIDATE INTERACTIONS
 ========================================================= */
 
 function initializeCandidateInteractions() {
 
-    const candidatesElements =
+    const candidateElements =
         document.querySelectorAll(
             ".quick-candidate"
         );
 
-    candidatesElements.forEach(
+    candidateElements.forEach(
         candidate => {
 
             candidate.addEventListener(
                 "click",
-                () => {
+                function () {
 
                     const name =
-                        candidate
-                            .querySelector(
-                                "strong"
-                            );
+                        candidate.querySelector(
+                            "strong"
+                        );
 
                     if (!name) {
                         return;
@@ -399,7 +488,8 @@ function initializeCandidateInteractions() {
                         name.textContent.trim();
 
                     showNotification(
-                        `${candidateName} selected.`
+                        `${candidateName} selected.`,
+                        "success"
                     );
 
                 }
@@ -412,7 +502,7 @@ function initializeCandidateInteractions() {
 
 
 /* =========================================================
-   11. GO TO VOTE
+   12. GO TO VOTE
 ========================================================= */
 
 function goToVote() {
@@ -424,7 +514,7 @@ function goToVote() {
 
 
 /* =========================================================
-   12. LOGOUT
+   13. LOGOUT
 ========================================================= */
 
 function logout() {
@@ -448,7 +538,23 @@ function logout() {
     );
 
     localStorage.removeItem(
-        "selectedCandidate"
+        "userEmail"
+    );
+
+    localStorage.removeItem(
+        "department"
+    );
+
+    localStorage.removeItem(
+        "accessToken"
+    );
+
+    localStorage.removeItem(
+        "userId"
+    );
+
+    localStorage.removeItem(
+        "selectedCandidateId"
     );
 
 
@@ -458,22 +564,289 @@ function logout() {
     );
 
 
-    setTimeout(() => {
+    setTimeout(
+        function () {
 
-        window.location.href =
-            "login.html";
+            window.location.href =
+                "login.html";
 
-    }, 700);
+        },
+        700
+    );
 
 }
 
 
 /* =========================================================
-   13. SELECT CANDIDATE
+   14. LOAD CANDIDATES FROM BACKEND
+========================================================= */
+
+async function loadVoteCandidates() {
+
+    console.log(
+        "Loading candidates from backend..."
+    );
+
+    const token =
+        localStorage.getItem(
+            "accessToken"
+        );
+
+    if (!token) {
+
+        console.warn(
+            "No access token found."
+        );
+
+        window.location.href =
+            "login.html";
+
+        return;
+    }
+
+
+    const candidateList =
+        document.getElementById(
+            "candidateList"
+        );
+
+    if (!candidateList) {
+
+        console.error(
+            "candidateList element not found."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/elections/${ELECTION_ID}/candidates`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Candidates API response:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load candidates."
+            );
+
+        }
+
+
+        candidateList.innerHTML =
+            "";
+
+
+        if (
+            !data.candidates ||
+            data.candidates.length === 0
+        ) {
+
+            candidateList.innerHTML = `
+                <div style="
+                    padding: 30px;
+                    text-align: center;
+                ">
+                    <p>No candidates available.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        data.candidates.forEach(
+            candidate => {
+
+                const candidateElement =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                candidateElement.className =
+                    "candidate";
+
+
+                candidateElement.dataset.candidateId =
+                    candidate.id;
+
+
+                let avatar =
+                    candidate.avatar || "";
+
+
+                /*
+                 * Backend seed data may contain
+                 * markdown-wrapped URLs.
+                 */
+                const markdownMatch =
+                    avatar.match(
+                        /\((https?:\/\/.*?)\)/
+                    );
+
+
+                if (markdownMatch) {
+
+                    avatar =
+                        markdownMatch[1];
+
+                }
+
+
+                /*
+                 * Remove markdown brackets.
+                 */
+                avatar =
+                    avatar
+                        .replace("[", "")
+                        .replace("]", "");
+
+
+                if (
+                    !avatar.startsWith(
+                        "http://"
+                    ) &&
+                    !avatar.startsWith(
+                        "https://"
+                    )
+                ) {
+
+                    avatar =
+                        "https://i.pravatar.cc/150?img=12";
+
+                }
+
+
+                candidateElement.innerHTML = `
+                    <div class="candidate-info">
+
+                        <img
+                            src="${escapeHTML(avatar)}"
+                            alt="${escapeHTML(candidate.name)}"
+                            class="candidate-avatar"
+                        >
+
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(
+                                    candidate.name
+                                )}
+                            </h3>
+
+                            <p>
+                                ${escapeHTML(
+                                    candidate.department ||
+                                    ""
+                                )}
+                            </p>
+
+                            <small>
+                                ${escapeHTML(
+                                    candidate.description ||
+                                    ""
+                                )}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="radio"></div>
+                `;
+
+
+                /*
+                 * Candidate CLICK
+                 */
+                candidateElement.addEventListener(
+                    "click",
+                    function () {
+
+                        selectCandidate(
+                            candidate.id
+                        );
+
+                    }
+                );
+
+
+                candidateList.appendChild(
+                    candidateElement
+                );
+
+            }
+        );
+
+
+        console.log(
+            "Candidates loaded successfully."
+        );
+
+
+        /*
+         * Check whether current user
+         * already voted.
+         */
+        await checkExistingVote();
+
+
+        /*
+         * Restore selection if one exists.
+         */
+        restoreCandidateSelection();
+
+
+    } catch (error) {
+
+        console.error(
+            "Candidate loading error:",
+            error
+        );
+
+
+        showNotification(
+            "Unable to connect to backend. " +
+            error.message,
+            "warning"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   15. SELECT CANDIDATE
 ========================================================= */
 
 function selectCandidate(candidateId) {
 
+    console.log(
+        "Candidate clicked:",
+        candidateId
+    );
+
+
+    /*
+     * Prevent selection after voting.
+     */
     if (
         localStorage.getItem(
             "voteSubmitted"
@@ -489,45 +862,198 @@ function selectCandidate(candidateId) {
     }
 
 
+    const id =
+        Number(candidateId);
+
+
+    /*
+     * Find candidate in frontend
+     * fallback data.
+     */
     const candidate =
         candidates.find(
             item =>
-                item.id === Number(candidateId)
+                item.id === id
         );
 
-    if (!candidate) {
+
+    /*
+     * Candidate may have come
+     * directly from backend.
+     */
+    const candidateElement =
+        document.querySelector(
+            `.candidate[data-candidate-id="${id}"]`
+        );
+
+
+    if (!candidateElement) {
+
+        console.error(
+            "Candidate element not found:",
+            id
+        );
+
+        return;
+    }
+
+
+    /*
+     * Save selection.
+     */
+    selectedCandidateId =
+        id;
+
+
+    localStorage.setItem(
+        "selectedCandidateId",
+        String(id)
+    );
+
+
+    /*
+     * Remove previous selection.
+     */
+    document
+        .querySelectorAll(
+            ".candidate"
+        )
+        .forEach(
+            element => {
+
+                element.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+    /*
+     * Add selected class.
+     */
+    candidateElement.classList.add(
+        "selected"
+    );
+
+
+    /*
+     * Update radio indicator.
+     */
+    document
+        .querySelectorAll(
+            ".candidate .radio"
+        )
+        .forEach(
+            radio => {
+
+                radio.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+    const radio =
+        candidateElement.querySelector(
+            ".radio"
+        );
+
+
+    if (radio) {
+
+        radio.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    const candidateName =
+        candidate
+            ? candidate.name
+            : (
+                candidateElement.querySelector(
+                    "h3"
+                )?.textContent ||
+                "Candidate"
+            );
+
+
+    console.log(
+        "Selected candidate:",
+        candidateName
+    );
+
+
+    showNotification(
+        `${candidateName} selected.`,
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   16. RESTORE CANDIDATE SELECTION
+========================================================= */
+
+function restoreCandidateSelection() {
+
+    if (
+        localStorage.getItem(
+            "voteSubmitted"
+        ) === "true"
+    ) {
+        return;
+    }
+
+
+    const savedId =
+        localStorage.getItem(
+            "selectedCandidateId"
+        );
+
+
+    if (!savedId) {
+        return;
+    }
+
+
+    const id =
+        Number(savedId);
+
+
+    const element =
+        document.querySelector(
+            `.candidate[data-candidate-id="${id}"]`
+        );
+
+
+    if (!element) {
         return;
     }
 
 
     selectedCandidateId =
-        candidate.id;
+        id;
 
 
-    const candidateElements =
-        document.querySelectorAll(
-            ".candidate"
-        );
-
-    candidateElements.forEach(
-        element => {
-
-            element.classList.remove(
-                "selected"
-            );
-
-        }
+    element.classList.add(
+        "selected"
     );
 
 
-    const selectedElement =
-        document.querySelector(
-            `.candidate[data-candidate-id="${candidate.id}"]`
+    const radio =
+        element.querySelector(
+            ".radio"
         );
 
-    if (selectedElement) {
 
-        selectedElement.classList.add(
+    if (radio) {
+
+        radio.classList.add(
             "selected"
         );
 
@@ -537,161 +1063,344 @@ function selectCandidate(candidateId) {
 
 
 /* =========================================================
-   14. SUBMIT VOTE
+   17. CHECK EXISTING VOTE
 ========================================================= */
 
-function submitVote() {
+async function checkExistingVote() {
 
-    if (
+    const token =
         localStorage.getItem(
-            "voteSubmitted"
-        ) === "true"
-    ) {
-
-        showNotification(
-            "You have already submitted your vote.",
-            "warning"
+            "accessToken"
         );
 
+
+    if (!token) {
         return;
     }
 
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/votes/my/${ELECTION_ID}`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Existing vote:",
+            data
+        );
+
+
+        if (
+            response.ok &&
+            data.has_voted === true
+        ) {
+
+            /*
+             * User already voted.
+             */
+            localStorage.setItem(
+                "voteSubmitted",
+                "true"
+            );
+
+
+            /*
+             * Disable submit button.
+             */
+            const button =
+                document.getElementById(
+                    "submitVoteButton"
+                );
+
+
+            if (button) {
+
+                button.disabled =
+                    true;
+
+
+                const span =
+                    button.querySelector(
+                        "span"
+                    );
+
+
+                if (span) {
+
+                    span.textContent =
+                        "Vote Already Submitted";
+
+                }
+
+            }
+
+
+            /*
+             * Disable candidates.
+             */
+            document
+                .querySelectorAll(
+                    ".candidate"
+                )
+                .forEach(
+                    element => {
+
+                        element.style.pointerEvents =
+                            "none";
+
+                        element.style.cursor =
+                            "default";
+
+                        element.style.opacity =
+                            "0.7";
+
+                    }
+                );
+
+
+        } else {
+
+            /*
+             * User has NOT voted.
+             */
+            if (
+                localStorage.getItem(
+                    "voteSubmitted"
+                ) !== "true"
+            ) {
+
+                document
+                    .querySelectorAll(
+                        ".candidate"
+                    )
+                    .forEach(
+                        element => {
+
+                            element.style.pointerEvents =
+                                "auto";
+
+                            element.style.cursor =
+                                "pointer";
+
+                            element.style.opacity =
+                                "1";
+
+                        }
+                    );
+
+
+                const button =
+                    document.getElementById(
+                        "submitVoteButton"
+                    );
+
+
+                if (button) {
+
+                    button.disabled =
+                        false;
+
+
+                    const span =
+                        button.querySelector(
+                            "span"
+                        );
+
+
+                    if (span) {
+
+                        span.textContent =
+                            "Submit Vote";
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Existing vote check error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   18. SUBMIT VOTE
+========================================================= */
+
+async function submitVote() {
+    const token = localStorage.getItem("accessToken");
+
+    console.log("========== SUBMIT VOTE DEBUG ==========");
+    console.log("Token exists:", !!token);
+    console.log("Selected candidate:", selectedCandidateId);
+    console.log("Election ID:", ELECTION_ID);
+
+    if (!token) {
+        showNotification("Please login again.", "warning");
+        console.error("No access token found.");
+        return;
+    }
 
     if (!selectedCandidateId) {
-
-        showNotification(
-            "Please select a candidate first.",
-            "warning"
-        );
-
+        showNotification("Please select a candidate first.", "warning");
         return;
     }
 
-
-    const candidate =
-        candidates.find(
-            item =>
-                item.id === selectedCandidateId
-        );
+    const candidate = candidates.find(
+        c => Number(c.id) === Number(selectedCandidateId)
+    );
 
     if (!candidate) {
-
-        showNotification(
-            "Candidate not found.",
-            "warning"
-        );
-
+        showNotification("Selected candidate not found.", "warning");
+        console.error("Candidate not found:", selectedCandidateId);
         return;
     }
 
-
-    const confirmed =
-        window.confirm(
-            `Are you sure you want to vote for ${candidate.name}?`
-        );
+    const confirmed = confirm(
+        `Are you sure you want to vote for ${candidate.name}?`
+    );
 
     if (!confirmed) {
         return;
     }
 
+    const button = document.getElementById("submitVoteButton");
 
-    /*
-       Save vote information locally.
-
-       NOTE:
-       This is frontend/demo storage only.
-       Real elections require a secure backend.
-    */
-
-    localStorage.setItem(
-        "voteSubmitted",
-        "true"
-    );
-
-    localStorage.setItem(
-        "lastVote",
-        JSON.stringify({
-            candidateId: candidate.id,
-            candidateName: candidate.name,
-            submittedAt:
-                new Date().toISOString()
-        })
-    );
-
-
-    /* Update submit button */
-
-    const submitButton =
-        document.getElementById(
-            "submitVoteButton"
-        );
-
-    if (submitButton) {
-
-        submitButton.textContent =
-            "Vote Submitted";
-
-        submitButton.disabled = true;
-
-        submitButton.classList.add(
-            "submitted"
-        );
-
+    if (button) {
+        button.disabled = true;
+        button.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Submitting...</span>
+        `;
     }
 
+    try {
+        const response = await fetch(`${API_URL}/api/votes/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                election_id: Number(ELECTION_ID),
+                candidate_id: Number(selectedCandidateId)
+            })
+        });
 
-    /* Disable candidate selection */
+        console.log("Backend HTTP status:", response.status);
 
-    const candidateElements =
-        document.querySelectorAll(
-            ".candidate"
-        );
+        // Read response as text first so we can see even non-JSON errors
+        const rawResponse = await response.text();
 
-    candidateElements.forEach(
-        element => {
+        console.log("Backend raw response:", rawResponse);
 
-            element.style.pointerEvents =
-                "none";
+        let data = {};
 
+        try {
+            data = JSON.parse(rawResponse);
+        } catch (jsonError) {
+            console.warn("Backend did not return JSON.");
         }
-    );
 
+        console.log("Backend parsed response:", data);
 
-    /* Update vote count */
+        if (!response.ok) {
+            throw new Error(
+                data.message ||
+                data.msg ||
+                rawResponse ||
+                `HTTP ${response.status}`
+            );
+        }
 
-    const voteCount =
-        document.getElementById(
-            "voteCount"
+        if (!data.success) {
+            throw new Error(
+                data.message ||
+                "Vote submission failed."
+            );
+        }
+
+        console.log("VOTE SUBMITTED SUCCESSFULLY:", data);
+
+        localStorage.setItem("voteSubmitted", "true");
+        localStorage.setItem(
+            "lastVote",
+            JSON.stringify({
+                election_id: ELECTION_ID,
+                candidate_id: selectedCandidateId,
+                candidate_name: candidate.name
+            })
         );
 
-    if (voteCount) {
-        voteCount.textContent = "01";
+        selectedCandidateId = null;
+
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = `
+                <i class="fa-solid fa-check"></i>
+                <span>Vote Submitted</span>
+            `;
+        }
+
+        document.querySelectorAll(".candidate").forEach(card => {
+            card.classList.remove("selected");
+            card.style.pointerEvents = "none";
+        });
+
+        showNotification(
+            "Your vote has been submitted successfully!",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error("========== SUBMIT VOTE ERROR ==========");
+        console.error(error);
+        console.error("Error message:", error.message);
+
+        showNotification(
+            error.message || "Vote submission failed.",
+            "warning"
+        );
+
+        // Restore button
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = `
+                <i class="fa-solid fa-check"></i>
+                <span>Submit Vote</span>
+            `;
+        }
     }
-
-
-    showNotification(
-        "Your vote has been submitted successfully."
-    );
-
 }
 
 
 /* =========================================================
-   15. GET USER NAME
-========================================================= */
-
-function getUserName() {
-
-    return (
-        localStorage.getItem("userName") ||
-        "Sameer Ahmad"
-    );
-
-}
-
-
-/* =========================================================
-   16. GET LAST VOTE
+   20. GET LAST VOTE
 ========================================================= */
 
 function getLastVote() {
@@ -701,13 +1410,17 @@ function getLastVote() {
             "lastVote"
         );
 
+
     if (!vote) {
         return null;
     }
 
+
     try {
 
-        return JSON.parse(vote);
+        return JSON.parse(
+            vote
+        );
 
     } catch (error) {
 
@@ -717,13 +1430,14 @@ function getLastVote() {
         );
 
         return null;
+
     }
 
 }
 
 
 /* =========================================================
-   17. NOTIFICATION
+   21. NOTIFICATION
 ========================================================= */
 
 function showNotification(
@@ -731,38 +1445,49 @@ function showNotification(
     type = "success"
 ) {
 
-    /* Remove previous notification */
-
+    /*
+     * Remove old notification.
+     */
     const existing =
         document.querySelector(
             ".custom-notification"
         );
+
 
     if (existing) {
         existing.remove();
     }
 
 
-    /* Create notification */
-
+    /*
+     * Create notification.
+     */
     const notification =
         document.createElement(
             "div"
         );
+
 
     notification.className =
         "custom-notification";
 
 
     if (type === "warning") {
+
         notification.classList.add(
             "warning"
         );
+
     }
 
 
+    /*
+     * Icon.
+     */
     const icon =
-        document.createElement("i");
+        document.createElement(
+            "i"
+        );
 
 
     if (type === "warning") {
@@ -778,71 +1503,95 @@ function showNotification(
     }
 
 
+    /*
+     * Text.
+     */
     const text =
-        document.createElement("span");
+        document.createElement(
+            "span"
+        );
+
 
     text.textContent =
         String(message);
 
 
-    notification.appendChild(icon);
+    notification.appendChild(
+        icon
+    );
 
-    notification.appendChild(text);
+    notification.appendChild(
+        text
+    );
+
 
     document.body.appendChild(
         notification
     );
 
 
-    /* Auto remove */
+    /*
+     * Remove after 4 seconds.
+     */
+    setTimeout(
+        function () {
 
-    setTimeout(() => {
+            if (
+                notification &&
+                notification.parentNode
+            ) {
 
-        if (
-            notification &&
-            notification.parentNode
-        ) {
+                notification.style.opacity =
+                    "0";
 
-            notification.style.opacity =
-                "0";
+                notification.style.transform =
+                    "translateX(30px)";
 
-            notification.style.transform =
-                "translateX(30px)";
-
-            notification.style.transition =
-                "all .25s ease";
+                notification.style.transition =
+                    "all .25s ease";
 
 
-            setTimeout(() => {
+                setTimeout(
+                    function () {
 
-                if (
-                    notification.parentNode
-                ) {
+                        if (
+                            notification.parentNode
+                        ) {
 
-                    notification.remove();
+                            notification.remove();
 
-                }
+                        }
 
-            }, 250);
+                    },
+                    250
+                );
 
-        }
+            }
 
-    }, 4000);
+        },
+        4000
+    );
 
 }
 
 
 /* =========================================================
-   18. HTML ESCAPE
+   22. HTML ESCAPE
 ========================================================= */
 
 function escapeHTML(value) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     div.textContent =
-        String(value ?? "");
+        String(
+            value ?? ""
+        );
+
 
     return div.innerHTML;
 
@@ -850,7 +1599,7 @@ function escapeHTML(value) {
 
 
 /* =========================================================
-   19. CHECK LOGIN
+   23. CHECK LOGIN
 ========================================================= */
 
 function isLoggedIn() {
@@ -865,7 +1614,7 @@ function isLoggedIn() {
 
 
 /* =========================================================
-   20. PROTECT PAGE
+   24. PROTECT PAGE
 ========================================================= */
 
 function protectPage() {
@@ -881,7 +1630,7 @@ function protectPage() {
 
 
 /* =========================================================
-   21. INITIALIZE ANIMATIONS
+   25. INITIALIZE ANIMATIONS
 ========================================================= */
 
 function initializeAnimations() {
@@ -900,25 +1649,28 @@ function initializeAnimations() {
     cards.forEach(
         (card, index) => {
 
-            card.style.opacity = "0";
+            card.style.opacity =
+                "0";
 
             card.style.transform =
                 "translateY(8px)";
-
 
             card.style.transition =
                 `opacity .4s ease ${index * 0.05}s,
                  transform .4s ease ${index * 0.05}s`;
 
 
-            requestAnimationFrame(() => {
+            requestAnimationFrame(
+                function () {
 
-                card.style.opacity = "1";
+                    card.style.opacity =
+                        "1";
 
-                card.style.transform =
-                    "translateY(0)";
+                    card.style.transform =
+                        "translateY(0)";
 
-            });
+                }
+            );
 
         }
     );
@@ -927,17 +1679,18 @@ function initializeAnimations() {
 
 
 /* =========================================================
-   22. HANDLE WINDOW RESIZE
+   26. WINDOW RESIZE
 ========================================================= */
 
 window.addEventListener(
     "resize",
-    () => {
+    function () {
 
         const sidebar =
             document.querySelector(
                 ".sidebar"
             );
+
 
         if (
             sidebar &&
@@ -955,17 +1708,18 @@ window.addEventListener(
 
 
 /* =========================================================
-   23. CLOSE SIDEBAR ON OUTSIDE CLICK
+   27. CLOSE SIDEBAR ON OUTSIDE CLICK
 ========================================================= */
 
 document.addEventListener(
     "click",
-    event => {
+    function (event) {
 
         const sidebar =
             document.querySelector(
                 ".sidebar"
             );
+
 
         const mobileButton =
             document.getElementById(
@@ -978,12 +1732,17 @@ document.addEventListener(
             !mobileButton ||
             window.innerWidth > 950
         ) {
+
             return;
+
         }
 
 
         const clickedInsideSidebar =
-            sidebar.contains(event.target);
+            sidebar.contains(
+                event.target
+            );
+
 
         const clickedMenuButton =
             mobileButton.contains(
@@ -1007,7 +1766,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   24. EXPORT GLOBAL FUNCTIONS
+   28. EXPORT GLOBAL FUNCTIONS
 ========================================================= */
 
 window.goToVote =
@@ -1039,7 +1798,7 @@ window.protectPage =
 
 
 /* =========================================================
-   25. CONSOLE MESSAGE
+   29. CONSOLE MESSAGE
 ========================================================= */
 
 console.log(

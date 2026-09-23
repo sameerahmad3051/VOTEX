@@ -628,77 +628,483 @@
     <script src="js/app.js"></script>
 
 
-    <script>
+   <script>
+const API_URL = "http://127.0.0.1:5000";
+const ELECTION_ID = 1;
 
-        /*
-         * Display logged-in user's name.
-         */
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
+let selectedCandidateId = null;
 
-                const userName =
-                    localStorage.getItem("userName");
+/* =========================================
+   LOAD CANDIDATES
+========================================= */
+async function loadCandidates() {
 
-                const nameElement =
-                    document.getElementById(
-                        "topbarUserName"
-                    );
+    const token = localStorage.getItem("accessToken");
 
-                if (
-                    userName &&
-                    nameElement
-                ) {
+    if (!token) {
+        alert("Please login first.");
+        window.location.href = "login.html";
+        return;
+    }
 
-                    nameElement.textContent =
-                        userName;
-                }
+    const candidateList = document.getElementById("candidateList");
+
+    if (!candidateList) {
+        console.error("candidateList not found");
+        return;
+    }
+
+    try {
+
+        console.log("Loading candidates...");
+
+        const response = await fetch(
+            `${API_URL}/api/elections/${ELECTION_ID}/candidates`
+        );
+
+        const data = await response.json();
+
+        console.log("Candidates response:", data);
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to load candidates");
+        }
+
+        candidateList.innerHTML = "";
+
+        data.candidates.forEach(candidate => {
+
+            const candidateElement = document.createElement("div");
+
+            candidateElement.className = "candidate";
+
+            candidateElement.dataset.candidateId = candidate.id;
+
+            let avatar = candidate.avatar || "";
+
+            // Fix markdown-style avatar URL if present
+            avatar = avatar
+                .replace("[", "")
+                .replace("]", "")
+                .replace(/\((.*?)\)/, "$1");
+
+            if (!avatar.startsWith("http")) {
+                avatar = "https://i.pravatar.cc/150?img=12";
+            }
+
+            candidateElement.innerHTML = `
+                <div class="candidate-info">
+
+                    <img
+                        src="${avatar}"
+                        alt="${candidate.name}"
+                        class="candidate-avatar"
+                    >
+
+                    <div>
+                        <h3>${candidate.name}</h3>
+
+                        <p>${candidate.department}</p>
+
+                        <small>
+                            ${candidate.description || ""}
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="radio"></div>
+            `;
+
+            /*
+             * IMPORTANT:
+             * Click directly on candidate
+             */
+            candidateElement.addEventListener("click", function () {
+                selectCandidate(candidate.id);
+            });
+
+            candidateList.appendChild(candidateElement);
+        });
+
+        console.log("Candidates loaded successfully");
+
+        await checkMyVote();
+
+    } catch (error) {
+
+        console.error("LOAD CANDIDATES ERROR:", error);
+
+        alert(
+            "Unable to load candidates.\n\n" +
+            error.message
+        );
+    }
+}
 
 
-                /*
-                 * Prevent voting if the user has
-                 * already submitted a vote.
-                 */
-                if (
-                    localStorage.getItem(
-                        "voteSubmitted"
-                    ) === "true"
-                ) {
+/* =========================================
+   SELECT CANDIDATE
+========================================= */
+function selectCandidate(candidateId) {
 
-                    const button =
-                        document.getElementById(
-                            "submitVoteButton"
-                        );
+    console.log("Candidate clicked:", candidateId);
 
-                    if (button) {
+    const alreadyVoted =
+        localStorage.getItem("voteSubmitted") === "true";
 
-                        button.disabled = true;
+    if (alreadyVoted) {
 
-                        button.innerHTML =
-                            '<i class="fa-solid fa-circle-check"></i>' +
-                            '<span>Vote Already Submitted</span>';
-                    }
+        alert("You have already submitted your vote.");
+
+        return;
+    }
+
+    // Remove previous selection
+    document
+        .querySelectorAll(".candidate")
+        .forEach(candidate => {
+            candidate.classList.remove("selected");
+        });
+
+    // Find clicked candidate
+    const selectedCandidate =
+        document.querySelector(
+            `.candidate[data-candidate-id="${candidateId}"]`
+        );
+
+    if (!selectedCandidate) {
+
+        console.error(
+            "Candidate element not found:",
+            candidateId
+        );
+
+        return;
+    }
+
+    // Add selected class
+    selectedCandidate.classList.add("selected");
+
+    // Save selected candidate
+    selectedCandidateId = Number(candidateId);
+
+    localStorage.setItem(
+        "selectedCandidateId",
+        selectedCandidateId
+    );
+
+    console.log(
+        "Selected candidate:",
+        selectedCandidateId
+    );
+}
 
 
-                    document
-                        .querySelectorAll(".candidate")
-                        .forEach(function (candidate) {
+/* =========================================
+   SUBMIT VOTE
+========================================= */
+async function submitVote() {
 
-                            candidate.style.pointerEvents =
-                                "none";
+    console.log("Submit Vote clicked");
 
-                            candidate.classList.add(
-                                "vote-disabled"
-                            );
+    const token = localStorage.getItem("accessToken");
 
-                        });
+    if (!token) {
 
-                }
+        alert("Please login first.");
 
+        window.location.href = "login.html";
+
+        return;
+    }
+
+    // Get selected candidate
+    if (!selectedCandidateId) {
+
+        const savedCandidate =
+            localStorage.getItem("selectedCandidateId");
+
+        if (savedCandidate) {
+            selectedCandidateId = Number(savedCandidate);
+        }
+    }
+
+    if (!selectedCandidateId) {
+
+        alert("Please select a candidate first.");
+
+        return;
+    }
+
+    // Prevent duplicate vote
+    if (
+        localStorage.getItem("voteSubmitted") === "true"
+    ) {
+
+        alert("You have already submitted your vote.");
+
+        return;
+    }
+
+    const selectedCandidate =
+        document.querySelector(
+            `.candidate[data-candidate-id="${selectedCandidateId}"]`
+        );
+
+    let candidateName = "this candidate";
+
+    if (selectedCandidate) {
+
+        const nameElement =
+            selectedCandidate.querySelector("h3");
+
+        if (nameElement) {
+            candidateName = nameElement.textContent;
+        }
+    }
+
+    const confirmed = confirm(
+        `Are you sure you want to vote for ${candidateName}?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const button =
+        document.getElementById("submitVoteButton");
+
+    if (button) {
+
+        button.disabled = true;
+
+        const span = button.querySelector("span");
+
+        if (span) {
+            span.textContent = "Submitting...";
+        }
+    }
+
+    try {
+
+        console.log("Sending vote to backend...");
+
+        const response = await fetch(
+            `${API_URL}/api/votes/`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+
+                body: JSON.stringify({
+                    election_id: ELECTION_ID,
+                    candidate_id: selectedCandidateId
+                })
             }
         );
 
-    </script>
+        const data = await response.json();
+
+        console.log("Vote response:", data);
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Vote submission failed"
+            );
+        }
+
+        /*
+         * Vote successfully submitted
+         */
+
+        localStorage.setItem(
+            "voteSubmitted",
+            "true"
+        );
+
+        localStorage.setItem(
+            "lastVote",
+            candidateName
+        );
+
+        localStorage.removeItem(
+            "selectedCandidateId"
+        );
+
+        if (button) {
+
+            button.disabled = true;
+
+            const span = button.querySelector("span");
+
+            if (span) {
+                span.textContent = "Vote Submitted";
+            }
+        }
+
+        // Disable candidates
+        document
+            .querySelectorAll(".candidate")
+            .forEach(candidate => {
+
+                candidate.style.pointerEvents = "none";
+
+                candidate.style.opacity = "0.7";
+            });
+
+        alert("Your vote has been submitted successfully!");
+
+        console.log("VOTE SUCCESS:", data);
+
+    } catch (error) {
+
+        console.error("SUBMIT VOTE ERROR:", error);
+
+        if (button) {
+
+            button.disabled = false;
+
+            const span = button.querySelector("span");
+
+            if (span) {
+                span.textContent = "Submit Vote";
+            }
+        }
+
+        alert(
+            "Vote submission failed.\n\n" +
+            error.message
+        );
+    }
+}
+
+
+/* =========================================
+   CHECK WHETHER USER ALREADY VOTED
+========================================= */
+async function checkMyVote() {
+
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/votes/my/${ELECTION_ID}`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("My vote:", data);
+
+        if (
+            response.ok &&
+            data.has_voted === true
+        ) {
+
+            localStorage.setItem(
+                "voteSubmitted",
+                "true"
+            );
+
+            const button =
+                document.getElementById("submitVoteButton");
+
+            if (button) {
+
+                button.disabled = true;
+
+                const span = button.querySelector("span");
+
+                if (span) {
+                    span.textContent = "Vote Already Submitted";
+                }
+            }
+
+            document
+                .querySelectorAll(".candidate")
+                .forEach(candidate => {
+
+                    candidate.style.pointerEvents = "none";
+
+                    candidate.style.opacity = "0.7";
+                });
+
+        } else {
+
+            /*
+             * IMPORTANT:
+             * Allow candidate clicking if user
+             * has not voted.
+             */
+
+            localStorage.removeItem("voteSubmitted");
+
+            document
+                .querySelectorAll(".candidate")
+                .forEach(candidate => {
+
+                    candidate.style.pointerEvents = "auto";
+
+                    candidate.style.cursor = "pointer";
+
+                    candidate.style.opacity = "1";
+                });
+
+            const button =
+                document.getElementById("submitVoteButton");
+
+            if (button) {
+
+                button.disabled = false;
+
+                const span = button.querySelector("span");
+
+                if (span) {
+                    span.textContent = "Submit Vote";
+                }
+            }
+        }
+
+    } catch (error) {
+
+        console.error(
+            "CHECK VOTE ERROR:",
+            error
+        );
+    }
+}
+
+
+/* =========================================
+   PAGE LOAD
+========================================= */
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        console.log("Vote page loaded");
+
+        loadCandidates();
+
+    }
+);
+</script>
 
 </body>
 </html>
