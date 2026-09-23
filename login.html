@@ -276,17 +276,22 @@
     <script src="js/app.js"></script>
 
 
-    <script>
+   <script>
 async function handleLogin(event) {
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
+    const loginButton = document.getElementById("loginButton");
 
     if (!email || !password) {
         alert("Please enter email and password.");
         return;
     }
+
+    // Disable button while logging in
+    loginButton.disabled = true;
+    loginButton.querySelector("span").textContent = "Signing in...";
 
     try {
         const response = await fetch(
@@ -305,12 +310,17 @@ async function handleLogin(event) {
 
         const data = await response.json();
 
+        console.log("Login response:", data);
+
         if (!response.ok) {
-            alert(data.message || "Login failed.");
+            alert(data.message || data.msg || "Login failed.");
             return;
         }
 
-        // Save authentication information
+        // ================================
+        // SAVE AUTHENTICATION INFORMATION
+        // ================================
+
         localStorage.setItem(
             "accessToken",
             data.token
@@ -341,8 +351,33 @@ async function handleLogin(event) {
             data.user.department || ""
         );
 
-        // Go to dashboard
-        window.location.href = "index.html";
+        // Save admin status
+        localStorage.setItem(
+            "isAdmin",
+            data.user.is_admin === true ? "true" : "false"
+        );
+
+        console.log(
+            "Admin account:",
+            data.user.is_admin
+        );
+
+        // ================================
+        // REDIRECT BASED ON USER ROLE
+        // ================================
+
+        if (data.user.is_admin === true) {
+
+            console.log("Redirecting to admin dashboard...");
+
+            window.location.href = "admin.html";
+
+        } else {
+
+            console.log("Redirecting to user dashboard...");
+
+            window.location.href = "index.html";
+        }
 
     } catch (error) {
 
@@ -352,6 +387,12 @@ async function handleLogin(event) {
             "Unable to connect to the server. " +
             "Please make sure the Flask backend is running."
         );
+
+    } finally {
+
+        loginButton.disabled = false;
+
+        loginButton.querySelector("span").textContent = "Sign In";
     }
 }
 </script>
