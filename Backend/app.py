@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from database.database import db
 from routes.elections import elections_bp
 from routes.votes import votes_bp
-from routes.votes import votes_bp
+from routes.admin import admin_bp
 
 # ------------------------------------------------------------
 # LOAD ENVIRONMENT VARIABLES
