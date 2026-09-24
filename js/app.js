@@ -80,10 +80,22 @@ function initializeApp() {
 
     initializeActiveMenu();
 
-    /*
-     * If vote.html is open,
-     * load candidates from Flask backend.
-     */
+
+    /* =====================================================
+       LOAD ELECTIONS ON DASHBOARD
+    ===================================================== */
+
+    if (document.getElementById("elections")) {
+
+        loadElectionsFromBackend();
+
+    }
+
+
+    /* =====================================================
+       LOAD CANDIDATES ON VOTE PAGE
+    ===================================================== */
+
     if (document.getElementById("candidateList")) {
 
         loadVoteCandidates();
@@ -91,7 +103,197 @@ function initializeApp() {
     }
 
 }
+/* =========================================================
+   LOAD ELECTIONS FROM BACKEND
+========================================================= */
 
+async function loadElectionsFromBackend() {
+
+    console.log("Loading elections from backend...");
+
+    const electionContainer =
+        document.getElementById("elections");
+
+    if (!electionContainer) {
+        console.log("Election container not found on this page.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/elections/`
+        );
+
+        const data = await response.json();
+
+        console.log(
+            "Elections API response:",
+            data
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load elections."
+            );
+        }
+
+        if (
+            !data.elections ||
+            data.elections.length === 0
+        ) {
+
+            electionContainer.innerHTML = `
+                <div class="empty-election">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                    <p>No elections available.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        electionContainer.innerHTML = "";
+
+        data.elections.forEach(
+            election => {
+
+                const electionElement =
+                    document.createElement("div");
+
+                electionElement.className =
+                    "election";
+
+                const startDate =
+                    formatElectionDate(
+                        election.start_date
+                    );
+
+                const endDate =
+                    formatElectionDate(
+                        election.end_date
+                    );
+
+                const status =
+                    String(
+                        election.status || "upcoming"
+                    ).toLowerCase();
+
+                let statusText =
+                    "Upcoming";
+
+                if (status === "active") {
+                    statusText = "Active";
+                }
+
+                if (status === "completed") {
+                    statusText = "Completed";
+                }
+
+                electionElement.innerHTML = `
+                    <div class="election-info">
+
+                        <div class="election-icon">
+                            <i class="fa-solid fa-check-to-slot"></i>
+                        </div>
+
+                        <div class="election-details">
+
+                            <h3>
+                                ${escapeHTML(
+                                    election.title
+                                )}
+                            </h3>
+
+                            <p>
+                                ${escapeHTML(
+                                    election.description || ""
+                                )}
+                            </p>
+
+                            <div class="election-meta">
+
+                                <span>
+                                    <i class="fa-regular fa-calendar"></i>
+                                    ${startDate}
+                                </span>
+
+                                <span>
+                                    <i class="fa-regular fa-clock"></i>
+                                    Ends ${endDate}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="election-status">
+
+                        <span class="status ${status}">
+                            ${statusText}
+                        </span>
+
+                    </div>
+                `;
+
+                electionContainer.appendChild(
+                    electionElement
+                );
+            }
+        );
+
+        console.log(
+            "Elections loaded successfully."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Election loading error:",
+            error
+        );
+
+        electionContainer.innerHTML = `
+            <div class="empty-election">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p>
+                    Unable to load elections.
+                </p>
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   FORMAT ELECTION DATE
+========================================================= */
+
+function formatElectionDate(dateValue) {
+
+    if (!dateValue) {
+        return "Date unavailable";
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+        return String(dateValue);
+    }
+
+    return date.toLocaleDateString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+}
 
 /* =========================================================
    5. USER INITIALIZATION
