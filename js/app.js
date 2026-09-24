@@ -11,7 +11,7 @@
 
 const API_URL = "http://127.0.0.1:5000";
 
-const ELECTION_ID = 1;
+let ELECTION_ID = null;
 
 
 /* =========================================================
@@ -707,11 +707,74 @@ function initializeCandidateInteractions() {
    12. GO TO VOTE
 ========================================================= */
 
-function goToVote() {
+/* =========================================================
+   12. GO TO VOTE
+========================================================= */
 
-    window.location.href =
-        "vote.html";
+async function goToVote() {
 
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/elections/`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.elections) {
+            throw new Error(
+                data.message || "Unable to load elections."
+            );
+        }
+
+        const activeElection = data.elections.find(
+            election =>
+                String(election.status).toLowerCase() === "active"
+        );
+
+        if (!activeElection) {
+            showNotification(
+                "No active election is available.",
+                "warning"
+            );
+            return;
+        }
+
+        ELECTION_ID = activeElection.id;
+
+        localStorage.setItem(
+            "currentElectionId",
+            String(ELECTION_ID)
+        );
+
+        localStorage.setItem(
+            "currentElectionTitle",
+            activeElection.title || ""
+        );
+
+        window.location.href =
+            `vote.html?election_id=${ELECTION_ID}`;
+
+    } catch (error) {
+
+        console.error(
+            "Unable to open voting page:",
+            error
+        );
+
+        showNotification(
+            error.message ||
+            "Unable to connect to backend.",
+            "warning"
+        );
+    }
 }
 
 
@@ -779,6 +842,7 @@ function logout() {
 }
 
 
+
 /* =========================================================
    14. LOAD CANDIDATES FROM BACKEND
 ========================================================= */
@@ -790,9 +854,7 @@ async function loadVoteCandidates() {
     );
 
     const token =
-        localStorage.getItem(
-            "accessToken"
-        );
+        localStorage.getItem("accessToken");
 
     if (!token) {
 
@@ -806,11 +868,8 @@ async function loadVoteCandidates() {
         return;
     }
 
-
     const candidateList =
-        document.getElementById(
-            "candidateList"
-        );
+        document.getElementById("candidateList");
 
     if (!candidateList) {
 
@@ -821,8 +880,90 @@ async function loadVoteCandidates() {
         return;
     }
 
-
     try {
+
+        /* =========================================
+           GET ELECTION ID
+        ========================================= */
+
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const urlElectionId =
+            urlParams.get("election_id");
+
+        if (urlElectionId) {
+
+            ELECTION_ID =
+                Number(urlElectionId);
+
+        } else {
+
+            /* Get current active election */
+
+            const electionResponse =
+                await fetch(
+                    `${API_URL}/api/elections/`
+                );
+
+            const electionData =
+                await electionResponse.json();
+
+            if (
+                !electionResponse.ok ||
+                !electionData.elections
+            ) {
+
+                throw new Error(
+                    electionData.message ||
+                    "Unable to load elections."
+                );
+
+            }
+
+            const activeElection =
+                electionData.elections.find(
+                    election =>
+                        String(
+                            election.status
+                        ).toLowerCase() === "active"
+                );
+
+            if (!activeElection) {
+
+                throw new Error(
+                    "No active election is available."
+                );
+
+            }
+
+            ELECTION_ID =
+                Number(activeElection.id);
+
+        }
+
+
+        console.log(
+            "Using Election ID:",
+            ELECTION_ID
+        );
+
+
+        /* =========================================
+           SAVE CURRENT ELECTION
+        ========================================= */
+
+        localStorage.setItem(
+            "currentElectionId",
+            String(ELECTION_ID)
+        );
+
+
+        /* =========================================
+           LOAD CANDIDATES
+        ========================================= */
 
         const response =
             await fetch(
@@ -872,13 +1013,15 @@ async function loadVoteCandidates() {
         }
 
 
+        /* =========================================
+           CREATE CANDIDATE CARDS
+        ========================================= */
+
         data.candidates.forEach(
             candidate => {
 
                 const candidateElement =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
 
                 candidateElement.className =
@@ -893,10 +1036,8 @@ async function loadVoteCandidates() {
                     candidate.avatar || "";
 
 
-                /*
-                 * Backend seed data may contain
-                 * markdown-wrapped URLs.
-                 */
+                /* Remove markdown URL formatting */
+
                 const markdownMatch =
                     avatar.match(
                         /\((https?:\/\/.*?)\)/
@@ -911,9 +1052,6 @@ async function loadVoteCandidates() {
                 }
 
 
-                /*
-                 * Remove markdown brackets.
-                 */
                 avatar =
                     avatar
                         .replace("[", "")
@@ -921,12 +1059,8 @@ async function loadVoteCandidates() {
 
 
                 if (
-                    !avatar.startsWith(
-                        "http://"
-                    ) &&
-                    !avatar.startsWith(
-                        "https://"
-                    )
+                    !avatar.startsWith("http://") &&
+                    !avatar.startsWith("https://")
                 ) {
 
                     avatar =
@@ -954,15 +1088,13 @@ async function loadVoteCandidates() {
 
                             <p>
                                 ${escapeHTML(
-                                    candidate.department ||
-                                    ""
+                                    candidate.department || ""
                                 )}
                             </p>
 
                             <small>
                                 ${escapeHTML(
-                                    candidate.description ||
-                                    ""
+                                    candidate.description || ""
                                 )}
                             </small>
 
@@ -974,9 +1106,8 @@ async function loadVoteCandidates() {
                 `;
 
 
-                /*
-                 * Candidate CLICK
-                 */
+                /* Candidate click */
+
                 candidateElement.addEventListener(
                     "click",
                     function () {
@@ -1002,16 +1133,13 @@ async function loadVoteCandidates() {
         );
 
 
-        /*
-         * Check whether current user
-         * already voted.
-         */
+        /* Check whether user already voted */
+
         await checkExistingVote();
 
 
-        /*
-         * Restore selection if one exists.
-         */
+        /* Restore previous selection */
+
         restoreCandidateSelection();
 
 
@@ -1022,7 +1150,6 @@ async function loadVoteCandidates() {
             error
         );
 
-
         showNotification(
             "Unable to connect to backend. " +
             error.message,
@@ -1032,7 +1159,6 @@ async function loadVoteCandidates() {
     }
 
 }
-
 
 /* =========================================================
    15. SELECT CANDIDATE
