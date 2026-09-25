@@ -707,12 +707,7 @@ function initializeCandidateInteractions() {
    12. GO TO VOTE
 ========================================================= */
 
-/* =========================================================
-   12. GO TO VOTE
-========================================================= */
-
 async function goToVote() {
-
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -721,33 +716,36 @@ async function goToVote() {
     }
 
     try {
-
         const response = await fetch(
-            `${API_URL}/api/elections/`
+            `${API_URL}/api/elections/`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
         );
 
         const data = await response.json();
 
-        if (!response.ok || !data.elections) {
+        if (!response.ok || !data.success) {
             throw new Error(
                 data.message || "Unable to load elections."
             );
         }
 
         const activeElection = data.elections.find(
-            election =>
-                String(election.status).toLowerCase() === "active"
+            election => election.status === "active"
         );
 
         if (!activeElection) {
             showNotification(
-                "No active election is available.",
+                "There is no active election right now.",
                 "warning"
             );
             return;
         }
 
-        ELECTION_ID = activeElection.id;
+        ELECTION_ID = Number(activeElection.id);
 
         localStorage.setItem(
             "currentElectionId",
@@ -756,18 +754,14 @@ async function goToVote() {
 
         localStorage.setItem(
             "currentElectionTitle",
-            activeElection.title || ""
+            activeElection.title
         );
 
         window.location.href =
             `vote.html?election_id=${ELECTION_ID}`;
 
     } catch (error) {
-
-        console.error(
-            "Unable to open voting page:",
-            error
-        );
+        console.error("Go to vote error:", error);
 
         showNotification(
             error.message ||
@@ -849,22 +843,10 @@ function logout() {
 
 async function loadVoteCandidates() {
 
-    console.log(
-        "Loading candidates from backend..."
-    );
-
-    const token =
-        localStorage.getItem("accessToken");
+    const token = localStorage.getItem("accessToken");
 
     if (!token) {
-
-        console.warn(
-            "No access token found."
-        );
-
-        window.location.href =
-            "login.html";
-
+        window.location.href = "login.html";
         return;
     }
 
@@ -872,40 +854,51 @@ async function loadVoteCandidates() {
         document.getElementById("candidateList");
 
     if (!candidateList) {
-
-        console.error(
-            "candidateList element not found."
-        );
-
+        console.error("candidateList not found.");
         return;
     }
 
+    candidateList.innerHTML = `
+        <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Loading candidates...</span>
+        </div>
+    `;
+
     try {
 
-        /* =========================================
-           GET ELECTION ID
-        ========================================= */
-
-        const urlParams =
-            new URLSearchParams(
-                window.location.search
-            );
+        /*
+         * First check URL:
+         * vote.html?election_id=2
+         */
+        const params =
+            new URLSearchParams(window.location.search);
 
         const urlElectionId =
-            urlParams.get("election_id");
+            params.get("election_id");
 
         if (urlElectionId) {
 
             ELECTION_ID =
                 Number(urlElectionId);
 
-        } else {
+        }
 
-            /* Get current active election */
+        /*
+         * If URL does not contain election ID,
+         * find the active election.
+         */
+        if (!ELECTION_ID) {
 
             const electionResponse =
                 await fetch(
-                    `${API_URL}/api/elections/`
+                    `${API_URL}/api/elections/`,
+                    {
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
                 );
 
             const electionData =
@@ -913,251 +906,196 @@ async function loadVoteCandidates() {
 
             if (
                 !electionResponse.ok ||
-                !electionData.elections
+                !electionData.success
             ) {
-
                 throw new Error(
                     electionData.message ||
                     "Unable to load elections."
                 );
-
             }
 
             const activeElection =
                 electionData.elections.find(
                     election =>
-                        String(
-                            election.status
-                        ).toLowerCase() === "active"
+                        election.status === "active"
                 );
 
             if (!activeElection) {
-
                 throw new Error(
-                    "No active election is available."
+                    "There is no active election."
                 );
-
             }
 
             ELECTION_ID =
                 Number(activeElection.id);
-
         }
 
-
-        console.log(
-            "Using Election ID:",
-            ELECTION_ID
-        );
-
-
-        /* =========================================
-           SAVE CURRENT ELECTION
-        ========================================= */
-
+        /*
+         * Save current election
+         */
         localStorage.setItem(
             "currentElectionId",
             String(ELECTION_ID)
         );
 
-
-        /* =========================================
-           LOAD CANDIDATES
-        ========================================= */
-
+        /*
+         * Load candidates
+         */
         const response =
             await fetch(
                 `${API_URL}/api/elections/${ELECTION_ID}/candidates`
             );
 
-
         const data =
             await response.json();
 
-
         console.log(
-            "Candidates API response:",
+            "Candidates response:",
             data
         );
 
-
-        if (!response.ok) {
-
+        if (!response.ok || !data.success) {
             throw new Error(
                 data.message ||
                 "Unable to load candidates."
             );
-
         }
-
-
-        candidateList.innerHTML =
-            "";
-
 
         if (
             !data.candidates ||
             data.candidates.length === 0
         ) {
-
             candidateList.innerHTML = `
-                <div style="
-                    padding: 30px;
-                    text-align: center;
-                ">
-                    <p>No candidates available.</p>
+                <div class="empty-state">
+                    <i class="fa-solid fa-users-slash"></i>
+                    <h3>No candidates available</h3>
+                    <p>
+                        Candidates have not been added
+                        to this election yet.
+                    </p>
                 </div>
             `;
 
             return;
         }
 
+        /*
+         * Render candidates
+         */
+        candidateList.innerHTML = "";
 
-        /* =========================================
-           CREATE CANDIDATE CARDS
-        ========================================= */
+        data.candidates.forEach(candidate => {
 
-        data.candidates.forEach(
-            candidate => {
+            const candidateElement =
+                document.createElement("div");
 
-                const candidateElement =
-                    document.createElement("div");
+            candidateElement.className =
+                "candidate";
 
+            candidateElement.dataset.candidateId =
+                candidate.id;
 
-                candidateElement.className =
-                    "candidate";
+            candidateElement.innerHTML = `
+                <div class="candidate-info">
 
+                    <img
+                        src="${
+                            candidate.avatar ||
+                            "https://i.pravatar.cc/100?img=12"
+                        }"
+                        alt="${escapeHTML(candidate.name)}"
+                        class="candidate-avatar"
+                    >
 
-                candidateElement.dataset.candidateId =
-                    candidate.id;
+                    <div>
+                        <h3>
+                            ${escapeHTML(candidate.name)}
+                        </h3>
 
+                        <p>
+                            ${escapeHTML(
+                                candidate.department || ""
+                            )}
+                        </p>
 
-                let avatar =
-                    candidate.avatar || "";
-
-
-                /* Remove markdown URL formatting */
-
-                const markdownMatch =
-                    avatar.match(
-                        /\((https?:\/\/.*?)\)/
-                    );
-
-
-                if (markdownMatch) {
-
-                    avatar =
-                        markdownMatch[1];
-
-                }
-
-
-                avatar =
-                    avatar
-                        .replace("[", "")
-                        .replace("]", "");
-
-
-                if (
-                    !avatar.startsWith("http://") &&
-                    !avatar.startsWith("https://")
-                ) {
-
-                    avatar =
-                        "https://i.pravatar.cc/150?img=12";
-
-                }
-
-
-                candidateElement.innerHTML = `
-                    <div class="candidate-info">
-
-                        <img
-                            src="${escapeHTML(avatar)}"
-                            alt="${escapeHTML(candidate.name)}"
-                            class="candidate-avatar"
-                        >
-
-                        <div>
-
-                            <h3>
-                                ${escapeHTML(
-                                    candidate.name
-                                )}
-                            </h3>
-
-                            <p>
-                                ${escapeHTML(
-                                    candidate.department || ""
-                                )}
-                            </p>
-
-                            <small>
-                                ${escapeHTML(
-                                    candidate.description || ""
-                                )}
-                            </small>
-
-                        </div>
-
+                        <small>
+                            ${escapeHTML(
+                                candidate.description || ""
+                            )}
+                        </small>
                     </div>
 
-                    <div class="radio"></div>
-                `;
+                </div>
 
+                <div class="radio"></div>
+            `;
 
-                /* Candidate click */
+            candidateElement.addEventListener(
+                "click",
+                function () {
 
-                candidateElement.addEventListener(
-                    "click",
-                    function () {
-
-                        selectCandidate(
-                            candidate.id
-                        );
-
+                    if (
+                        localStorage.getItem(
+                            "voteSubmitted"
+                        ) === "true"
+                    ) {
+                        return;
                     }
-                );
 
+                    document
+                        .querySelectorAll(
+                            ".candidate"
+                        )
+                        .forEach(item => {
+                            item.classList.remove(
+                                "selected"
+                            );
+                        });
 
-                candidateList.appendChild(
-                    candidateElement
-                );
+                    candidateElement.classList.add(
+                        "selected"
+                    );
 
-            }
-        );
+                    selectedCandidateId =
+                        Number(candidate.id);
 
+                    console.log(
+                        "Selected candidate:",
+                        selectedCandidateId
+                    );
+                }
+            );
 
-        console.log(
-            "Candidates loaded successfully."
-        );
+            candidateList.appendChild(
+                candidateElement
+            );
+        });
 
-
-        /* Check whether user already voted */
-
+        /*
+         * Check whether current user
+         * already voted in this election.
+         */
         await checkExistingVote();
-
-
-        /* Restore previous selection */
-
-        restoreCandidateSelection();
-
 
     } catch (error) {
 
         console.error(
-            "Candidate loading error:",
+            "Load candidates error:",
             error
         );
 
-        showNotification(
-            "Unable to connect to backend. " +
-            error.message,
-            "warning"
-        );
+        candidateList.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-triangle-exclamation"></i>
 
+                <h3>Unable to load candidates</h3>
+
+                <p>
+                    ${escapeHTML(error.message)}
+                </p>
+            </div>
+        `;
     }
-
 }
 
 /* =========================================================
