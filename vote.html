@@ -1,6 +1,6 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
@@ -29,1083 +29,574 @@
 
 <body>
 
-    <div class="app">
+<div class="app">
 
-        <!-- =========================
-             SIDEBAR
-        ========================== -->
-        <aside class="sidebar" id="sidebar">
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
 
-            <div class="sidebar-header">
+    <aside class="sidebar" id="sidebar">
 
-                <a href="index.html" class="sidebar-logo">
+        <div class="sidebar-header">
 
-                    <div class="logo-icon">
-                        <i class="fa-solid fa-check-to-slot"></i>
-                    </div>
+            <a href="index.html" class="sidebar-logo">
 
-                    <div>
-                        <strong>VoteSecure</strong>
-                        <span>Online Voting</span>
-                    </div>
+                <div class="logo-icon">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                </div>
 
-                </a>
+                <div>
+                    <strong>VoteSecure</strong>
+                    <span>Online Voting</span>
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-menu">
+
+            <p class="menu-title">
+                Main Menu
+            </p>
+
+            <a
+                href="index.html"
+                class="menu-item"
+            >
+                <i class="fa-solid fa-grid-2"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a
+                href="index.html#elections"
+                class="menu-item"
+            >
+                <i class="fa-solid fa-landmark"></i>
+                <span>Elections</span>
+            </a>
+
+            <a
+                href="vote.html"
+                class="menu-item active"
+            >
+                <i class="fa-solid fa-check-to-slot"></i>
+                <span>Cast Vote</span>
+            </a>
+
+            <a
+                href="results.html"
+                class="menu-item"
+            >
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Results</span>
+            </a>
+
+            <a
+                href="profile.html"
+                class="menu-item"
+            >
+                <i class="fa-solid fa-user"></i>
+                <span>My Profile</span>
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="#"
+                class="menu-item"
+                onclick="showNotification('Settings will be available soon.', 'warning'); return false;"
+            >
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+
+            <a
+                href="#"
+                class="menu-item logout-item"
+                onclick="logout(); return false;"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-footer">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>© 2026 VoteSecure</span>
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <!-- Topbar -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    class="mobile-menu-btn"
+                    id="mobileMenuBtn"
+                    aria-label="Open menu"
+                >
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="page-title">
+
+                    <h1>Cast Your Vote</h1>
+
+                    <span id="electionTopTitle">
+                        Loading election...
+                    </span>
+
+                </div>
 
             </div>
 
 
-            <div class="sidebar-menu">
+            <div class="topbar-actions">
 
-                <p class="menu-title">
-                    Main Menu
-                </p>
+                <!-- Search -->
 
-                <a
-                    href="index.html"
-                    class="menu-item"
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search elections..."
+                    >
+
+                </div>
+
+
+                <!-- Notification -->
+
+                <button
+                    class="notification-btn"
+                    onclick="showNotification('You have 3 new notifications.')"
+                    aria-label="Notifications"
                 >
-                    <i class="fa-solid fa-grid-2"></i>
-                    <span>Dashboard</span>
-                </a>
 
-                <a
-                    href="index.html#elections"
-                    class="menu-item"
-                >
-                    <i class="fa-solid fa-landmark"></i>
-                    <span>Elections</span>
-                </a>
+                    <i class="fa-regular fa-bell"></i>
 
-                <a
-                    href="vote.html"
-                    class="menu-item active"
-                >
-                    <i class="fa-solid fa-check-to-slot"></i>
-                    <span>Cast Vote</span>
-                </a>
+                    <span class="notification-badge">
+                        3
+                    </span>
 
-                <a
-                    href="results.html"
-                    class="menu-item"
-                >
-                    <i class="fa-solid fa-chart-column"></i>
-                    <span>Results</span>
-                </a>
+                </button>
+
+
+                <!-- User -->
 
                 <a
                     href="profile.html"
-                    class="menu-item"
+                    class="topbar-user"
                 >
-                    <i class="fa-solid fa-user"></i>
-                    <span>My Profile</span>
+
+                    <img
+                        src="https://i.pravatar.cc/100?img=12"
+                        alt="User"
+                    >
+
+                    <div class="topbar-user-info">
+
+                        <strong id="topbarUserName">
+                            Sameer Ahmad
+                        </strong>
+
+                        <span>
+                            Verified Voter
+                        </span>
+
+                    </div>
+
+                    <i class="fa-solid fa-chevron-down"></i>
+
                 </a>
 
             </div>
 
-
-            <div class="sidebar-bottom">
-
-                <a
-                    href="#"
-                    class="menu-item"
-                    onclick="showNotification('Settings will be available soon.', 'warning'); return false;"
-                >
-                    <i class="fa-solid fa-gear"></i>
-                    <span>Settings</span>
-                </a>
-
-                <a
-                    href="#"
-                    class="menu-item logout-item"
-                    onclick="logout(); return false;"
-                >
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
-
-            </div>
-
-
-            <div class="sidebar-footer">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>© 2026 VoteSecure</span>
-            </div>
-
-        </aside>
+        </header>
 
 
         <!-- =========================
-             MAIN
+             PAGE CONTENT
         ========================== -->
-        <main class="main">
 
-            <!-- Topbar -->
-            <header class="topbar">
+        <div class="page-content">
 
-                <div class="topbar-left">
+            <!-- Election Header -->
 
-                    <button
-                        class="mobile-menu-btn"
-                        id="mobileMenuBtn"
-                        aria-label="Open menu"
-                    >
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+            <div class="vote-page-header">
 
-                    <div class="page-title">
-                        <h1>Cast Your Vote</h1>
+                <div>
+
+                    <div class="breadcrumb">
+
+                        <a href="index.html">
+                            Dashboard
+                        </a>
+
+                        <i class="fa-solid fa-chevron-right"></i>
+
                         <span>
-                            Student Council Election 2026
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <div class="topbar-actions">
-
-                    <!-- Search -->
-                    <div class="search-box">
-
-                        <i class="fa-solid fa-magnifying-glass"></i>
-
-                        <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Search elections..."
-                        >
-
-                    </div>
-
-
-                    <!-- Notification -->
-                    <button
-                        class="notification-btn"
-                        onclick="showNotification('You have 3 new notifications.')"
-                        aria-label="Notifications"
-                    >
-
-                        <i class="fa-regular fa-bell"></i>
-
-                        <span class="notification-badge">
-                            3
+                            Cast Vote
                         </span>
 
-                    </button>
-
-
-                    <!-- User -->
-                    <a
-                        href="profile.html"
-                        class="topbar-user"
-                    >
-
-                        <img
-                            src="https://i.pravatar.cc/100?img=12"
-                            alt="User"
-                        >
-
-                        <div class="topbar-user-info">
-
-                            <strong id="topbarUserName">
-                                Sameer Ahmad
-                            </strong>
-
-                            <span>
-                                Verified Voter
-                            </span>
-
-                        </div>
-
-                        <i class="fa-solid fa-chevron-down"></i>
-
-                    </a>
-
-                </div>
-
-            </header>
-
-
-            <!-- =========================
-                 PAGE CONTENT
-            ========================== -->
-            <div class="page-content">
-
-                <!-- Election Header -->
-                <div class="vote-page-header">
-
-                    <div>
-
-                        <div class="breadcrumb">
-                            <a href="index.html">
-                                Dashboard
-                            </a>
-
-                            <i class="fa-solid fa-chevron-right"></i>
-
-                            <span>
-                                Cast Vote
-                            </span>
-                        </div>
-
-                        <h2>
-                            Student Council Election 2026
-                        </h2>
-
-                        <p>
-                            Choose one candidate and submit
-                            your vote securely.
-                        </p>
-
                     </div>
 
 
-                    <div class="election-status active">
+                    <h2 id="electionTitle">
+                        Loading election...
+                    </h2>
 
-                        <span class="status-dot"></span>
-
-                        Election Active
-
-                    </div>
+                    <p>
+                        Choose one candidate and submit
+                        your vote securely.
+                    </p>
 
                 </div>
 
 
-                <!-- Election Information -->
-                <div class="vote-info-grid">
-
-                    <div class="vote-info-card">
-
-                        <div class="vote-info-icon">
-                            <i class="fa-regular fa-calendar"></i>
-                        </div>
-
-                        <div>
-                            <span>Election Ends</span>
-                            <strong>25 Sep 2026</strong>
-                        </div>
-
-                    </div>
-
-
-                    <div class="vote-info-card">
-
-                        <div class="vote-info-icon">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-
-                        <div>
-                            <span>Total Candidates</span>
-                            <strong>3 Candidates</strong>
-                        </div>
-
-                    </div>
-
-
-                    <div class="vote-info-card">
-
-                        <div class="vote-info-icon">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-
-                        <div>
-                            <span>Voting Status</span>
-                            <strong>Secure & Verified</strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =========================
-                     VOTING CARD
-                ========================== -->
-                <div class="vote-layout">
-
-                    <section class="vote-card">
-
-                        <div class="vote-card-header">
-
-                            <div>
-
-                                <span class="section-label">
-                                    Student Council
-                                </span>
-
-                                <h3>
-                                    Choose Your Candidate
-                                </h3>
-
-                                <p>
-                                    Select one candidate from
-                                    the list below.
-                                </p>
-
-                            </div>
-
-                            <span class="vote-step">
-                                Step 1 of 2
-                            </span>
-
-                        </div>
-
-
-                        <!-- Candidates -->
-                        <div
-                            class="candidate-list"
-                            id="candidateList"
-                        >
-
-                            <!-- Candidate 1 -->
-                            <div
-                                class="candidate"
-                                data-candidate-id="1"
-                                onclick="selectCandidate(1)"
-                            >
-
-                                <div class="candidate-radio">
-                                    <span class="radio"></span>
-                                </div>
-
-                                <img
-                                    src="https://i.pravatar.cc/100?img=11"
-                                    alt="Aarav Sharma"
-                                    class="candidate-avatar"
-                                >
-
-                                <div class="candidate-info">
-
-                                    <h4>
-                                        Aarav Sharma
-                                    </h4>
-
-                                    <p>
-                                        Computer Science Department
-                                    </p>
-
-                                </div>
-
-                                <div class="candidate-arrow">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </div>
-
-                            </div>
-
-
-                            <!-- Candidate 2 -->
-                            <div
-                                class="candidate"
-                                data-candidate-id="2"
-                                onclick="selectCandidate(2)"
-                            >
-
-                                <div class="candidate-radio">
-                                    <span class="radio"></span>
-                                </div>
-
-                                <img
-                                    src="https://i.pravatar.cc/100?img=47"
-                                    alt="Priya Verma"
-                                    class="candidate-avatar"
-                                >
-
-                                <div class="candidate-info">
-
-                                    <h4>
-                                        Priya Verma
-                                    </h4>
-
-                                    <p>
-                                        Electronics Department
-                                    </p>
-
-                                </div>
-
-                                <div class="candidate-arrow">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </div>
-
-                            </div>
-
-
-                            <!-- Candidate 3 -->
-                            <div
-                                class="candidate"
-                                data-candidate-id="3"
-                                onclick="selectCandidate(3)"
-                            >
-
-                                <div class="candidate-radio">
-                                    <span class="radio"></span>
-                                </div>
-
-                                <img
-                                    src="https://i.pravatar.cc/100?img=13"
-                                    alt="Rohan Mehta"
-                                    class="candidate-avatar"
-                                >
-
-                                <div class="candidate-info">
-
-                                    <h4>
-                                        Rohan Mehta
-                                    </h4>
-
-                                    <p>
-                                        Mechanical Department
-                                    </p>
-
-                                </div>
-
-                                <div class="candidate-arrow">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Submit Area -->
-                        <div class="vote-submit-area">
-
-                            <div class="vote-warning">
-
-                                <i class="fa-solid fa-circle-info"></i>
-
-                                <span>
-                                    You can vote only once.
-                                    Your vote cannot be changed
-                                    after submission.
-                                </span>
-
-                            </div>
-
-                            <button
-                                type="button"
-                                class="submit-vote-btn"
-                                id="submitVoteButton"
-                                onclick="submitVote()"
-                            >
-                                <i class="fa-solid fa-check"></i>
-                                <span>Submit Vote</span>
-                            </button>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- =========================
-                         SECURITY CARD
-                    ========================== -->
-                    <aside class="voting-security-card">
-
-                        <div class="security-card-icon">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-
-                        <h3>
-                            Your Vote is Secure
-                        </h3>
-
-                        <p>
-                            VoteSecure protects your voting
-                            information using secure
-                            authentication and encrypted
-                            communication.
-                        </p>
-
-
-                        <div class="security-feature">
-
-                            <i class="fa-solid fa-lock"></i>
-
-                            <div>
-                                <strong>
-                                    Private
-                                </strong>
-
-                                <span>
-                                    Your choice remains protected.
-                                </span>
-                            </div>
-
-                        </div>
-
-
-                        <div class="security-feature">
-
-                            <i class="fa-solid fa-fingerprint"></i>
-
-                            <div>
-                                <strong>
-                                    Verified
-                                </strong>
-
-                                <span>
-                                    Only verified voters can vote.
-                                </span>
-                            </div>
-
-                        </div>
-
-
-                        <div class="security-feature">
-
-                            <i class="fa-solid fa-circle-check"></i>
-
-                            <div>
-                                <strong>
-                                    One Vote
-                                </strong>
-
-                                <span>
-                                    Duplicate voting is prevented.
-                                </span>
-                            </div>
-
-                        </div>
-
-
-                        <div class="security-card-footer">
-
-                            <i class="fa-solid fa-shield"></i>
-
-                            <span>
-                                Secure Voting System
-                            </span>
-
-                        </div>
-
-                    </aside>
-
-                </div>
-
-
-                <!-- Help Section -->
-                <div class="vote-help-card">
-
-                    <div class="help-icon">
-                        <i class="fa-regular fa-circle-question"></i>
-                    </div>
-
-                    <div>
-
-                        <h4>
-                            Need help?
-                        </h4>
-
-                        <p>
-                            Make sure you select the candidate
-                            you want before submitting your vote.
-                        </p>
-
-                    </div>
-
-                    <button
-                        type="button"
-                        onclick="showNotification('Voting support will be available soon.', 'warning')"
-                    >
-                        Contact Support
-                    </button>
+                <div
+                    class="election-status active"
+                    id="electionStatus"
+                >
+
+                    <span class="status-dot"></span>
+
+                    <span id="electionStatusText">
+                        Checking...
+                    </span>
 
                 </div>
 
             </div>
 
-        </main>
 
-    </div>
+            <!-- Election Information -->
 
+            <div class="vote-info-grid">
 
-    <!-- Notification Container -->
-    <div id="notificationContainer"></div>
+                <div class="vote-info-card">
 
-
-    <!-- Main JavaScript -->
-    <script src="js/app.js"></script>
-
-
-   <script>
-const API_URL = "http://127.0.0.1:5000";
-const ELECTION_ID = 1;
-
-let selectedCandidateId = null;
-
-/* =========================================
-   LOAD CANDIDATES
-========================================= */
-async function loadCandidates() {
-
-    const token = localStorage.getItem("accessToken");
-
-    if (!token) {
-        alert("Please login first.");
-        window.location.href = "login.html";
-        return;
-    }
-
-    const candidateList = document.getElementById("candidateList");
-
-    if (!candidateList) {
-        console.error("candidateList not found");
-        return;
-    }
-
-    try {
-
-        console.log("Loading candidates...");
-
-        const response = await fetch(
-            `${API_URL}/api/elections/${ELECTION_ID}/candidates`
-        );
-
-        const data = await response.json();
-
-        console.log("Candidates response:", data);
-
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to load candidates");
-        }
-
-        candidateList.innerHTML = "";
-
-        data.candidates.forEach(candidate => {
-
-            const candidateElement = document.createElement("div");
-
-            candidateElement.className = "candidate";
-
-            candidateElement.dataset.candidateId = candidate.id;
-
-            let avatar = candidate.avatar || "";
-
-            // Fix markdown-style avatar URL if present
-            avatar = avatar
-                .replace("[", "")
-                .replace("]", "")
-                .replace(/\((.*?)\)/, "$1");
-
-            if (!avatar.startsWith("http")) {
-                avatar = "https://i.pravatar.cc/150?img=12";
-            }
-
-            candidateElement.innerHTML = `
-                <div class="candidate-info">
-
-                    <img
-                        src="${avatar}"
-                        alt="${candidate.name}"
-                        class="candidate-avatar"
-                    >
+                    <div class="vote-info-icon">
+                        <i class="fa-regular fa-calendar"></i>
+                    </div>
 
                     <div>
-                        <h3>${candidate.name}</h3>
 
-                        <p>${candidate.department}</p>
+                        <span>
+                            Election Ends
+                        </span>
 
-                        <small>
-                            ${candidate.description || ""}
-                        </small>
+                        <strong id="electionEndDate">
+                            --
+                        </strong>
+
                     </div>
 
                 </div>
 
-                <div class="radio"></div>
-            `;
 
-            /*
-             * IMPORTANT:
-             * Click directly on candidate
-             */
-            candidateElement.addEventListener("click", function () {
-                selectCandidate(candidate.id);
-            });
+                <div class="vote-info-card">
 
-            candidateList.appendChild(candidateElement);
-        });
+                    <div class="vote-info-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
 
-        console.log("Candidates loaded successfully");
+                    <div>
 
-        await checkMyVote();
+                        <span>
+                            Total Candidates
+                        </span>
 
-    } catch (error) {
+                        <strong id="candidateCount">
+                            Loading...
+                        </strong>
 
-        console.error("LOAD CANDIDATES ERROR:", error);
+                    </div>
 
-        alert(
-            "Unable to load candidates.\n\n" +
-            error.message
-        );
-    }
-}
+                </div>
 
 
-/* =========================================
-   SELECT CANDIDATE
-========================================= */
-function selectCandidate(candidateId) {
+                <div class="vote-info-card">
 
-    console.log("Candidate clicked:", candidateId);
+                    <div class="vote-info-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
 
-    const alreadyVoted =
-        localStorage.getItem("voteSubmitted") === "true";
+                    <div>
 
-    if (alreadyVoted) {
+                        <span>
+                            Voting Status
+                        </span>
 
-        alert("You have already submitted your vote.");
+                        <strong id="votingStatus">
+                            Checking...
+                        </strong>
 
-        return;
-    }
+                    </div>
 
-    // Remove previous selection
-    document
-        .querySelectorAll(".candidate")
-        .forEach(candidate => {
-            candidate.classList.remove("selected");
-        });
+                </div>
 
-    // Find clicked candidate
-    const selectedCandidate =
-        document.querySelector(
-            `.candidate[data-candidate-id="${candidateId}"]`
-        );
+            </div>
 
-    if (!selectedCandidate) {
 
-        console.error(
-            "Candidate element not found:",
-            candidateId
-        );
+            <!-- =========================
+                 VOTING CARD
+            ========================== -->
 
-        return;
-    }
+            <div class="vote-layout">
 
-    // Add selected class
-    selectedCandidate.classList.add("selected");
+                <section class="vote-card">
 
-    // Save selected candidate
-    selectedCandidateId = Number(candidateId);
+                    <div class="vote-card-header">
 
-    localStorage.setItem(
-        "selectedCandidateId",
-        selectedCandidateId
-    );
+                        <div>
 
-    console.log(
-        "Selected candidate:",
-        selectedCandidateId
-    );
-}
+                            <span class="section-label">
+                                Online Election
+                            </span>
 
+                            <h3>
+                                Choose Your Candidate
+                            </h3>
 
-/* =========================================
-   SUBMIT VOTE
-========================================= */
-async function submitVote() {
+                            <p>
+                                Select one candidate from
+                                the list below.
+                            </p>
 
-    console.log("Submit Vote clicked");
+                        </div>
 
-    const token = localStorage.getItem("accessToken");
+                        <span class="vote-step">
+                            Step 1 of 2
+                        </span>
 
-    if (!token) {
+                    </div>
 
-        alert("Please login first.");
 
-        window.location.href = "login.html";
+                    <!-- Candidates -->
 
-        return;
-    }
+                    <div
+                        class="candidate-list"
+                        id="candidateList"
+                    >
 
-    // Get selected candidate
-    if (!selectedCandidateId) {
+                        <div
+                            class="candidate-loading"
+                            style="
+                                padding:30px;
+                                text-align:center;
+                                width:100%;
+                            "
+                        >
 
-        const savedCandidate =
-            localStorage.getItem("selectedCandidateId");
+                            <i class="fa-solid fa-spinner fa-spin"></i>
 
-        if (savedCandidate) {
-            selectedCandidateId = Number(savedCandidate);
-        }
-    }
+                            <p>
+                                Loading candidates...
+                            </p>
 
-    if (!selectedCandidateId) {
+                        </div>
 
-        alert("Please select a candidate first.");
+                    </div>
 
-        return;
-    }
 
-    // Prevent duplicate vote
-    if (
-        localStorage.getItem("voteSubmitted") === "true"
-    ) {
+                    <!-- Submit Area -->
 
-        alert("You have already submitted your vote.");
+                    <div class="vote-submit-area">
 
-        return;
-    }
+                        <div class="vote-warning">
 
-    const selectedCandidate =
-        document.querySelector(
-            `.candidate[data-candidate-id="${selectedCandidateId}"]`
-        );
+                            <i class="fa-solid fa-circle-info"></i>
 
-    let candidateName = "this candidate";
+                            <span>
+                                You can vote only once.
+                                Your vote cannot be changed
+                                after submission.
+                            </span>
 
-    if (selectedCandidate) {
+                        </div>
 
-        const nameElement =
-            selectedCandidate.querySelector("h3");
 
-        if (nameElement) {
-            candidateName = nameElement.textContent;
-        }
-    }
+                        <button
+                            type="button"
+                            class="submit-vote-btn"
+                            id="submitVoteButton"
+                            onclick="submitVote()"
+                        >
 
-    const confirmed = confirm(
-        `Are you sure you want to vote for ${candidateName}?`
-    );
+                            <i class="fa-solid fa-check"></i>
 
-    if (!confirmed) {
-        return;
-    }
+                            <span>
+                                Submit Vote
+                            </span>
 
-    const button =
-        document.getElementById("submitVoteButton");
+                        </button>
 
-    if (button) {
+                    </div>
 
-        button.disabled = true;
+                </section>
 
-        const span = button.querySelector("span");
 
-        if (span) {
-            span.textContent = "Submitting...";
-        }
-    }
+                <!-- =========================
+                     SECURITY CARD
+                ========================== -->
 
-    try {
+                <aside class="voting-security-card">
 
-        console.log("Sending vote to backend...");
+                    <div class="security-card-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
 
-        const response = await fetch(
-            `${API_URL}/api/votes/`,
-            {
-                method: "POST",
+                    <h3>
+                        Your Vote is Secure
+                    </h3>
 
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
+                    <p>
+                        VoteSecure protects your voting
+                        information using secure
+                        authentication and encrypted
+                        communication.
+                    </p>
 
-                body: JSON.stringify({
-                    election_id: ELECTION_ID,
-                    candidate_id: selectedCandidateId
-                })
-            }
-        );
 
-        const data = await response.json();
+                    <div class="security-feature">
 
-        console.log("Vote response:", data);
+                        <i class="fa-solid fa-lock"></i>
 
-        if (!response.ok) {
+                        <div>
 
-            throw new Error(
-                data.message || "Vote submission failed"
-            );
-        }
+                            <strong>
+                                Private
+                            </strong>
 
-        /*
-         * Vote successfully submitted
-         */
+                            <span>
+                                Your choice remains protected.
+                            </span>
 
-        localStorage.setItem(
-            "voteSubmitted",
-            "true"
-        );
+                        </div>
 
-        localStorage.setItem(
-            "lastVote",
-            candidateName
-        );
+                    </div>
 
-        localStorage.removeItem(
-            "selectedCandidateId"
-        );
 
-        if (button) {
+                    <div class="security-feature">
 
-            button.disabled = true;
+                        <i class="fa-solid fa-fingerprint"></i>
 
-            const span = button.querySelector("span");
+                        <div>
 
-            if (span) {
-                span.textContent = "Vote Submitted";
-            }
-        }
+                            <strong>
+                                Verified
+                            </strong>
 
-        // Disable candidates
-        document
-            .querySelectorAll(".candidate")
-            .forEach(candidate => {
+                            <span>
+                                Only verified voters can vote.
+                            </span>
 
-                candidate.style.pointerEvents = "none";
+                        </div>
 
-                candidate.style.opacity = "0.7";
-            });
+                    </div>
 
-        alert("Your vote has been submitted successfully!");
 
-        console.log("VOTE SUCCESS:", data);
+                    <div class="security-feature">
 
-    } catch (error) {
+                        <i class="fa-solid fa-circle-check"></i>
 
-        console.error("SUBMIT VOTE ERROR:", error);
+                        <div>
 
-        if (button) {
+                            <strong>
+                                One Vote
+                            </strong>
 
-            button.disabled = false;
+                            <span>
+                                Duplicate voting is prevented.
+                            </span>
 
-            const span = button.querySelector("span");
+                        </div>
 
-            if (span) {
-                span.textContent = "Submit Vote";
-            }
-        }
+                    </div>
 
-        alert(
-            "Vote submission failed.\n\n" +
-            error.message
-        );
-    }
-}
 
+                    <div class="security-card-footer">
 
-/* =========================================
-   CHECK WHETHER USER ALREADY VOTED
-========================================= */
-async function checkMyVote() {
+                        <i class="fa-solid fa-shield"></i>
 
-    const token = localStorage.getItem("accessToken");
+                        <span>
+                            Secure Voting System
+                        </span>
 
-    if (!token) {
-        return;
-    }
+                    </div>
 
-    try {
+                </aside>
 
-        const response = await fetch(
-            `${API_URL}/api/votes/my/${ELECTION_ID}`,
-            {
-                method: "GET",
+            </div>
 
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            }
-        );
 
-        const data = await response.json();
+            <!-- Help Section -->
 
-        console.log("My vote:", data);
+            <div class="vote-help-card">
 
-        if (
-            response.ok &&
-            data.has_voted === true
-        ) {
+                <div class="help-icon">
+                    <i class="fa-regular fa-circle-question"></i>
+                </div>
 
-            localStorage.setItem(
-                "voteSubmitted",
-                "true"
-            );
+                <div>
 
-            const button =
-                document.getElementById("submitVoteButton");
+                    <h4>
+                        Need help?
+                    </h4>
 
-            if (button) {
+                    <p>
+                        Make sure you select the candidate
+                        you want before submitting your vote.
+                    </p>
 
-                button.disabled = true;
+                </div>
 
-                const span = button.querySelector("span");
+                <button
+                    type="button"
+                    onclick="showNotification('Voting support will be available soon.', 'warning')"
+                >
+                    Contact Support
+                </button>
 
-                if (span) {
-                    span.textContent = "Vote Already Submitted";
-                }
-            }
+            </div>
 
-            document
-                .querySelectorAll(".candidate")
-                .forEach(candidate => {
+        </div>
 
-                    candidate.style.pointerEvents = "none";
+    </main>
 
-                    candidate.style.opacity = "0.7";
-                });
+</div>
 
-        } else {
 
-            /*
-             * IMPORTANT:
-             * Allow candidate clicking if user
-             * has not voted.
-             */
+<!-- Notification Container -->
 
-            localStorage.removeItem("voteSubmitted");
+<div id="notificationContainer"></div>
 
-            document
-                .querySelectorAll(".candidate")
-                .forEach(candidate => {
 
-                    candidate.style.pointerEvents = "auto";
+<!-- Main JavaScript -->
 
-                    candidate.style.cursor = "pointer";
-
-                    candidate.style.opacity = "1";
-                });
-
-            const button =
-                document.getElementById("submitVoteButton");
-
-            if (button) {
-
-                button.disabled = false;
-
-                const span = button.querySelector("span");
-
-                if (span) {
-                    span.textContent = "Submit Vote";
-                }
-            }
-        }
-
-    } catch (error) {
-
-        console.error(
-            "CHECK VOTE ERROR:",
-            error
-        );
-    }
-}
-
-
-/* =========================================
-   PAGE LOAD
-========================================= */
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        console.log("Vote page loaded");
-
-        loadCandidates();
-
-    }
-);
-</script>
+<script src="js/app.js"></script>
 
 </body>
+
 </html>
-```

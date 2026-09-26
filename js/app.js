@@ -1,580 +1,1865 @@
 /* =========================================================
    VOTESECURE - APP.JS
-   Premium Online Voting System
-   Backend: Flask + SQLite + JWT
-========================================================= */
-
-
-/* =========================================================
-   1. CONFIGURATION
+   Frontend API Integration
 ========================================================= */
 
 const API_URL = "http://127.0.0.1:5000";
 
 let ELECTION_ID = null;
-
-
-/* =========================================================
-   2. GLOBAL DATA
-========================================================= */
-
-const candidates = [
-    {
-        id: 1,
-        name: "Aarav Sharma",
-        department: "Computer Science",
-        votes: 0,
-        image: "https://i.pravatar.cc/100?img=11"
-    },
-    {
-        id: 2,
-        name: "Priya Verma",
-        department: "Electronics",
-        votes: 0,
-        image: "https://i.pravatar.cc/100?img=47"
-    },
-    {
-        id: 3,
-        name: "Rohan Mehta",
-        department: "Mechanical",
-        votes: 0,
-        image: "https://i.pravatar.cc/100?img=13"
-    }
-];
-
 let selectedCandidateId = null;
+let candidates = [];
 
 
 /* =========================================================
-   3. DOM READY
+   INITIALIZE APP
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    console.log("VoteSecure application starting...");
-
+document.addEventListener("DOMContentLoaded", () => {
     initializeApp();
-
 });
 
 
-/* =========================================================
-   4. INITIALIZE APPLICATION
-========================================================= */
-
-function initializeApp() {
+async function initializeApp() {
 
     initializeUser();
-
     initializeDate();
-
     initializeVoteCount();
-
     initializeSearch();
-
     initializeMobileMenu();
-
     initializeAnimations();
-
-    initializeCandidateInteractions();
-
     initializeActiveMenu();
 
-
-    /* =====================================================
-       LOAD ELECTIONS ON DASHBOARD
-    ===================================================== */
-
+    /*
+     * Dashboard
+     */
     if (document.getElementById("elections")) {
-
         loadElectionsFromBackend();
-
     }
 
-
-    /* =====================================================
-       LOAD CANDIDATES ON VOTE PAGE
-    ===================================================== */
-
+    /*
+     * Vote page
+     */
     if (document.getElementById("candidateList")) {
-
-        loadVoteCandidates();
-
+        await loadVoteCandidates();
     }
 
+    /*
+     * Results page
+     */
+    if (
+        document.getElementById("resultsList") ||
+        document.getElementById("resultsContainer")
+    ) {
+        loadResults();
+    }
+
+    /*
+     * Profile page
+     */
+    if (document.getElementById("profileName")) {
+        loadProfile();
+    }
 }
+
+
 /* =========================================================
-   LOAD ELECTIONS FROM BACKEND
+   AUTHENTICATION
 ========================================================= */
 
-async function loadElectionsFromBackend() {
+function getToken() {
+    return localStorage.getItem("accessToken");
+}
 
-    console.log("Loading elections from backend...");
 
-    const electionContainer =
-        document.getElementById("elections");
+function isLoggedIn() {
+    return !!getToken();
+}
 
-    if (!electionContainer) {
-        console.log("Election container not found on this page.");
-        return;
+
+function getUserName() {
+    return localStorage.getItem("userName") || "Sameer Ahmad";
+}
+
+
+function getUserEmail() {
+    return localStorage.getItem("userEmail") || "voter@example.com";
+}
+
+
+function getDepartment() {
+    return localStorage.getItem("department") || "Computer Science";
+}
+
+
+function getAuthHeaders() {
+
+    const token = getToken();
+
+    return {
+        "Content-Type": "application/json",
+        ...(token
+            ? {
+                "Authorization": `Bearer ${token}`
+            }
+            : {})
+    };
+}
+
+
+function requireLogin() {
+
+    if (!isLoggedIn()) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+    return true;
+}
+
+
+async function protectPage() {
+
+    if (!requireLogin()) {
+        return false;
     }
 
     try {
 
         const response = await fetch(
-            `${API_URL}/api/elections/`
-        );
-
-        const data = await response.json();
-
-        console.log(
-            "Elections API response:",
-            data
-        );
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "Unable to load elections."
-            );
-        }
-
-        if (
-            !data.elections ||
-            data.elections.length === 0
-        ) {
-
-            electionContainer.innerHTML = `
-                <div class="empty-election">
-                    <i class="fa-solid fa-calendar-xmark"></i>
-                    <p>No elections available.</p>
-                </div>
-            `;
-
-            return;
-        }
-
-        electionContainer.innerHTML = "";
-
-        data.elections.forEach(
-            election => {
-
-                const electionElement =
-                    document.createElement("div");
-
-                electionElement.className =
-                    "election";
-
-                const startDate =
-                    formatElectionDate(
-                        election.start_date
-                    );
-
-                const endDate =
-                    formatElectionDate(
-                        election.end_date
-                    );
-
-                const status =
-                    String(
-                        election.status || "upcoming"
-                    ).toLowerCase();
-
-                let statusText =
-                    "Upcoming";
-
-                if (status === "active") {
-                    statusText = "Active";
-                }
-
-                if (status === "completed") {
-                    statusText = "Completed";
-                }
-
-                electionElement.innerHTML = `
-                    <div class="election-info">
-
-                        <div class="election-icon">
-                            <i class="fa-solid fa-check-to-slot"></i>
-                        </div>
-
-                        <div class="election-details">
-
-                            <h3>
-                                ${escapeHTML(
-                                    election.title
-                                )}
-                            </h3>
-
-                            <p>
-                                ${escapeHTML(
-                                    election.description || ""
-                                )}
-                            </p>
-
-                            <div class="election-meta">
-
-                                <span>
-                                    <i class="fa-regular fa-calendar"></i>
-                                    ${startDate}
-                                </span>
-
-                                <span>
-                                    <i class="fa-regular fa-clock"></i>
-                                    Ends ${endDate}
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="election-status">
-
-                        <span class="status ${status}">
-                            ${statusText}
-                        </span>
-
-                    </div>
-                `;
-
-                electionContainer.appendChild(
-                    electionElement
-                );
+            `${API_URL}/api/auth/me`,
+            {
+                method: "GET",
+                headers: getAuthHeaders()
             }
         );
 
-        console.log(
-            "Elections loaded successfully."
-        );
+        if (!response.ok) {
+            throw new Error("Authentication failed");
+        }
+
+        const data = await response.json();
+
+        if (data.user) {
+
+            localStorage.setItem(
+                "userName",
+                data.user.name || ""
+            );
+
+            localStorage.setItem(
+                "userEmail",
+                data.user.email || ""
+            );
+
+            localStorage.setItem(
+                "department",
+                data.user.department || ""
+            );
+
+            localStorage.setItem(
+                "isAdmin",
+                data.user.is_admin === true
+                    ? "true"
+                    : "false"
+            );
+        }
+
+        return true;
 
     } catch (error) {
 
-        console.error(
-            "Election loading error:",
-            error
-        );
+        console.error("AUTH ERROR:", error);
 
-        electionContainer.innerHTML = `
-            <div class="empty-election">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <p>
-                    Unable to load elections.
-                </p>
-            </div>
-        `;
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("loggedIn");
+
+        window.location.href = "login.html";
+
+        return false;
     }
 }
 
 
 /* =========================================================
-   FORMAT ELECTION DATE
+   USER INITIALIZATION
 ========================================================= */
 
-function formatElectionDate(dateValue) {
+function initializeUser() {
 
-    if (!dateValue) {
-        return "Date unavailable";
-    }
+    const userName = getUserName();
 
-    const date = new Date(dateValue);
+    const elements = [
+        "topbarUserName",
+        "profileName",
+        "userName",
+        "welcomeUserName"
+    ];
 
-    if (Number.isNaN(date.getTime())) {
-        return String(dateValue);
-    }
+    elements.forEach(id => {
 
-    return date.toLocaleDateString(
-        "en-GB",
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent = userName;
+        }
+
+    });
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function initializeDate() {
+
+    const dateElements = document.querySelectorAll(
+        "[data-current-date]"
+    );
+
+    const today = new Date();
+
+    const formattedDate = today.toLocaleDateString(
+        "en-IN",
         {
             day: "2-digit",
             month: "short",
             year: "numeric"
         }
     );
-}
 
-/* =========================================================
-   5. USER INITIALIZATION
-========================================================= */
-
-function initializeUser() {
-
-    const storedUserName =
-        localStorage.getItem("userName") ||
-        "Sameer Ahmad";
-
-    const shortName =
-        storedUserName.split(" ")[0] ||
-        "Sameer";
-
-
-    /* Topbar username */
-
-    const topbarUserName =
-        document.getElementById("topbarUserName");
-
-    if (topbarUserName) {
-
-        topbarUserName.textContent =
-            storedUserName;
-
-    }
-
-
-    /* Welcome username */
-
-    const welcomeUserName =
-        document.getElementById("welcomeUserName");
-
-    if (welcomeUserName) {
-
-        welcomeUserName.textContent =
-            shortName;
-
-    }
-
-
-    /* Save default username */
-
-    if (!localStorage.getItem("userName")) {
-
-        localStorage.setItem(
-            "userName",
-            storedUserName
-        );
-
-    }
-
-
-    /* Profile name */
-
-    const profileName =
-        document.getElementById("profileName");
-
-    if (profileName) {
-
-        profileName.textContent =
-            storedUserName;
-
-    }
-
-
-    /* Profile email */
-
-    const profileEmail =
-        document.getElementById("profileEmail");
-
-    const storedEmail =
-        localStorage.getItem("userEmail");
-
-    if (profileEmail && storedEmail) {
-
-        profileEmail.textContent =
-            storedEmail;
-
-    }
-
-
-    /* Profile department */
-
-    const profileDepartment =
-        document.getElementById("profileDepartment");
-
-    const storedDepartment =
-        localStorage.getItem("department");
-
-    if (
-        profileDepartment &&
-        storedDepartment
-    ) {
-
-        profileDepartment.textContent =
-            storedDepartment;
-
-    }
-
+    dateElements.forEach(element => {
+        element.textContent = formattedDate;
+    });
 }
 
 
 /* =========================================================
-   6. DATE
-========================================================= */
-
-function initializeDate() {
-
-    const dateElement =
-        document.getElementById("currentDate");
-
-    if (!dateElement) {
-        return;
-    }
-
-    const today = new Date();
-
-    const options = {
-        day: "2-digit",
-        month: "short",
-        year: "numeric"
-    };
-
-    dateElement.textContent =
-        today.toLocaleDateString(
-            "en-GB",
-            options
-        );
-
-}
-
-
-/* =========================================================
-   7. VOTE COUNT
+   VOTE COUNT
 ========================================================= */
 
 function initializeVoteCount() {
 
-    const voteCount =
+    const voteCountElement =
         document.getElementById("voteCount");
 
-    if (!voteCount) {
+    if (!voteCountElement) {
         return;
     }
 
-    const voteSubmitted =
-        localStorage.getItem(
-            "voteSubmitted"
-        ) === "true";
+    const hasVoted =
+        localStorage.getItem("voteSubmitted") === "true";
 
-    voteCount.textContent =
-        voteSubmitted ? "01" : "00";
-
+    voteCountElement.textContent =
+        hasVoted ? "01" : "00";
 }
 
 
 /* =========================================================
-   8. SEARCH
+   API - GET ELECTIONS
+========================================================= */
+
+async function getElections() {
+
+    const response = await fetch(
+        `${API_URL}/api/elections/`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            `Unable to load elections (${response.status})`
+        );
+    }
+
+    const data = await response.json();
+
+    return data.elections || [];
+}
+
+
+/* =========================================================
+   FIND ACTIVE ELECTION
+========================================================= */
+
+function findActiveElection(elections) {
+
+    if (!Array.isArray(elections)) {
+        return null;
+    }
+
+    return elections.find(
+        election =>
+            String(election.status).toLowerCase() === "active"
+    ) || null;
+}
+
+
+/* =========================================================
+   GET ELECTION ID FROM URL
+========================================================= */
+
+function getElectionIdFromURL() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const id = params.get("election_id");
+
+    if (!id) {
+        return null;
+    }
+
+    const numericId = Number(id);
+
+    return Number.isInteger(numericId) && numericId > 0
+        ? numericId
+        : null;
+}
+
+
+/* =========================================================
+   GO TO VOTE
+========================================================= */
+
+async function goToVote() {
+
+    if (!requireLogin()) {
+        return;
+    }
+
+    try {
+
+        showNotification(
+            "Finding an active election...",
+            "success"
+        );
+
+        const elections =
+            await getElections();
+
+        const activeElection =
+            findActiveElection(elections);
+
+        if (!activeElection) {
+
+            showNotification(
+                "No active election is available right now.",
+                "warning"
+            );
+
+            return;
+        }
+
+        ELECTION_ID =
+            Number(activeElection.id);
+
+        localStorage.setItem(
+            "currentElectionId",
+            String(ELECTION_ID)
+        );
+
+        localStorage.setItem(
+            "currentElectionTitle",
+            activeElection.title || ""
+        );
+
+        window.location.href =
+            `vote.html?election_id=${ELECTION_ID}`;
+
+    } catch (error) {
+
+        console.error(
+            "GO TO VOTE ERROR:",
+            error
+        );
+
+        showNotification(
+            "Unable to connect to backend.",
+            "warning"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOAD ELECTIONS
+========================================================= */
+
+async function loadElectionsFromBackend() {
+
+    const container =
+        document.getElementById("elections");
+
+    if (!container) {
+        return;
+    }
+
+    try {
+
+        const elections =
+            await getElections();
+
+        renderElections(elections);
+
+    } catch (error) {
+
+        console.error(
+            "ELECTION LOAD ERROR:",
+            error
+        );
+
+        showNotification(
+            "Unable to load elections.",
+            "warning"
+        );
+    }
+}
+
+
+/* =========================================================
+   RENDER ELECTIONS
+========================================================= */
+
+function renderElections(elections) {
+
+    const container =
+        document.getElementById("elections");
+
+    if (!container) {
+        return;
+    }
+
+    if (!elections.length) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-calendar-xmark"></i>
+                <h3>No Elections Found</h3>
+                <p>There are currently no elections available.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        elections.map(election => {
+
+            const status =
+                String(election.status || "")
+                    .toLowerCase();
+
+            const statusClass =
+                status === "active"
+                    ? "active"
+                    : status === "upcoming"
+                        ? "upcoming"
+                        : "completed";
+
+            const startDate =
+                formatDate(election.start_date);
+
+            const endDate =
+                formatDate(election.end_date);
+
+            return `
+                <div
+                    class="election"
+                    data-election-title="${escapeHTML(
+                        election.title || ""
+                    )}"
+                >
+
+                    <div class="election-icon">
+                        <i class="fa-solid fa-landmark"></i>
+                    </div>
+
+                    <div class="election-info">
+
+                        <h3>
+                            ${escapeHTML(
+                                election.title || "Election"
+                            )}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(
+                                election.description || ""
+                            )}
+                        </p>
+
+                        <span class="election-date">
+                            ${startDate}
+                            -
+                            ${endDate}
+                        </span>
+
+                    </div>
+
+                    <div class="election-status ${statusClass}">
+                        ${escapeHTML(
+                            election.status || ""
+                        )}
+                    </div>
+
+                    ${
+                        status === "active"
+                            ? `
+                                <button
+                                    type="button"
+                                    class="primary-btn"
+                                    onclick="openElection(${Number(election.id)})"
+                                >
+                                    Vote
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            `
+                            : ""
+                    }
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* =========================================================
+   OPEN SPECIFIC ELECTION
+========================================================= */
+
+function openElection(electionId) {
+
+    if (!requireLogin()) {
+        return;
+    }
+
+    ELECTION_ID =
+        Number(electionId);
+
+    localStorage.setItem(
+        "currentElectionId",
+        String(ELECTION_ID)
+    );
+
+    window.location.href =
+        `vote.html?election_id=${ELECTION_ID}`;
+}
+
+
+/* =========================================================
+   LOAD VOTE CANDIDATES
+========================================================= */
+
+async function loadVoteCandidates() {
+
+    const candidateList =
+        document.getElementById("candidateList");
+
+    if (!candidateList) {
+        return;
+    }
+
+    if (!requireLogin()) {
+        return;
+    }
+
+    try {
+
+        /*
+         * First try URL parameter
+         */
+        let electionId =
+            getElectionIdFromURL();
+
+
+        /*
+         * If URL has no ID,
+         * use stored election ID
+         */
+        if (!electionId) {
+
+            const storedId =
+                Number(
+                    localStorage.getItem(
+                        "currentElectionId"
+                    )
+                );
+
+            if (
+                Number.isInteger(storedId) &&
+                storedId > 0
+            ) {
+                electionId = storedId;
+            }
+        }
+
+
+        /*
+         * If still no election ID,
+         * fetch active election.
+         */
+        if (!electionId) {
+
+            const elections =
+                await getElections();
+
+            const activeElection =
+                findActiveElection(elections);
+
+            if (!activeElection) {
+
+                showVoteError(
+                    "No active election is available."
+                );
+
+                return;
+            }
+
+            electionId =
+                Number(activeElection.id);
+
+            localStorage.setItem(
+                "currentElectionId",
+                String(electionId)
+            );
+
+            localStorage.setItem(
+                "currentElectionTitle",
+                activeElection.title || ""
+            );
+        }
+
+
+        ELECTION_ID =
+            Number(electionId);
+
+
+        /*
+         * Fetch election details
+         */
+        const electionResponse =
+            await fetch(
+                `${API_URL}/api/elections/${ELECTION_ID}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        /*
+         * If details endpoint is unavailable,
+         * candidates endpoint can still work.
+         */
+        if (electionResponse.ok) {
+
+            const electionData =
+                await electionResponse.json();
+
+            const election =
+                electionData.election ||
+                electionData;
+
+            updateElectionInformation(election);
+        }
+
+
+        /*
+         * Fetch candidates
+         */
+        const response =
+            await fetch(
+                `${API_URL}/api/elections/${ELECTION_ID}/candidates`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            if (response.status === 404) {
+                throw new Error(
+                    "Election or candidates not found."
+                );
+            }
+
+            throw new Error(
+                `Candidate request failed (${response.status})`
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        candidates =
+            Array.isArray(data)
+                ? data
+                : data.candidates || [];
+
+
+        if (!candidates.length) {
+
+            candidateList.innerHTML = `
+                <div
+                    class="empty-state"
+                    style="
+                        width:100%;
+                        padding:40px;
+                        text-align:center;
+                    "
+                >
+                    <i class="fa-solid fa-users-slash"></i>
+
+                    <h3>
+                        No Candidates Found
+                    </h3>
+
+                    <p>
+                        This election currently has
+                        no candidates.
+                    </p>
+                </div>
+            `;
+
+            updateCandidateCount(0);
+
+            return;
+        }
+
+
+        renderCandidates(candidates);
+
+        updateCandidateCount(
+            candidates.length
+        );
+
+
+        /*
+         * Check whether current user
+         * already voted.
+         */
+        await checkExistingVote();
+
+    } catch (error) {
+
+        console.error(
+            "LOAD VOTE CANDIDATES ERROR:",
+            error
+        );
+
+        showVoteError(
+            error.message ||
+            "Unable to connect to backend."
+        );
+    }
+}
+
+
+/* =========================================================
+   RENDER CANDIDATES
+========================================================= */
+
+function renderCandidates(candidateData) {
+
+    const candidateList =
+        document.getElementById("candidateList");
+
+    if (!candidateList) {
+        return;
+    }
+
+    candidateList.innerHTML =
+        candidateData.map(candidate => {
+
+            const candidateId =
+                Number(candidate.id);
+
+            const image =
+                candidate.avatar ||
+                candidate.image ||
+                `https://i.pravatar.cc/100?img=${candidateId + 10}`;
+
+            return `
+                <div
+                    class="candidate"
+                    data-candidate-id="${candidateId}"
+                    onclick="selectCandidate(${candidateId})"
+                >
+
+                    <div class="candidate-radio">
+                        <span class="radio"></span>
+                    </div>
+
+                    <img
+                        class="candidate-avatar"
+                        src="${escapeHTML(image)}"
+                        alt="${escapeHTML(
+                            candidate.name || "Candidate"
+                        )}"
+                    >
+
+                    <div class="candidate-info">
+
+                        <h4>
+                            ${escapeHTML(
+                                candidate.name ||
+                                "Unknown Candidate"
+                            )}
+                        </h4>
+
+                        <p>
+                            ${escapeHTML(
+                                candidate.department ||
+                                "Department not specified"
+                            )}
+                        </p>
+
+                        ${
+                            candidate.description
+                                ? `
+                                    <span class="candidate-description">
+                                        ${escapeHTML(
+                                            candidate.description
+                                        )}
+                                    </span>
+                                `
+                                : ""
+                        }
+
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right candidate-arrow"></i>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* =========================================================
+   SELECT CANDIDATE
+========================================================= */
+
+function selectCandidate(candidateId) {
+
+    if (!ELECTION_ID) {
+
+        showNotification(
+            "Election information is not available.",
+            "warning"
+        );
+
+        return;
+    }
+
+
+    const submitButton =
+        document.getElementById(
+            "submitVoteButton"
+        );
+
+    if (
+        submitButton &&
+        submitButton.disabled &&
+        submitButton.dataset.submitted === "true"
+    ) {
+        return;
+    }
+
+
+    selectedCandidateId =
+        Number(candidateId);
+
+
+    document
+        .querySelectorAll(".candidate")
+        .forEach(candidate => {
+
+            candidate.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    const selected =
+        document.querySelector(
+            `.candidate[data-candidate-id="${selectedCandidateId}"]`
+        );
+
+
+    if (selected) {
+        selected.classList.add("selected");
+    }
+
+
+    /*
+     * Enable submit button
+     */
+    if (submitButton) {
+
+        submitButton.disabled = false;
+
+        submitButton.classList.remove(
+            "disabled"
+        );
+
+        const span =
+            submitButton.querySelector("span");
+
+        if (span) {
+            span.textContent =
+                "Submit Vote";
+        }
+    }
+}
+
+
+/* =========================================================
+   CHECK EXISTING VOTE
+========================================================= */
+
+async function checkExistingVote() {
+
+    if (!ELECTION_ID || !isLoggedIn()) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/votes/my/${ELECTION_ID}`,
+                {
+                    method: "GET",
+                    headers: getAuthHeaders()
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (data.has_voted === true) {
+
+            markVoteAsSubmitted(
+                data.vote
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "CHECK VOTE ERROR:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   SUBMIT VOTE
+========================================================= */
+
+async function submitVote() {
+
+    if (!requireLogin()) {
+        return;
+    }
+
+
+    if (!ELECTION_ID) {
+
+        showNotification(
+            "Election information is missing.",
+            "warning"
+        );
+
+        return;
+    }
+
+
+    if (!selectedCandidateId) {
+
+        showNotification(
+            "Please select a candidate first.",
+            "warning"
+        );
+
+        return;
+    }
+
+
+    const candidate =
+        candidates.find(
+            candidate =>
+                Number(candidate.id) ===
+                Number(selectedCandidateId)
+        );
+
+
+    if (!candidate) {
+
+        showNotification(
+            "Selected candidate was not found.",
+            "warning"
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `Are you sure you want to vote for ${candidate.name}?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const submitButton =
+        document.getElementById(
+            "submitVoteButton"
+        );
+
+
+    if (submitButton) {
+
+        submitButton.disabled = true;
+
+        submitButton.dataset.submitting =
+            "true";
+
+        const span =
+            submitButton.querySelector("span");
+
+        if (span) {
+            span.textContent =
+                "Submitting...";
+        }
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/votes/`,
+                {
+                    method: "POST",
+
+                    headers:
+                        getAuthHeaders(),
+
+                    body:
+                        JSON.stringify({
+                            election_id:
+                                Number(ELECTION_ID),
+
+                            candidate_id:
+                                Number(selectedCandidateId)
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            /*
+             * Backend returns 409 when
+             * the user already voted.
+             */
+            if (response.status === 409) {
+
+                markVoteAsSubmitted(
+                    data.vote
+                );
+
+                showNotification(
+                    data.message ||
+                    "You have already voted in this election.",
+                    "warning"
+                );
+
+                return;
+            }
+
+
+            throw new Error(
+                data.message ||
+                "Vote submission failed."
+            );
+        }
+
+
+        /*
+         * Keep old frontend compatibility
+         */
+        localStorage.setItem(
+            "voteSubmitted",
+            "true"
+        );
+
+
+        localStorage.setItem(
+            "lastVote",
+            candidate.name
+        );
+
+
+        markVoteAsSubmitted(
+            data.vote
+        );
+
+
+        showNotification(
+            "Your vote has been submitted successfully!",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "SUBMIT VOTE ERROR:",
+            error
+        );
+
+
+        if (submitButton) {
+
+            submitButton.disabled = false;
+
+            delete submitButton.dataset.submitting;
+
+            const span =
+                submitButton.querySelector("span");
+
+            if (span) {
+                span.textContent =
+                    "Submit Vote";
+            }
+        }
+
+
+        showNotification(
+            error.message ||
+            "Unable to submit vote.",
+            "warning"
+        );
+    }
+}
+
+
+/* =========================================================
+   MARK VOTE AS SUBMITTED
+========================================================= */
+
+function markVoteAsSubmitted(vote) {
+
+    const submitButton =
+        document.getElementById(
+            "submitVoteButton"
+        );
+
+
+    if (submitButton) {
+
+        submitButton.disabled = true;
+
+        submitButton.dataset.submitted =
+            "true";
+
+        const span =
+            submitButton.querySelector("span");
+
+        if (span) {
+
+            span.textContent =
+                "Vote Already Submitted";
+        }
+    }
+
+
+    document
+        .querySelectorAll(".candidate")
+        .forEach(candidate => {
+
+            candidate.style.pointerEvents =
+                "none";
+
+        });
+
+
+    /*
+     * Highlight voted candidate
+     */
+    if (vote && vote.candidate_id) {
+
+        const selected =
+            document.querySelector(
+                `.candidate[data-candidate-id="${Number(
+                    vote.candidate_id
+                )}"]`
+            );
+
+        if (selected) {
+
+            selected.classList.add(
+                "selected"
+            );
+        }
+    }
+
+
+    const votingStatus =
+        document.getElementById(
+            "votingStatus"
+        );
+
+    if (votingStatus) {
+        votingStatus.textContent =
+            "Vote Submitted";
+    }
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+async function loadResults() {
+
+    const container =
+        document.getElementById("resultsList") ||
+        document.getElementById("resultsContainer");
+
+    if (!container) {
+        return;
+    }
+
+
+    if (!requireLogin()) {
+        return;
+    }
+
+
+    try {
+
+        let electionId =
+            getElectionIdFromURL();
+
+
+        if (!electionId) {
+
+            electionId =
+                Number(
+                    localStorage.getItem(
+                        "currentElectionId"
+                    )
+                );
+        }
+
+
+        if (!electionId) {
+
+            const elections =
+                await getElections();
+
+            const activeElection =
+                findActiveElection(elections);
+
+            if (!activeElection) {
+                throw new Error(
+                    "No election found."
+                );
+            }
+
+            electionId =
+                Number(activeElection.id);
+        }
+
+
+        const response =
+            await fetch(
+                `${API_URL}/api/votes/results/${electionId}`,
+                {
+                    method: "GET",
+                    headers: getAuthHeaders()
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load results."
+            );
+        }
+
+
+        renderResults(data);
+
+    } catch (error) {
+
+        console.error(
+            "RESULTS ERROR:",
+            error
+        );
+
+        showNotification(
+            error.message ||
+            "Unable to load results.",
+            "warning"
+        );
+    }
+}
+
+
+/* =========================================================
+   RENDER RESULTS
+========================================================= */
+
+function renderResults(data) {
+
+    const container =
+        document.getElementById("resultsList") ||
+        document.getElementById("resultsContainer");
+
+    if (!container) {
+        return;
+    }
+
+
+    const results =
+        data.results || [];
+
+
+    if (!results.length) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-chart-column"></i>
+
+                <h3>
+                    No Results Available
+                </h3>
+
+                <p>
+                    There are no votes recorded yet.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        results.map(result => {
+
+            const percentage =
+                Number(result.percentage || 0);
+
+            return `
+                <div class="result-item">
+
+                    <div class="result-candidate">
+
+                        <img
+                            src="${escapeHTML(
+                                result.avatar ||
+                                "https://i.pravatar.cc/100?img=12"
+                            )}"
+                            alt="${escapeHTML(
+                                result.candidate_name
+                            )}"
+                        >
+
+                        <div>
+
+                            <strong>
+                                ${escapeHTML(
+                                    result.candidate_name
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escapeHTML(
+                                    result.department || ""
+                                )}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-progress">
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress-fill"
+                                style="
+                                    width:${percentage}%;
+                                "
+                            ></div>
+
+                        </div>
+
+                        <span>
+                            ${percentage}%
+                        </span>
+
+                    </div>
+
+
+                    <strong class="result-votes">
+                        ${Number(result.votes || 0)}
+                    </strong>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function loadProfile() {
+
+    if (!requireLogin()) {
+        return;
+    }
+
+
+    const name =
+        getUserName();
+
+    const email =
+        getUserEmail();
+
+    const department =
+        getDepartment();
+
+
+    const nameElement =
+        document.getElementById("profileName");
+
+    const emailElement =
+        document.getElementById("profileEmail");
+
+    const departmentElement =
+        document.getElementById("profileDepartment");
+
+
+    if (nameElement) {
+        nameElement.textContent = name;
+    }
+
+    if (emailElement) {
+        emailElement.textContent = email;
+    }
+
+    if (departmentElement) {
+        departmentElement.textContent =
+            department;
+    }
+
+
+    /*
+     * Try refreshing profile from backend.
+     */
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/auth/me`,
+                {
+                    method: "GET",
+                    headers: getAuthHeaders()
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (data.user) {
+
+            localStorage.setItem(
+                "userName",
+                data.user.name || ""
+            );
+
+            localStorage.setItem(
+                "userEmail",
+                data.user.email || ""
+            );
+
+            localStorage.setItem(
+                "department",
+                data.user.department || ""
+            );
+
+            initializeUser();
+        }
+
+    } catch (error) {
+
+        console.error(
+            "PROFILE ERROR:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   UPDATE ELECTION INFORMATION
+========================================================= */
+
+function updateElectionInformation(election) {
+
+    if (!election) {
+        return;
+    }
+
+
+    const title =
+        election.title ||
+        localStorage.getItem(
+            "currentElectionTitle"
+        ) ||
+        "Election";
+
+
+    localStorage.setItem(
+        "currentElectionTitle",
+        title
+    );
+
+
+    const titleElements = [
+        "electionTitle",
+        "electionTopTitle"
+    ];
+
+
+    titleElements.forEach(id => {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+            element.textContent = title;
+        }
+
+    });
+
+
+    const endDate =
+        document.getElementById(
+            "electionEndDate"
+        );
+
+
+    if (endDate) {
+
+        endDate.textContent =
+            formatDate(election.end_date);
+    }
+
+
+    const status =
+        document.getElementById(
+            "electionStatus"
+        );
+
+
+    const statusText =
+        document.getElementById(
+            "electionStatusText"
+        );
+
+
+    const votingStatus =
+        document.getElementById(
+            "votingStatus"
+        );
+
+
+    const electionStatus =
+        String(
+            election.status || ""
+        ).toLowerCase();
+
+
+    if (statusText) {
+
+        statusText.textContent =
+            election.status ||
+            "Unknown";
+    }
+
+
+    if (votingStatus) {
+
+        votingStatus.textContent =
+            electionStatus === "active"
+                ? "Open"
+                : "Closed";
+    }
+
+
+    if (status) {
+
+        status.classList.remove(
+            "active",
+            "upcoming",
+            "completed"
+        );
+
+
+        status.classList.add(
+            electionStatus || "active"
+        );
+    }
+}
+
+
+/* =========================================================
+   CANDIDATE COUNT
+========================================================= */
+
+function updateCandidateCount(count) {
+
+    const element =
+        document.getElementById(
+            "candidateCount"
+        );
+
+    if (element) {
+        element.textContent =
+            String(count);
+    }
+}
+
+
+/* =========================================================
+   VOTE ERROR
+========================================================= */
+
+function showVoteError(message) {
+
+    const candidateList =
+        document.getElementById(
+            "candidateList"
+        );
+
+
+    if (candidateList) {
+
+        candidateList.innerHTML = `
+            <div
+                class="empty-state"
+                style="
+                    width:100%;
+                    padding:45px 20px;
+                    text-align:center;
+                "
+            >
+
+                <i
+                    class="fa-solid fa-triangle-exclamation"
+                    style="font-size:32px;"
+                ></i>
+
+                <h3>
+                    Unable to Load Election
+                </h3>
+
+                <p>
+                    ${escapeHTML(message)}
+                </p>
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    onclick="loadVoteCandidates()"
+                >
+                    <i class="fa-solid fa-rotate"></i>
+                    Try Again
+                </button>
+
+            </div>
+        `;
+    }
+
+
+    showNotification(
+        message,
+        "warning"
+    );
+}
+
+
+/* =========================================================
+   SEARCH
 ========================================================= */
 
 function initializeSearch() {
 
     const searchInput =
-        document.getElementById("searchInput");
+        document.getElementById(
+            "searchInput"
+        );
 
     if (!searchInput) {
         return;
     }
 
+
     searchInput.addEventListener(
         "input",
         function () {
 
-            const searchTerm =
+            const query =
                 this.value
                     .trim()
                     .toLowerCase();
 
-            const elections =
+
+            const electionElements =
                 document.querySelectorAll(
                     ".election"
                 );
 
-            elections.forEach(
+
+            electionElements.forEach(
                 election => {
 
                     const text =
                         election.textContent
                             .toLowerCase();
 
-                    if (
-                        searchTerm === "" ||
-                        text.includes(searchTerm)
-                    ) {
-
-                        election.style.display =
-                            "flex";
-
-                    } else {
-
-                        election.style.display =
-                            "none";
-
-                    }
-
+                    election.style.display =
+                        text.includes(query)
+                            ? ""
+                            : "none";
                 }
             );
 
         }
     );
-
 }
 
 
 /* =========================================================
-   9. MOBILE SIDEBAR
+   MOBILE MENU
 ========================================================= */
 
 function initializeMobileMenu() {
 
-    const sidebar =
-        document.querySelector(".sidebar");
-
-    const mobileMenuBtn =
+    const button =
         document.getElementById(
             "mobileMenuBtn"
         );
 
-    if (!sidebar || !mobileMenuBtn) {
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+
+    if (!button || !sidebar) {
         return;
     }
 
-    mobileMenuBtn.addEventListener(
+
+    button.addEventListener(
         "click",
-        function () {
+        () => {
 
             sidebar.classList.toggle(
                 "open"
             );
-
         }
     );
-
-
-    /* Close sidebar after menu click */
-
-    const menuItems =
-        document.querySelectorAll(
-            ".sidebar .menu-item"
-        );
-
-    menuItems.forEach(
-        item => {
-
-            item.addEventListener(
-                "click",
-                function () {
-
-                    if (
-                        window.innerWidth <= 950
-                    ) {
-
-                        sidebar.classList.remove(
-                            "open"
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
 }
 
 
 /* =========================================================
-   10. ACTIVE MENU
+   ANIMATIONS
+========================================================= */
+
+function initializeAnimations() {
+
+    const elements =
+        document.querySelectorAll(
+            ".stat-card, .election, .vote-card, .candidate"
+        );
+
+
+    elements.forEach(
+        (element, index) => {
+
+            element.style.animationDelay =
+                `${index * 50}ms`;
+
+        }
+    );
+}
+
+
+/* =========================================================
+   ACTIVE MENU
 ========================================================= */
 
 function initializeActiveMenu() {
@@ -585,13 +1870,10 @@ function initializeActiveMenu() {
             .pop()
             .toLowerCase();
 
-    const menuItems =
-        document.querySelectorAll(
-            ".sidebar .menu-item"
-        );
 
-    menuItems.forEach(
-        item => {
+    document
+        .querySelectorAll(".menu-item")
+        .forEach(item => {
 
             const href =
                 item.getAttribute("href");
@@ -600,22 +1882,19 @@ function initializeActiveMenu() {
                 return;
             }
 
-            const cleanHref =
+
+            const target =
                 href
+                    .split("?")[0]
                     .split("#")[0]
                     .toLowerCase();
 
-            if (
-                currentPage &&
-                cleanHref === currentPage
-            ) {
 
-                menuItems.forEach(
-                    menu =>
-                        menu.classList.remove(
-                            "active"
-                        )
-                );
+            if (
+                target &&
+                target !== "#" &&
+                target === currentPage
+            ) {
 
                 item.classList.add(
                     "active"
@@ -623,157 +1902,12 @@ function initializeActiveMenu() {
 
             }
 
-        }
-    );
-
-
-    /* Dashboard active */
-
-    if (
-        currentPage === "" ||
-        currentPage === "index.html"
-    ) {
-
-        menuItems.forEach(
-            menu =>
-                menu.classList.remove(
-                    "active"
-                )
-        );
-
-        const dashboard =
-            document.querySelector(
-                '.menu-item[href="index.html"]'
-            );
-
-        if (dashboard) {
-
-            dashboard.classList.add(
-                "active"
-            );
-
-        }
-
-    }
-
+        });
 }
 
 
 /* =========================================================
-   11. QUICK CANDIDATE INTERACTIONS
-========================================================= */
-
-function initializeCandidateInteractions() {
-
-    const candidateElements =
-        document.querySelectorAll(
-            ".quick-candidate"
-        );
-
-    candidateElements.forEach(
-        candidate => {
-
-            candidate.addEventListener(
-                "click",
-                function () {
-
-                    const name =
-                        candidate.querySelector(
-                            "strong"
-                        );
-
-                    if (!name) {
-                        return;
-                    }
-
-                    const candidateName =
-                        name.textContent.trim();
-
-                    showNotification(
-                        `${candidateName} selected.`,
-                        "success"
-                    );
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   12. GO TO VOTE
-========================================================= */
-
-async function goToVote() {
-    const token = localStorage.getItem("accessToken");
-
-    if (!token) {
-        window.location.href = "login.html";
-        return;
-    }
-
-    try {
-        const response = await fetch(
-            `${API_URL}/api/elections/`,
-            {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-            throw new Error(
-                data.message || "Unable to load elections."
-            );
-        }
-
-        const activeElection = data.elections.find(
-            election => election.status === "active"
-        );
-
-        if (!activeElection) {
-            showNotification(
-                "There is no active election right now.",
-                "warning"
-            );
-            return;
-        }
-
-        ELECTION_ID = Number(activeElection.id);
-
-        localStorage.setItem(
-            "currentElectionId",
-            String(ELECTION_ID)
-        );
-
-        localStorage.setItem(
-            "currentElectionTitle",
-            activeElection.title
-        );
-
-        window.location.href =
-            `vote.html?election_id=${ELECTION_ID}`;
-
-    } catch (error) {
-        console.error("Go to vote error:", error);
-
-        showNotification(
-            error.message ||
-            "Unable to connect to backend.",
-            "warning"
-        );
-    }
-}
-
-
-/* =========================================================
-   13. LOGOUT
+   LOGOUT
 ========================================================= */
 
 function logout() {
@@ -783,13 +1917,22 @@ function logout() {
             "Are you sure you want to logout?"
         );
 
+
     if (!confirmed) {
-        return;
+        return false;
     }
 
 
     localStorage.removeItem(
+        "accessToken"
+    );
+
+    localStorage.removeItem(
         "loggedIn"
+    );
+
+    localStorage.removeItem(
+        "userId"
     );
 
     localStorage.removeItem(
@@ -805,905 +1948,36 @@ function logout() {
     );
 
     localStorage.removeItem(
-        "accessToken"
+        "isAdmin"
     );
 
     localStorage.removeItem(
-        "userId"
+        "currentElectionId"
     );
 
     localStorage.removeItem(
-        "selectedCandidateId"
+        "currentElectionTitle"
+    );
+
+    localStorage.removeItem(
+        "voteSubmitted"
+    );
+
+    localStorage.removeItem(
+        "lastVote"
     );
 
 
-    showNotification(
-        "You have been logged out.",
-        "success"
-    );
+    window.location.href =
+        "login.html";
 
 
-    setTimeout(
-        function () {
-
-            window.location.href =
-                "login.html";
-
-        },
-        700
-    );
-
-}
-
-
-
-/* =========================================================
-   14. LOAD CANDIDATES FROM BACKEND
-========================================================= */
-
-async function loadVoteCandidates() {
-
-    const token = localStorage.getItem("accessToken");
-
-    if (!token) {
-        window.location.href = "login.html";
-        return;
-    }
-
-    const candidateList =
-        document.getElementById("candidateList");
-
-    if (!candidateList) {
-        console.error("candidateList not found.");
-        return;
-    }
-
-    candidateList.innerHTML = `
-        <div class="loading-state">
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>Loading candidates...</span>
-        </div>
-    `;
-
-    try {
-
-        /*
-         * First check URL:
-         * vote.html?election_id=2
-         */
-        const params =
-            new URLSearchParams(window.location.search);
-
-        const urlElectionId =
-            params.get("election_id");
-
-        if (urlElectionId) {
-
-            ELECTION_ID =
-                Number(urlElectionId);
-
-        }
-
-        /*
-         * If URL does not contain election ID,
-         * find the active election.
-         */
-        if (!ELECTION_ID) {
-
-            const electionResponse =
-                await fetch(
-                    `${API_URL}/api/elections/`,
-                    {
-                        headers: {
-                            "Authorization":
-                                `Bearer ${token}`
-                        }
-                    }
-                );
-
-            const electionData =
-                await electionResponse.json();
-
-            if (
-                !electionResponse.ok ||
-                !electionData.success
-            ) {
-                throw new Error(
-                    electionData.message ||
-                    "Unable to load elections."
-                );
-            }
-
-            const activeElection =
-                electionData.elections.find(
-                    election =>
-                        election.status === "active"
-                );
-
-            if (!activeElection) {
-                throw new Error(
-                    "There is no active election."
-                );
-            }
-
-            ELECTION_ID =
-                Number(activeElection.id);
-        }
-
-        /*
-         * Save current election
-         */
-        localStorage.setItem(
-            "currentElectionId",
-            String(ELECTION_ID)
-        );
-
-        /*
-         * Load candidates
-         */
-        const response =
-            await fetch(
-                `${API_URL}/api/elections/${ELECTION_ID}/candidates`
-            );
-
-        const data =
-            await response.json();
-
-        console.log(
-            "Candidates response:",
-            data
-        );
-
-        if (!response.ok || !data.success) {
-            throw new Error(
-                data.message ||
-                "Unable to load candidates."
-            );
-        }
-
-        if (
-            !data.candidates ||
-            data.candidates.length === 0
-        ) {
-            candidateList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa-solid fa-users-slash"></i>
-                    <h3>No candidates available</h3>
-                    <p>
-                        Candidates have not been added
-                        to this election yet.
-                    </p>
-                </div>
-            `;
-
-            return;
-        }
-
-        /*
-         * Render candidates
-         */
-        candidateList.innerHTML = "";
-
-        data.candidates.forEach(candidate => {
-
-            const candidateElement =
-                document.createElement("div");
-
-            candidateElement.className =
-                "candidate";
-
-            candidateElement.dataset.candidateId =
-                candidate.id;
-
-            candidateElement.innerHTML = `
-                <div class="candidate-info">
-
-                    <img
-                        src="${
-                            candidate.avatar ||
-                            "https://i.pravatar.cc/100?img=12"
-                        }"
-                        alt="${escapeHTML(candidate.name)}"
-                        class="candidate-avatar"
-                    >
-
-                    <div>
-                        <h3>
-                            ${escapeHTML(candidate.name)}
-                        </h3>
-
-                        <p>
-                            ${escapeHTML(
-                                candidate.department || ""
-                            )}
-                        </p>
-
-                        <small>
-                            ${escapeHTML(
-                                candidate.description || ""
-                            )}
-                        </small>
-                    </div>
-
-                </div>
-
-                <div class="radio"></div>
-            `;
-
-            candidateElement.addEventListener(
-                "click",
-                function () {
-
-                    if (
-                        localStorage.getItem(
-                            "voteSubmitted"
-                        ) === "true"
-                    ) {
-                        return;
-                    }
-
-                    document
-                        .querySelectorAll(
-                            ".candidate"
-                        )
-                        .forEach(item => {
-                            item.classList.remove(
-                                "selected"
-                            );
-                        });
-
-                    candidateElement.classList.add(
-                        "selected"
-                    );
-
-                    selectedCandidateId =
-                        Number(candidate.id);
-
-                    console.log(
-                        "Selected candidate:",
-                        selectedCandidateId
-                    );
-                }
-            );
-
-            candidateList.appendChild(
-                candidateElement
-            );
-        });
-
-        /*
-         * Check whether current user
-         * already voted in this election.
-         */
-        await checkExistingVote();
-
-    } catch (error) {
-
-        console.error(
-            "Load candidates error:",
-            error
-        );
-
-        candidateList.innerHTML = `
-            <div class="empty-state">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <h3>Unable to load candidates</h3>
-
-                <p>
-                    ${escapeHTML(error.message)}
-                </p>
-            </div>
-        `;
-    }
-}
-
-/* =========================================================
-   15. SELECT CANDIDATE
-========================================================= */
-
-function selectCandidate(candidateId) {
-
-    console.log(
-        "Candidate clicked:",
-        candidateId
-    );
-
-
-    /*
-     * Prevent selection after voting.
-     */
-    if (
-        localStorage.getItem(
-            "voteSubmitted"
-        ) === "true"
-    ) {
-
-        showNotification(
-            "You have already submitted your vote.",
-            "warning"
-        );
-
-        return;
-    }
-
-
-    const id =
-        Number(candidateId);
-
-
-    /*
-     * Find candidate in frontend
-     * fallback data.
-     */
-    const candidate =
-        candidates.find(
-            item =>
-                item.id === id
-        );
-
-
-    /*
-     * Candidate may have come
-     * directly from backend.
-     */
-    const candidateElement =
-        document.querySelector(
-            `.candidate[data-candidate-id="${id}"]`
-        );
-
-
-    if (!candidateElement) {
-
-        console.error(
-            "Candidate element not found:",
-            id
-        );
-
-        return;
-    }
-
-
-    /*
-     * Save selection.
-     */
-    selectedCandidateId =
-        id;
-
-
-    localStorage.setItem(
-        "selectedCandidateId",
-        String(id)
-    );
-
-
-    /*
-     * Remove previous selection.
-     */
-    document
-        .querySelectorAll(
-            ".candidate"
-        )
-        .forEach(
-            element => {
-
-                element.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-
-    /*
-     * Add selected class.
-     */
-    candidateElement.classList.add(
-        "selected"
-    );
-
-
-    /*
-     * Update radio indicator.
-     */
-    document
-        .querySelectorAll(
-            ".candidate .radio"
-        )
-        .forEach(
-            radio => {
-
-                radio.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-
-    const radio =
-        candidateElement.querySelector(
-            ".radio"
-        );
-
-
-    if (radio) {
-
-        radio.classList.add(
-            "selected"
-        );
-
-    }
-
-
-    const candidateName =
-        candidate
-            ? candidate.name
-            : (
-                candidateElement.querySelector(
-                    "h3"
-                )?.textContent ||
-                "Candidate"
-            );
-
-
-    console.log(
-        "Selected candidate:",
-        candidateName
-    );
-
-
-    showNotification(
-        `${candidateName} selected.`,
-        "success"
-    );
-
+    return false;
 }
 
 
 /* =========================================================
-   16. RESTORE CANDIDATE SELECTION
-========================================================= */
-
-function restoreCandidateSelection() {
-
-    if (
-        localStorage.getItem(
-            "voteSubmitted"
-        ) === "true"
-    ) {
-        return;
-    }
-
-
-    const savedId =
-        localStorage.getItem(
-            "selectedCandidateId"
-        );
-
-
-    if (!savedId) {
-        return;
-    }
-
-
-    const id =
-        Number(savedId);
-
-
-    const element =
-        document.querySelector(
-            `.candidate[data-candidate-id="${id}"]`
-        );
-
-
-    if (!element) {
-        return;
-    }
-
-
-    selectedCandidateId =
-        id;
-
-
-    element.classList.add(
-        "selected"
-    );
-
-
-    const radio =
-        element.querySelector(
-            ".radio"
-        );
-
-
-    if (radio) {
-
-        radio.classList.add(
-            "selected"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   17. CHECK EXISTING VOTE
-========================================================= */
-
-async function checkExistingVote() {
-
-    const token =
-        localStorage.getItem(
-            "accessToken"
-        );
-
-
-    if (!token) {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_URL}/api/votes/my/${ELECTION_ID}`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Authorization":
-                            `Bearer ${token}`
-                    }
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        console.log(
-            "Existing vote:",
-            data
-        );
-
-
-        if (
-            response.ok &&
-            data.has_voted === true
-        ) {
-
-            /*
-             * User already voted.
-             */
-            localStorage.setItem(
-                "voteSubmitted",
-                "true"
-            );
-
-
-            /*
-             * Disable submit button.
-             */
-            const button =
-                document.getElementById(
-                    "submitVoteButton"
-                );
-
-
-            if (button) {
-
-                button.disabled =
-                    true;
-
-
-                const span =
-                    button.querySelector(
-                        "span"
-                    );
-
-
-                if (span) {
-
-                    span.textContent =
-                        "Vote Already Submitted";
-
-                }
-
-            }
-
-
-            /*
-             * Disable candidates.
-             */
-            document
-                .querySelectorAll(
-                    ".candidate"
-                )
-                .forEach(
-                    element => {
-
-                        element.style.pointerEvents =
-                            "none";
-
-                        element.style.cursor =
-                            "default";
-
-                        element.style.opacity =
-                            "0.7";
-
-                    }
-                );
-
-
-        } else {
-
-            /*
-             * User has NOT voted.
-             */
-            if (
-                localStorage.getItem(
-                    "voteSubmitted"
-                ) !== "true"
-            ) {
-
-                document
-                    .querySelectorAll(
-                        ".candidate"
-                    )
-                    .forEach(
-                        element => {
-
-                            element.style.pointerEvents =
-                                "auto";
-
-                            element.style.cursor =
-                                "pointer";
-
-                            element.style.opacity =
-                                "1";
-
-                        }
-                    );
-
-
-                const button =
-                    document.getElementById(
-                        "submitVoteButton"
-                    );
-
-
-                if (button) {
-
-                    button.disabled =
-                        false;
-
-
-                    const span =
-                        button.querySelector(
-                            "span"
-                        );
-
-
-                    if (span) {
-
-                        span.textContent =
-                            "Submit Vote";
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Existing vote check error:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   18. SUBMIT VOTE
-========================================================= */
-
-async function submitVote() {
-    const token = localStorage.getItem("accessToken");
-
-    console.log("========== SUBMIT VOTE DEBUG ==========");
-    console.log("Token exists:", !!token);
-    console.log("Selected candidate:", selectedCandidateId);
-    console.log("Election ID:", ELECTION_ID);
-
-    if (!token) {
-        showNotification("Please login again.", "warning");
-        console.error("No access token found.");
-        return;
-    }
-
-    if (!selectedCandidateId) {
-        showNotification("Please select a candidate first.", "warning");
-        return;
-    }
-
-    const candidate = candidates.find(
-        c => Number(c.id) === Number(selectedCandidateId)
-    );
-
-    if (!candidate) {
-        showNotification("Selected candidate not found.", "warning");
-        console.error("Candidate not found:", selectedCandidateId);
-        return;
-    }
-
-    const confirmed = confirm(
-        `Are you sure you want to vote for ${candidate.name}?`
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    const button = document.getElementById("submitVoteButton");
-
-    if (button) {
-        button.disabled = true;
-        button.innerHTML = `
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>Submitting...</span>
-        `;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/api/votes/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                election_id: Number(ELECTION_ID),
-                candidate_id: Number(selectedCandidateId)
-            })
-        });
-
-        console.log("Backend HTTP status:", response.status);
-
-        // Read response as text first so we can see even non-JSON errors
-        const rawResponse = await response.text();
-
-        console.log("Backend raw response:", rawResponse);
-
-        let data = {};
-
-        try {
-            data = JSON.parse(rawResponse);
-        } catch (jsonError) {
-            console.warn("Backend did not return JSON.");
-        }
-
-        console.log("Backend parsed response:", data);
-
-        if (!response.ok) {
-            throw new Error(
-                data.message ||
-                data.msg ||
-                rawResponse ||
-                `HTTP ${response.status}`
-            );
-        }
-
-        if (!data.success) {
-            throw new Error(
-                data.message ||
-                "Vote submission failed."
-            );
-        }
-
-        console.log("VOTE SUBMITTED SUCCESSFULLY:", data);
-
-        localStorage.setItem("voteSubmitted", "true");
-        localStorage.setItem(
-            "lastVote",
-            JSON.stringify({
-                election_id: ELECTION_ID,
-                candidate_id: selectedCandidateId,
-                candidate_name: candidate.name
-            })
-        );
-
-        selectedCandidateId = null;
-
-        if (button) {
-            button.disabled = true;
-            button.innerHTML = `
-                <i class="fa-solid fa-check"></i>
-                <span>Vote Submitted</span>
-            `;
-        }
-
-        document.querySelectorAll(".candidate").forEach(card => {
-            card.classList.remove("selected");
-            card.style.pointerEvents = "none";
-        });
-
-        showNotification(
-            "Your vote has been submitted successfully!",
-            "success"
-        );
-
-    } catch (error) {
-
-        console.error("========== SUBMIT VOTE ERROR ==========");
-        console.error(error);
-        console.error("Error message:", error.message);
-
-        showNotification(
-            error.message || "Vote submission failed.",
-            "warning"
-        );
-
-        // Restore button
-        if (button) {
-            button.disabled = false;
-            button.innerHTML = `
-                <i class="fa-solid fa-check"></i>
-                <span>Submit Vote</span>
-            `;
-        }
-    }
-}
-
-
-/* =========================================================
-   20. GET LAST VOTE
-========================================================= */
-
-function getLastVote() {
-
-    const vote =
-        localStorage.getItem(
-            "lastVote"
-        );
-
-
-    if (!vote) {
-        return null;
-    }
-
-
-    try {
-
-        return JSON.parse(
-            vote
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Unable to read last vote:",
-            error
-        );
-
-        return null;
-
-    }
-
-}
-
-
-/* =========================================================
-   21. NOTIFICATION
+   NOTIFICATION
 ========================================================= */
 
 function showNotification(
@@ -1712,22 +1986,19 @@ function showNotification(
 ) {
 
     /*
-     * Remove old notification.
+     * Remove existing notification
      */
-    const existing =
+    const oldNotification =
         document.querySelector(
             ".custom-notification"
         );
 
 
-    if (existing) {
-        existing.remove();
+    if (oldNotification) {
+        oldNotification.remove();
     }
 
 
-    /*
-     * Create notification.
-     */
     const notification =
         document.createElement(
             "div"
@@ -1735,60 +2006,38 @@ function showNotification(
 
 
     notification.className =
-        "custom-notification";
+        `custom-notification ${type}`;
 
 
-    if (type === "warning") {
-
-        notification.classList.add(
-            "warning"
-        );
-
-    }
-
-
-    /*
-     * Icon.
-     */
     const icon =
-        document.createElement(
-            "i"
-        );
+        type === "warning"
+            ? "fa-triangle-exclamation"
+            : type === "error"
+                ? "fa-circle-xmark"
+                : "fa-circle-check";
 
 
-    if (type === "warning") {
+    notification.innerHTML = `
 
-        icon.className =
-            "fa-solid fa-triangle-exclamation";
+        <div class="notification-icon">
 
-    } else {
+            <i class="fa-solid ${icon}"></i>
 
-        icon.className =
-            "fa-solid fa-circle-check";
+        </div>
 
-    }
+        <div class="notification-message">
+            ${escapeHTML(message)}
+        </div>
 
+        <button
+            type="button"
+            class="notification-close"
+            aria-label="Close"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
-    /*
-     * Text.
-     */
-    const text =
-        document.createElement(
-            "span"
-        );
-
-
-    text.textContent =
-        String(message);
-
-
-    notification.appendChild(
-        icon
-    );
-
-    notification.appendChild(
-        text
-    );
+    `;
 
 
     document.body.appendChild(
@@ -1796,247 +2045,117 @@ function showNotification(
     );
 
 
-    /*
-     * Remove after 4 seconds.
-     */
+    const closeButton =
+        notification.querySelector(
+            ".notification-close"
+        );
+
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            () => notification.remove()
+        );
+    }
+
+
     setTimeout(
-        function () {
+        () => {
 
             if (
                 notification &&
                 notification.parentNode
             ) {
-
-                notification.style.opacity =
-                    "0";
-
-                notification.style.transform =
-                    "translateX(30px)";
-
-                notification.style.transition =
-                    "all .25s ease";
-
-
-                setTimeout(
-                    function () {
-
-                        if (
-                            notification.parentNode
-                        ) {
-
-                            notification.remove();
-
-                        }
-
-                    },
-                    250
-                );
-
+                notification.remove();
             }
 
         },
         4000
     );
-
 }
 
 
 /* =========================================================
-   22. HTML ESCAPE
+   FORMAT DATE
+========================================================= */
+
+function formatDate(value) {
+
+    if (!value) {
+        return "--";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (Number.isNaN(
+        date.getTime()
+    )) {
+        return String(value);
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+}
+
+
+/* =========================================================
+   ESCAPE HTML
 ========================================================= */
 
 function escapeHTML(value) {
 
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+
     const div =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     div.textContent =
-        String(
-            value ?? ""
-        );
+        String(value);
 
 
     return div.innerHTML;
-
 }
 
 
 /* =========================================================
-   23. CHECK LOGIN
+   LAST VOTE
 ========================================================= */
 
-function isLoggedIn() {
+function getLastVote() {
 
-    return (
-        localStorage.getItem(
-            "loggedIn"
-        ) === "true"
-    );
-
+    return localStorage.getItem(
+        "lastVote"
+    ) || "";
 }
 
 
 /* =========================================================
-   24. PROTECT PAGE
-========================================================= */
-
-function protectPage() {
-
-    if (!isLoggedIn()) {
-
-        window.location.href =
-            "login.html";
-
-    }
-
-}
-
-
-/* =========================================================
-   25. INITIALIZE ANIMATIONS
-========================================================= */
-
-function initializeAnimations() {
-
-    const cards =
-        document.querySelectorAll(
-            ".stat-card, .dashboard-card, .hero-banner"
-        );
-
-
-    if (!cards.length) {
-        return;
-    }
-
-
-    cards.forEach(
-        (card, index) => {
-
-            card.style.opacity =
-                "0";
-
-            card.style.transform =
-                "translateY(8px)";
-
-            card.style.transition =
-                `opacity .4s ease ${index * 0.05}s,
-                 transform .4s ease ${index * 0.05}s`;
-
-
-            requestAnimationFrame(
-                function () {
-
-                    card.style.opacity =
-                        "1";
-
-                    card.style.transform =
-                        "translateY(0)";
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   26. WINDOW RESIZE
-========================================================= */
-
-window.addEventListener(
-    "resize",
-    function () {
-
-        const sidebar =
-            document.querySelector(
-                ".sidebar"
-            );
-
-
-        if (
-            sidebar &&
-            window.innerWidth > 950
-        ) {
-
-            sidebar.classList.remove(
-                "open"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   27. CLOSE SIDEBAR ON OUTSIDE CLICK
-========================================================= */
-
-document.addEventListener(
-    "click",
-    function (event) {
-
-        const sidebar =
-            document.querySelector(
-                ".sidebar"
-            );
-
-
-        const mobileButton =
-            document.getElementById(
-                "mobileMenuBtn"
-            );
-
-
-        if (
-            !sidebar ||
-            !mobileButton ||
-            window.innerWidth > 950
-        ) {
-
-            return;
-
-        }
-
-
-        const clickedInsideSidebar =
-            sidebar.contains(
-                event.target
-            );
-
-
-        const clickedMenuButton =
-            mobileButton.contains(
-                event.target
-            );
-
-
-        if (
-            !clickedInsideSidebar &&
-            !clickedMenuButton
-        ) {
-
-            sidebar.classList.remove(
-                "open"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   28. EXPORT GLOBAL FUNCTIONS
+   GLOBAL FUNCTIONS
 ========================================================= */
 
 window.goToVote =
     goToVote;
+
+window.openElection =
+    openElection;
 
 window.logout =
     logout;
@@ -2062,16 +2181,8 @@ window.isLoggedIn =
 window.protectPage =
     protectPage;
 
+window.loadVoteCandidates =
+    loadVoteCandidates;
 
-/* =========================================================
-   29. CONSOLE MESSAGE
-========================================================= */
-
-console.log(
-    "%c VoteSecure ",
-    "background:#2563eb;color:#fff;padding:5px 10px;border-radius:5px;font-weight:bold;"
-);
-
-console.log(
-    "Secure Online Voting System initialized successfully."
-);
+window.loadResults =
+    loadResults;

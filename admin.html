@@ -2,25 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>VoteSecure - Admin Dashboard</title>
 
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- Existing stylesheet -->
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-
         /* =====================================================
            ADMIN DASHBOARD
         ===================================================== */
@@ -58,7 +49,6 @@
         .admin-actions {
             display: flex;
             gap: 12px;
-            flex-wrap: wrap;
         }
 
         .admin-btn {
@@ -79,33 +69,41 @@
         }
 
         .admin-btn.primary {
-            background: #2563eb;
+            background: #4f46e5;
             color: white;
+        }
+
+        .admin-btn.primary:hover {
+            background: #4338ca;
         }
 
         .admin-btn.secondary {
-            background: white;
-            color: #374151;
-            border: 1px solid #e5e7eb;
+            background: #eef2ff;
+            color: #4338ca;
         }
 
         .admin-btn.danger {
-            background: #dc2626;
-            color: white;
+            background: #fee2e2;
+            color: #dc2626;
         }
 
         .admin-btn.success {
-            background: #16a34a;
-            color: white;
+            background: #dcfce7;
+            color: #15803d;
         }
 
-        /* Stats */
+        .admin-btn.small {
+            padding: 8px 11px;
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           STAT CARDS
+        ===================================================== */
 
         .admin-stats {
             display: grid;
-            grid-template-columns:
-                repeat(4, minmax(0, 1fr));
-
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -114,7 +112,7 @@
             background: white;
             border-radius: 16px;
             padding: 22px;
-            border: 1px solid #e5e7eb;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
             display: flex;
             align-items: center;
             gap: 16px;
@@ -123,18 +121,18 @@
         .admin-stat-icon {
             width: 50px;
             height: 50px;
-            border-radius: 12px;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #eff6ff;
-            color: #2563eb;
+            background: #eef2ff;
+            color: #4f46e5;
             font-size: 20px;
         }
 
         .admin-stat h3 {
             margin: 0;
-            font-size: 26px;
+            font-size: 25px;
             color: #111827;
         }
 
@@ -144,22 +142,24 @@
             font-size: 13px;
         }
 
-        /* Cards */
+        /* =====================================================
+           TABLE
+        ===================================================== */
 
         .admin-card {
             background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            margin-bottom: 25px;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(15, 23, 42, 0.06);
             overflow: hidden;
+            margin-bottom: 30px;
         }
 
         .admin-card-header {
-            padding: 20px 22px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 22px 24px;
+            border-bottom: 1px solid #eef0f4;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             gap: 15px;
         }
 
@@ -174,8 +174,6 @@
             color: #6b7280;
             font-size: 13px;
         }
-
-        /* Table */
 
         .table-wrapper {
             width: 100%;
@@ -200,14 +198,14 @@
 
         .admin-table td {
             padding: 17px 20px;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid #f0f2f5;
             color: #374151;
             font-size: 14px;
             vertical-align: middle;
         }
 
         .admin-table tr:hover td {
-            background: #fafafa;
+            background: #fafbff;
         }
 
         .election-name {
@@ -228,98 +226,41 @@
             gap: 6px;
             padding: 6px 10px;
             border-radius: 999px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: capitalize;
         }
 
         .status-active {
             background: #dcfce7;
-            color: #166534;
+            color: #15803d;
         }
 
         .status-upcoming {
             background: #dbeafe;
-            color: #1d4ed8;
+            color: #2563eb;
         }
 
         .status-ended {
             background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .status-inactive {
-            background: #fee2e2;
-            color: #991b1b;
+            color: #6b7280;
         }
 
         .table-actions {
             display: flex;
             gap: 7px;
+            flex-wrap: wrap;
         }
 
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
+        /* =====================================================
+           MODAL
+        ===================================================== */
 
-        .icon-btn:hover {
-            background: #f9fafb;
-        }
-
-        .icon-btn.edit {
-            color: #2563eb;
-        }
-
-        .icon-btn.delete {
-            color: #dc2626;
-        }
-
-        /* Empty */
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-        }
-
-        .empty-state i {
-            font-size: 42px;
-            margin-bottom: 15px;
-            color: #9ca3af;
-        }
-
-        .empty-state h3 {
-            margin: 0 0 7px;
-            color: #374151;
-        }
-
-        /* Loading */
-
-        .loading-state {
-            padding: 50px;
-            text-align: center;
-            color: #6b7280;
-        }
-
-        .loading-state i {
-            margin-right: 8px;
-        }
-
-        /* Modal */
-
-        .modal {
+        .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(5px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -327,42 +268,52 @@
             z-index: 9999;
         }
 
-        .modal.show {
+        .modal-overlay.show {
             display: flex;
         }
 
-        .modal-content {
-            width: min(650px, 100%);
+        .modal {
+            width: 100%;
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             background: white;
-            border-radius: 18px;
-            box-shadow:
-                0 25px 60px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal.large {
+            max-width: 900px;
         }
 
         .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 22px 24px;
+            border-bottom: 1px solid #eef0f4;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 15px;
         }
 
         .modal-header h2 {
             margin: 0;
-            color: #111827;
             font-size: 20px;
+            color: #111827;
         }
 
         .modal-close {
             width: 35px;
             height: 35px;
             border: none;
+            border-radius: 50%;
             background: #f3f4f6;
-            border-radius: 8px;
+            color: #6b7280;
             cursor: pointer;
             font-size: 16px;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
         }
 
         .modal-body {
@@ -376,9 +327,9 @@
         .form-group label {
             display: block;
             margin-bottom: 7px;
-            color: #374151;
+            font-size: 13px;
             font-weight: 600;
-            font-size: 14px;
+            color: #374151;
         }
 
         .form-group input,
@@ -386,25 +337,27 @@
         .form-group select {
             width: 100%;
             box-sizing: border-box;
-            border: 1px solid #d1d5db;
-            border-radius: 9px;
-            padding: 11px 13px;
-            font-size: 14px;
+            padding: 12px 13px;
+            border: 1px solid #d9dee8;
+            border-radius: 10px;
             outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            color: #111827;
             background: white;
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
+            transition: 0.2s;
         }
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
-            border-color: #2563eb;
-            box-shadow:
-                0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
         }
 
         .form-row {
@@ -415,97 +368,220 @@
 
         .modal-footer {
             padding: 18px 24px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #eef0f4;
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
 
-        /* Notification */
+        /* =====================================================
+           CANDIDATES
+        ===================================================== */
 
-        .admin-notification {
+        .candidate-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .candidate-section-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .candidate-section-header p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .candidate-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .candidate-card {
+            border: 1px solid #e8ebf1;
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: 0.2s;
+        }
+
+        .candidate-card:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 5px 18px rgba(79, 70, 229, 0.07);
+        }
+
+        .candidate-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #eef2ff;
+            flex-shrink: 0;
+        }
+
+        .candidate-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .candidate-info h4 {
+            margin: 0;
+            color: #111827;
+            font-size: 15px;
+        }
+
+        .candidate-department {
+            margin: 4px 0;
+            color: #4f46e5;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .candidate-description {
+            margin: 0;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .candidate-votes {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .candidate-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .empty-candidates {
+            padding: 35px 20px;
+            border: 1px dashed #d7dbe4;
+            border-radius: 14px;
+            text-align: center;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        .empty-candidates i {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #9ca3af;
+        }
+
+        .empty-candidates h4 {
+            margin: 0 0 5px;
+            color: #374151;
+        }
+
+        .empty-candidates p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .candidate-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 25px;
+            height: 25px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        .loading-box {
+            padding: 50px 20px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .loading-box i {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        .admin-toast {
             position: fixed;
             right: 25px;
             bottom: 25px;
             min-width: 280px;
             max-width: 420px;
-            padding: 15px 18px;
-            background: #111827;
+            padding: 14px 17px;
+            border-radius: 12px;
             color: white;
-            border-radius: 10px;
-            box-shadow: 0 15px 35px rgba(0,0,0,.2);
-            z-index: 20000;
+            background: #111827;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
             display: flex;
             align-items: center;
             gap: 10px;
+            animation: adminToastIn 0.25s ease;
         }
 
-        .admin-notification.success {
-            background: #166534;
+        .admin-toast.success {
+            background: #15803d;
         }
 
-        .admin-notification.error {
-            background: #991b1b;
+        .admin-toast.error {
+            background: #dc2626;
         }
 
-        .admin-notification.warning {
-            background: #92400e;
+        @keyframes adminToastIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Unauthorized */
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
 
-        .unauthorized {
-            min-height: 100vh;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            background: #f5f7fb;
-        }
-
-        .unauthorized-card {
-            max-width: 480px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 18px;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .unauthorized-card i {
-            font-size: 55px;
-            color: #dc2626;
-            margin-bottom: 20px;
-        }
-
-        .unauthorized-card h2 {
-            margin: 0 0 10px;
-            color: #111827;
-        }
-
-        .unauthorized-card p {
-            color: #6b7280;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        @media (max-width: 900px) {
-
+        @media (max-width: 1000px) {
             .admin-stats {
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .candidate-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .admin-container {
+                padding: 18px;
             }
 
             .admin-header {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .admin-container {
-                padding: 18px;
             }
 
             .admin-stats {
@@ -517,356 +593,300 @@
             }
 
             .admin-card-header {
-                align-items: flex-start;
                 flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .modal {
+                max-height: 95vh;
+            }
+
+            .candidate-card {
+                align-items: flex-start;
             }
         }
-
     </style>
 </head>
 
 <body>
 
-    <!-- =====================================================
-         UNAUTHORIZED SCREEN
-    ====================================================== -->
+<div class="admin-page">
 
-    <div id="unauthorizedScreen" class="unauthorized">
+    <div class="admin-container">
 
-        <div class="unauthorized-card">
+        <!-- =================================================
+             HEADER
+        ================================================== -->
 
-            <i class="fa-solid fa-shield-halved"></i>
+        <div class="admin-header">
 
-            <h2>Admin Access Required</h2>
+            <div class="admin-title">
+                <h1>
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Admin Dashboard
+                </h1>
 
-            <p>
-                You must be logged in with an administrator
-                account to access the VoteSecure admin dashboard.
-            </p>
-
-            <button
-                class="admin-btn primary"
-                type="button"
-                onclick="goToLogin()"
-            >
-                <i class="fa-solid fa-right-to-bracket"></i>
-                Go to Login
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         ADMIN PAGE
-    ====================================================== -->
-
-    <div
-        id="adminPage"
-        class="admin-page"
-        style="display:none;"
-    >
-
-        <div class="admin-container">
-
-            <!-- Header -->
-
-            <div class="admin-header">
-
-                <div class="admin-title">
-
-                    <h1>
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Admin Dashboard
-                    </h1>
-
-                    <p>
-                        Manage elections, candidates and
-                        voting activity.
-                    </p>
-
-                </div>
-
-                <div class="admin-actions">
-
-                    <button
-                        class="admin-btn secondary"
-                        type="button"
-                        onclick="refreshAdminData()"
-                    >
-                        <i class="fa-solid fa-rotate"></i>
-                        Refresh
-                    </button>
-
-                    <button
-                        class="admin-btn secondary"
-                        type="button"
-                        onclick="logoutAdmin()"
-                    >
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Logout
-                    </button>
-
-                </div>
-
+                <p>
+                    Manage elections, candidates and voting results.
+                </p>
             </div>
 
-
-            <!-- Stats -->
-
-            <div class="admin-stats">
-
-                <div class="admin-stat">
-
-                    <div class="admin-stat-icon">
-                        <i class="fa-solid fa-calendar-days"></i>
-                    </div>
-
-                    <div>
-                        <h3 id="totalElections">0</h3>
-                        <p>Total Elections</p>
-                    </div>
-
-                </div>
-
-
-                <div class="admin-stat">
-
-                    <div class="admin-stat-icon">
-                        <i class="fa-solid fa-circle-play"></i>
-                    </div>
-
-                    <div>
-                        <h3 id="activeElections">0</h3>
-                        <p>Active Elections</p>
-                    </div>
-
-                </div>
-
-
-                <div class="admin-stat">
-
-                    <div class="admin-stat-icon">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-
-                    <div>
-                        <h3 id="totalVoters">0</h3>
-                        <p>Total Voters</p>
-                    </div>
-
-                </div>
-
-
-                <div class="admin-stat">
-
-                    <div class="admin-stat-icon">
-                        <i class="fa-solid fa-check-to-slot"></i>
-                    </div>
-
-                    <div>
-                        <h3 id="totalVotes">0</h3>
-                        <p>Total Votes</p>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- Elections -->
-
-            <div class="admin-card">
-
-                <div class="admin-card-header">
-
-                    <div>
-
-                        <h2>
-                            Elections
-                        </h2>
-
-                        <p>
-                            Create, edit and delete elections.
-                        </p>
-
-                    </div>
-
-                    <button
-                        class="admin-btn primary"
-                        type="button"
-                        onclick="openElectionModal()"
-                    >
-                        <i class="fa-solid fa-plus"></i>
-                        Create Election
-                    </button>
-
-                </div>
-
-
-                <div class="table-wrapper">
-
-                    <table class="admin-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Election
-                                </th>
-
-                                <th>
-                                    Start
-                                </th>
-
-                                <th>
-                                    End
-                                </th>
-
-                                <th>
-                                    Status
-                                </th>
-
-                                <th>
-                                    Candidates
-                                </th>
-
-                                <th>
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="electionsTableBody">
-
-                            <tr>
-
-                                <td colspan="6">
-
-                                    <div class="loading-state">
-
-                                        <i
-                                            class="fa-solid fa-spinner fa-spin"
-                                        ></i>
-
-                                        Loading elections...
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-
-            <!-- Candidate Management -->
-
-            <div class="admin-card">
-
-                <div class="admin-card-header">
-
-                    <div>
-
-                        <h2>
-                            Candidate Management
-                        </h2>
-
-                        <p>
-                            Select an election above to manage
-                            its candidates.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div
-                    id="candidateManagement"
-                    class="empty-state"
-                >
-
-                    <i class="fa-solid fa-users"></i>
-
-                    <h3>
-                        Select an election
-                    </h3>
-
-                    <p>
-                        Candidate management will appear
-                        here after selecting an election.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         ELECTION MODAL
-    ====================================================== -->
-
-    <div
-        id="electionModal"
-        class="modal"
-    >
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h2 id="modalTitle">
-                    Create Election
-                </h2>
+            <div class="admin-actions">
 
                 <button
-                    class="modal-close"
+                    class="admin-btn secondary"
                     type="button"
-                    onclick="closeElectionModal()"
+                    onclick="refreshAdminDashboard()"
                 >
-                    <i class="fa-solid fa-xmark"></i>
+                    <i class="fa-solid fa-rotate"></i>
+                    Refresh
+                </button>
+
+                <button
+                    class="admin-btn primary"
+                    type="button"
+                    onclick="openElectionModal()"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Create Election
+                </button>
+
+                <button
+                    class="admin-btn danger"
+                    type="button"
+                    onclick="adminLogout()"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             STATS
+        ================================================== -->
+
+        <div class="admin-stats">
+
+            <div class="admin-stat">
+
+                <div class="admin-stat-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+
+                <div>
+                    <h3 id="totalElections">0</h3>
+                    <p>Total Elections</p>
+                </div>
+
+            </div>
+
+
+            <div class="admin-stat">
+
+                <div class="admin-stat-icon">
+                    <i class="fa-solid fa-circle-play"></i>
+                </div>
+
+                <div>
+                    <h3 id="activeElections">0</h3>
+                    <p>Active Elections</p>
+                </div>
+
+            </div>
+
+
+            <div class="admin-stat">
+
+                <div class="admin-stat-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div>
+                    <h3 id="totalVoters">0</h3>
+                    <p>Total Voters</p>
+                </div>
+
+            </div>
+
+
+            <div class="admin-stat">
+
+                <div class="admin-stat-icon">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                </div>
+
+                <div>
+                    <h3 id="totalVotes">0</h3>
+                    <p>Total Votes</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ELECTIONS
+        ================================================== -->
+
+        <div class="admin-card">
+
+            <div class="admin-card-header">
+
+                <div>
+                    <h2>
+                        <i class="fa-solid fa-list-check"></i>
+                        Elections
+                    </h2>
+
+                    <p>
+                        Create and manage your voting elections.
+                    </p>
+                </div>
+
+                <button
+                    class="admin-btn primary small"
+                    type="button"
+                    onclick="openElectionModal()"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    New Election
                 </button>
 
             </div>
 
 
-            <form
-                id="electionForm"
-                onsubmit="saveElection(event)"
-            >
+            <div class="table-wrapper">
 
-                <div class="modal-body">
+                <table class="admin-table">
+
+                    <thead>
+
+                    <tr>
+                        <th>Election</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Candidates</th>
+                        <th>Actions</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="electionsTableBody">
+
+                    <tr>
+                        <td colspan="6">
+
+                            <div class="loading-box">
+
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                                <div>
+                                    Loading elections...
+                                </div>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CREATE / EDIT ELECTION MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="electionModal"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2 id="electionModalTitle">
+                Create Election
+            </h2>
+
+            <button
+                class="modal-close"
+                type="button"
+                onclick="closeElectionModal()"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <form id="electionForm">
+
+            <div class="modal-body">
+
+                <input
+                    type="hidden"
+                    id="electionId"
+                >
+
+
+                <div class="form-group">
+
+                    <label for="electionTitle">
+                        Election Title
+                    </label>
 
                     <input
-                        type="hidden"
-                        id="electionId"
+                        type="text"
+                        id="electionTitle"
+                        placeholder="e.g. Student Council Election 2026"
+                        required
                     >
 
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="electionDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="electionDescription"
+                        placeholder="Enter election description..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-row">
 
                     <div class="form-group">
 
-                        <label for="electionTitle">
-                            Election Title
+                        <label for="startDate">
+                            Start Date
                         </label>
 
                         <input
-                            type="text"
-                            id="electionTitle"
-                            placeholder="Student Council Election 2026"
+                            type="datetime-local"
+                            id="startDate"
                             required
                         >
 
@@ -875,29 +895,165 @@
 
                     <div class="form-group">
 
-                        <label for="electionDescription">
-                            Description
+                        <label for="endDate">
+                            End Date
                         </label>
 
-                        <textarea
-                            id="electionDescription"
-                            placeholder="Enter election description..."
-                        ></textarea>
+                        <input
+                            type="datetime-local"
+                            id="endDate"
+                            required
+                        >
 
                     </div>
 
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="electionStatus">
+                        Status
+                    </label>
+
+                    <select id="electionStatus">
+
+                        <option value="upcoming">
+                            Upcoming
+                        </option>
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="ended">
+                            Ended
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="admin-btn secondary"
+                    onclick="closeElectionModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="admin-btn primary"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Election
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CANDIDATE MANAGEMENT MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="candidateModal"
+>
+
+    <div class="modal large">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    <i class="fa-solid fa-users"></i>
+                    Manage Candidates
+                </h2>
+
+                <p
+                    id="candidateElectionTitle"
+                    style="margin:5px 0 0;color:#6b7280;font-size:13px;"
+                >
+                    Election
+                </p>
+
+            </div>
+
+            <button
+                class="modal-close"
+                type="button"
+                onclick="closeCandidateModal()"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <!-- Candidate Form -->
+
+            <div
+                style="
+                    background:#f8fafc;
+                    border:1px solid #e7eaf0;
+                    border-radius:15px;
+                    padding:18px;
+                    margin-bottom:25px;
+                "
+            >
+
+                <div class="candidate-section-header">
+
+                    <div>
+
+                        <h3 id="candidateFormTitle">
+                            Add Candidate
+                        </h3>
+
+                        <p>
+                            Add a candidate to this election.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="candidateForm">
+
+                    <input
+                        type="hidden"
+                        id="candidateId"
+                    >
 
                     <div class="form-row">
 
                         <div class="form-group">
 
-                            <label for="startDate">
-                                Start Date
+                            <label for="candidateName">
+                                Candidate Name
                             </label>
 
                             <input
-                                type="datetime-local"
-                                id="startDate"
+                                type="text"
+                                id="candidateName"
+                                placeholder="e.g. Aarav Sharma"
                                 required
                             >
 
@@ -906,13 +1062,14 @@
 
                         <div class="form-group">
 
-                            <label for="endDate">
-                                End Date
+                            <label for="candidateDepartment">
+                                Department
                             </label>
 
                             <input
-                                type="datetime-local"
-                                id="endDate"
+                                type="text"
+                                id="candidateDepartment"
+                                placeholder="e.g. Computer Science"
                                 required
                             >
 
@@ -923,464 +1080,425 @@
 
                     <div class="form-group">
 
-                        <label for="electionStatus">
-                            Status
+                        <label for="candidateDescription">
+                            Description
                         </label>
 
-                        <select id="electionStatus">
+                        <textarea
+                            id="candidateDescription"
+                            placeholder="Enter candidate description..."
+                        ></textarea>
 
-                            <option value="upcoming">
-                                Upcoming
-                            </option>
+                    </div>
 
-                            <option value="active">
-                                Active
-                            </option>
 
-                            <option value="ended">
-                                Ended
-                            </option>
+                    <div class="form-group">
 
-                            <option value="inactive">
-                                Inactive
-                            </option>
+                        <label for="candidateAvatar">
+                            Avatar URL
+                        </label>
 
-                        </select>
+                        <input
+                            type="url"
+                            id="candidateAvatar"
+                            placeholder="https://i.pravatar.cc/150?img=11"
+                        >
 
+                    </div>
+
+
+                    <div
+                        style="
+                            display:flex;
+                            justify-content:flex-end;
+                            gap:10px;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            id="cancelCandidateEditButton"
+                            class="admin-btn secondary"
+                            style="display:none;"
+                            onclick="resetCandidateForm()"
+                        >
+                            Cancel Edit
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="admin-btn primary"
+                            id="candidateSubmitButton"
+                        >
+                            <i class="fa-solid fa-plus"></i>
+                            Add Candidate
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- Existing Candidates -->
+
+            <div class="candidate-section-header">
+
+                <div>
+
+                    <h3>
+                        Existing Candidates
+
+                        <span
+                            class="candidate-count"
+                            id="candidateCount"
+                        >
+                            0
+                        </span>
+
+                    </h3>
+
+                    <p>
+                        Candidates registered for this election.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="candidate-list"
+                id="candidateList"
+            >
+
+                <div class="loading-box">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <div>
+                        Loading candidates...
                     </div>
 
                 </div>
 
+            </div>
 
-                <div class="modal-footer">
+        </div>
 
-                    <button
-                        type="button"
-                        class="admin-btn secondary"
-                        onclick="closeElectionModal()"
-                    >
-                        Cancel
-                    </button>
 
-                    <button
-                        type="submit"
-                        class="admin-btn primary"
-                        id="saveElectionButton"
-                    >
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Save Election
-                    </button>
+        <div class="modal-footer">
 
-                </div>
-
-            </form>
+            <button
+                type="button"
+                class="admin-btn secondary"
+                onclick="closeCandidateModal()"
+            >
+                Close
+            </button>
 
         </div>
 
     </div>
 
-
-    <script>
-
-        /* =====================================================
-           CONFIG
-        ===================================================== */
-
-        const API_URL =
-            "http://127.0.0.1:5000";
+</div>
 
 
-        /* =====================================================
-           AUTH HELPERS
-        ===================================================== */
+<script>
 
-        function getToken() {
+    /* =========================================================
+       CONFIG
+    ========================================================= */
 
-            return localStorage.getItem(
-                "accessToken"
+    const API_URL = "http://127.0.0.1:5000";
+
+    let editingElectionId = null;
+    let managingElectionId = null;
+
+
+    /* =========================================================
+       AUTH
+    ========================================================= */
+
+    function getToken() {
+
+        return localStorage.getItem("accessToken");
+
+    }
+
+
+    function getAuthHeaders() {
+
+        const token = getToken();
+
+        return {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        };
+
+    }
+
+
+    function checkAdminAccess() {
+
+        const token = getToken();
+
+        const isAdmin =
+            localStorage.getItem("isAdmin") === "true";
+
+        if (!token || !isAdmin) {
+
+            window.location.href = "login.html";
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+
+    /* =========================================================
+       INITIALIZE
+    ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            if (!checkAdminAccess()) {
+                return;
+            }
+
+            loadAdminDashboard();
+
+        }
+    );
+
+
+    /* =========================================================
+       LOAD DASHBOARD
+    ========================================================= */
+
+    async function loadAdminDashboard() {
+
+        await Promise.all([
+            loadAdminStats(),
+            loadElections()
+        ]);
+
+    }
+
+
+    async function refreshAdminDashboard() {
+
+        await loadAdminDashboard();
+
+        showAdminToast(
+            "Dashboard refreshed successfully.",
+            "success"
+        );
+
+    }
+
+
+    /* =========================================================
+       ADMIN STATS
+    ========================================================= */
+
+    async function loadAdminStats() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/admin/dashboard`,
+                    {
+                        headers: getAuthHeaders()
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load dashboard statistics."
+                );
+
+            }
+
+            const stats =
+                data.stats || {};
+
+            document.getElementById(
+                "totalElections"
+            ).textContent =
+                stats.total_elections ?? 0;
+
+            document.getElementById(
+                "activeElections"
+            ).textContent =
+                stats.active_elections ?? 0;
+
+            document.getElementById(
+                "totalVoters"
+            ).textContent =
+                stats.total_voters ?? 0;
+
+            document.getElementById(
+                "totalVotes"
+            ).textContent =
+                stats.total_votes ?? 0;
+
+        } catch (error) {
+
+            console.error(
+                "ADMIN DASHBOARD:",
+                error
             );
 
         }
 
-
-        function getAuthHeaders() {
-
-            const token = getToken();
-
-            return {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            };
-
-        }
+    }
 
 
-        /* =====================================================
-           INITIALIZATION
-        ===================================================== */
+    /* =========================================================
+       LOAD ELECTIONS
+    ========================================================= */
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            initializeAdmin
-        );
+    async function loadElections() {
 
-
-        async function initializeAdmin() {
-
-            const token = getToken();
-
-            if (!token) {
-
-                showUnauthorized();
-
-                return;
-
-            }
-
-
-            /*
-             * Ask backend who is currently logged in.
-             * Do NOT trust localStorage.isAdmin alone.
-             */
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_URL}/api/auth/me`,
-                        {
-                            headers: {
-                                "Authorization":
-                                    `Bearer ${token}`
-                            }
-                        }
-                    );
-
-                const data =
-                    await response.json();
-
-                console.log(
-                    "ADMIN CURRENT USER:",
-                    data
-                );
-
-
-                if (
-                    !response.ok ||
-                    !data.success ||
-                    !data.user ||
-                    data.user.is_admin !== true
-                ) {
-
-                    showUnauthorized();
-
-                    return;
-
-                }
-
-
-                /*
-                 * Backend confirmed admin.
-                 */
-                localStorage.setItem(
-                    "isAdmin",
-                    "true"
-                );
-
-
-                document.getElementById(
-                    "adminPage"
-                ).style.display = "block";
-
-
-                await refreshAdminData();
-
-            } catch (error) {
-
-                console.error(
-                    "Admin authentication error:",
-                    error
-                );
-
-                showUnauthorized();
-
-            }
-
-        }
-
-
-        /* =====================================================
-           UNAUTHORIZED
-        ===================================================== */
-
-        function showUnauthorized() {
-
+        const tbody =
             document.getElementById(
-                "adminPage"
-            ).style.display = "none";
+                "electionsTableBody"
+            );
 
-            document.getElementById(
-                "unauthorizedScreen"
-            ).style.display = "flex";
-
-        }
-
-
-        function goToLogin() {
-
-            window.location.href =
-                "login.html";
-
-        }
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="loading-box">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <div>Loading elections...</div>
+                    </div>
+                </td>
+            </tr>
+        `;
 
 
-        /* =====================================================
-           REFRESH
-        ===================================================== */
+        try {
 
-        async function refreshAdminData() {
-
-            await Promise.all([
-                loadDashboard(),
-                loadElections()
-            ]);
-
-        }
-
-
-        /* =====================================================
-           DASHBOARD
-        ===================================================== */
-
-        async function loadDashboard() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_URL}/api/admin/dashboard`,
-                        {
-                            headers:
-                                getAuthHeaders()
-                        }
-                    );
-
-                const data =
-                    await response.json();
-
-                console.log(
-                    "ADMIN DASHBOARD:",
-                    data
+            const response =
+                await fetch(
+                    `${API_URL}/api/admin/elections`,
+                    {
+                        headers: getAuthHeaders()
+                    }
                 );
 
+            const data =
+                await response.json();
 
-                if (
-                    response.status === 401 ||
-                    response.status === 403
-                ) {
+            if (!response.ok) {
 
-                    showNotification(
-                        data.message ||
-                        "Admin access required.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to load dashboard."
-                    );
-
-                }
-
-
-                /*
-                 * Support the current backend stats format.
-                 */
-                const stats =
-                    data.stats || {};
-
-
-                document.getElementById(
-                    "totalElections"
-                ).textContent =
-                    stats.total_elections ?? 0;
-
-
-                document.getElementById(
-                    "activeElections"
-                ).textContent =
-                    stats.active_elections ?? 0;
-
-
-                document.getElementById(
-                    "totalVoters"
-                ).textContent =
-                    stats.total_voters ?? 0;
-
-
-                document.getElementById(
-                    "totalVotes"
-                ).textContent =
-                    stats.total_votes ?? 0;
-
-
-            } catch (error) {
-
-                console.error(
-                    "Dashboard error:",
-                    error
+                throw new Error(
+                    data.message ||
+                    "Unable to load elections."
                 );
 
             }
 
-        }
+            const elections =
+                data.elections || [];
 
+            renderElections(elections);
 
-        /* =====================================================
-           LOAD ELECTIONS
-        ===================================================== */
+        } catch (error) {
 
-        async function loadElections() {
-
-            const tbody =
-                document.getElementById(
-                    "electionsTableBody"
-                );
-
+            console.error(
+                "ADMIN ELECTIONS:",
+                error
+            );
 
             tbody.innerHTML = `
                 <tr>
                     <td colspan="6">
-                        <div class="loading-state">
-                            <i class="fa-solid fa-spinner fa-spin"></i>
-                            Loading elections...
+                        <div class="loading-box">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <div>${escapeHTML(error.message)}</div>
                         </div>
                     </td>
                 </tr>
             `;
 
+        }
 
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_URL}/api/admin/elections`,
-                        {
-                            method: "GET",
-                            headers:
-                                getAuthHeaders()
-                        }
-                    );
+    }
 
 
-                const data =
-                    await response.json();
+    /* =========================================================
+       RENDER ELECTIONS
+    ========================================================= */
+
+    function renderElections(elections) {
+
+        const tbody =
+            document.getElementById(
+                "electionsTableBody"
+            );
+
+        if (!elections.length) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="loading-box">
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                            <div>No elections found.</div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
 
 
-                console.log(
-                    "ADMIN ELECTIONS:",
-                    data
-                );
+        tbody.innerHTML =
+            elections.map(
+                election => {
 
-
-                if (
-                    response.status === 401 ||
-                    response.status === 403
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Admin access required."
-                    );
-
-                }
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to load elections."
-                    );
-
-                }
-
-
-                const elections =
-                    data.elections || [];
-
-
-                if (
-                    elections.length === 0
-                ) {
-
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6">
-
-                                <div class="empty-state">
-
-                                    <i class="fa-solid fa-calendar-xmark"></i>
-
-                                    <h3>
-                                        No elections found
-                                    </h3>
-
-                                    <p>
-                                        Create your first election.
-                                    </p>
-
-                                </div>
-
-                            </td>
-                        </tr>
-                    `;
-
-                    return;
-
-                }
-
-
-                tbody.innerHTML = "";
-
-
-                elections.forEach(
-                    election => {
-
-                        const row =
-                            document.createElement(
-                                "tr"
+                    const candidateCount =
+                        Array.isArray(
+                            election.candidates
+                        )
+                            ? election.candidates.length
+                            : (
+                                election.candidate_count ||
+                                0
                             );
 
 
-                        const candidateCount =
-                            election.candidates
-                                ? election.candidates.length
-                                : (
-                                    election.candidate_count ??
-                                    0
-                                );
+                    const status =
+                        String(
+                            election.status ||
+                            "upcoming"
+                        ).toLowerCase();
 
 
-                        row.innerHTML = `
+                    return `
+                        <tr>
 
                             <td>
 
                                 <div class="election-name">
                                     ${escapeHTML(
-                                        election.title
+                                        election.title || "Untitled Election"
                                     )}
                                 </div>
 
@@ -1408,14 +1526,23 @@
 
 
                             <td>
-                                ${getStatusBadge(
-                                    election.status
-                                )}
+
+                                <span
+                                    class="status-badge status-${escapeHTML(status)}"
+                                >
+                                    <i class="fa-solid fa-circle"></i>
+                                    ${escapeHTML(status)}
+                                </span>
+
                             </td>
 
 
                             <td>
-                                ${candidateCount}
+
+                                <span class="candidate-count">
+                                    ${candidateCount}
+                                </span>
+
                             </td>
 
 
@@ -1424,150 +1551,97 @@
                                 <div class="table-actions">
 
                                     <button
-                                        class="icon-btn edit"
-                                        title="Edit election"
-                                        onclick="editElection(
-                                            ${Number(election.id)}
-                                        )"
+                                        type="button"
+                                        class="admin-btn primary small"
+                                        onclick="openCandidateManager(${Number(election.id)})"
                                     >
-                                        <i class="fa-solid fa-pen"></i>
+                                        <i class="fa-solid fa-users"></i>
+                                        Manage Candidates
                                     </button>
 
 
                                     <button
-                                        class="icon-btn delete"
-                                        title="Delete election"
-                                        onclick="deleteElection(
-                                            ${Number(election.id)}
-                                        )"
+                                        type="button"
+                                        class="admin-btn secondary small"
+                                        onclick="editElection(${Number(election.id)})"
+                                    >
+                                        <i class="fa-solid fa-pen"></i>
+                                        Edit
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="admin-btn danger small"
+                                        onclick="deleteElection(${Number(election.id)})"
                                     >
                                         <i class="fa-solid fa-trash"></i>
+                                        Delete
                                     </button>
 
                                 </div>
 
                             </td>
 
-                        `;
+                        </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
 
 
-                        tbody.appendChild(row);
+    /* =========================================================
+       CREATE ELECTION
+    ========================================================= */
 
-                    }
-                );
+    function openElectionModal() {
 
+        editingElectionId = null;
 
-            } catch (error) {
+        document.getElementById(
+            "electionModalTitle"
+        ).textContent =
+            "Create Election";
 
-                console.error(
-                    "Load elections error:",
-                    error
-                );
+        document.getElementById(
+            "electionForm"
+        ).reset();
 
+        document.getElementById(
+            "electionId"
+        ).value = "";
 
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6">
+        document.getElementById(
+            "electionModal"
+        ).classList.add("show");
 
-                            <div class="empty-state">
-
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                                <h3>
-                                    Unable to load elections
-                                </h3>
-
-                                <p>
-                                    ${escapeHTML(
-                                        error.message
-                                    )}
-                                </p>
-
-                            </div>
-
-                        </td>
-                    </tr>
-                `;
-
-            }
-
-        }
+    }
 
 
-        /* =====================================================
-           CREATE ELECTION MODAL
-        ===================================================== */
+    function closeElectionModal() {
 
-        function openElectionModal() {
+        document.getElementById(
+            "electionModal"
+        ).classList.remove("show");
 
-            document.getElementById(
-                "modalTitle"
-            ).textContent =
-                "Create Election";
+        editingElectionId = null;
 
-
-            document.getElementById(
-                "electionForm"
-            ).reset();
+    }
 
 
-            document.getElementById(
-                "electionId"
-            ).value = "";
+    /* =========================================================
+       SAVE ELECTION
+    ========================================================= */
 
-
-            document.getElementById(
-                "electionStatus"
-            ).value = "upcoming";
-
-
-            document.getElementById(
-                "electionModal"
-            ).classList.add("show");
-
-        }
-
-
-        function closeElectionModal() {
-
-            document.getElementById(
-                "electionModal"
-            ).classList.remove("show");
-
-        }
-
-
-        /* =====================================================
-           SAVE ELECTION
-        ===================================================== */
-
-        async function saveElection(event) {
+    document.getElementById(
+        "electionForm"
+    ).addEventListener(
+        "submit",
+        async function(event) {
 
             event.preventDefault();
-
-
-            const token =
-                getToken();
-
-
-            if (!token) {
-
-                showNotification(
-                    "Please login again.",
-                    "error"
-                );
-
-                goToLogin();
-
-                return;
-
-            }
-
-
-            const id =
-                document.getElementById(
-                    "electionId"
-                ).value;
 
 
             const title =
@@ -1575,24 +1649,20 @@
                     "electionTitle"
                 ).value.trim();
 
-
             const description =
                 document.getElementById(
                     "electionDescription"
                 ).value.trim();
-
 
             const startDate =
                 document.getElementById(
                     "startDate"
                 ).value;
 
-
             const endDate =
                 document.getElementById(
                     "endDate"
                 ).value;
-
 
             const status =
                 document.getElementById(
@@ -1600,23 +1670,11 @@
                 ).value;
 
 
-            if (!title) {
+            if (!title || !startDate || !endDate) {
 
-                showNotification(
-                    "Election title is required.",
-                    "warning"
-                );
-
-                return;
-
-            }
-
-
-            if (!startDate || !endDate) {
-
-                showNotification(
-                    "Start and end dates are required.",
-                    "warning"
+                showAdminToast(
+                    "Please fill all required election fields.",
+                    "error"
                 );
 
                 return;
@@ -1625,13 +1683,13 @@
 
 
             if (
-                new Date(startDate) >=
-                new Date(endDate)
+                new Date(endDate) <=
+                new Date(startDate)
             ) {
 
-                showNotification(
+                showAdminToast(
                     "End date must be after start date.",
-                    "warning"
+                    "error"
                 );
 
                 return;
@@ -1641,64 +1699,46 @@
 
             const payload = {
 
-                title: title,
+                title,
 
-                description: description,
+                description,
 
-                start_date: startDate,
+                start_date:
+                    startDate,
 
-                end_date: endDate,
+                end_date:
+                    endDate,
 
-                status: status
+                status
 
             };
 
 
-            const button =
-                document.getElementById(
-                    "saveElectionButton"
-                );
-
-
-            button.disabled = true;
-
-            button.innerHTML = `
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                Saving...
-            `;
-
-
             try {
 
-                const url = id
-                    ? `${API_URL}/api/admin/elections/${id}`
-                    : `${API_URL}/api/admin/elections`;
+                let url =
+                    `${API_URL}/api/admin/elections`;
+
+                let method = "POST";
 
 
-                const method = id
-                    ? "PUT"
-                    : "POST";
+                if (editingElectionId) {
 
+                    url =
+                        `${API_URL}/api/admin/elections/${editingElectionId}`;
 
-                console.log(
-                    "Saving election:",
-                    {
-                        method,
-                        url,
-                        payload
-                    }
-                );
+                    method = "PUT";
+
+                }
 
 
                 const response =
                     await fetch(
                         url,
                         {
-                            method: method,
-
+                            method,
                             headers:
                                 getAuthHeaders(),
-
                             body:
                                 JSON.stringify(
                                     payload
@@ -1711,29 +1751,7 @@
                     await response.json();
 
 
-                console.log(
-                    "SAVE ELECTION RESPONSE:",
-                    data
-                );
-
-
-                if (
-                    response.status === 401 ||
-                    response.status === 403
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Admin access required."
-                    );
-
-                }
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
+                if (!response.ok) {
 
                     throw new Error(
                         data.message ||
@@ -1745,60 +1763,636 @@
 
                 closeElectionModal();
 
+                await loadAdminDashboard();
 
-                showNotification(
-                    id
+
+                showAdminToast(
+                    editingElectionId
                         ? "Election updated successfully."
                         : "Election created successfully.",
                     "success"
                 );
 
 
-                await refreshAdminData();
-
-
             } catch (error) {
 
                 console.error(
-                    "Save election error:",
+                    "SAVE ELECTION:",
                     error
                 );
 
-
-                showNotification(
-                    error.message ||
-                    "Unable to save election.",
+                showAdminToast(
+                    error.message,
                     "error"
                 );
-
-            } finally {
-
-                button.disabled = false;
-
-                button.innerHTML = `
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Save Election
-                `;
 
             }
 
         }
+    );
 
 
-        /* =====================================================
-           EDIT ELECTION
-        ===================================================== */
+    /* =========================================================
+       EDIT ELECTION
+    ========================================================= */
 
-        async function editElection(id) {
+    async function editElection(electionId) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/admin/elections/${electionId}`,
+                    {
+                        headers:
+                            getAuthHeaders()
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load election."
+                );
+
+            }
+
+
+            const election =
+                data.election ||
+                data;
+
+
+            editingElectionId =
+                electionId;
+
+
+            document.getElementById(
+                "electionModalTitle"
+            ).textContent =
+                "Edit Election";
+
+
+            document.getElementById(
+                "electionId"
+            ).value =
+                election.id;
+
+
+            document.getElementById(
+                "electionTitle"
+            ).value =
+                election.title || "";
+
+
+            document.getElementById(
+                "electionDescription"
+            ).value =
+                election.description || "";
+
+
+            document.getElementById(
+                "startDate"
+            ).value =
+                toDateTimeLocal(
+                    election.start_date
+                );
+
+
+            document.getElementById(
+                "endDate"
+            ).value =
+                toDateTimeLocal(
+                    election.end_date
+                );
+
+
+            document.getElementById(
+                "electionStatus"
+            ).value =
+                election.status || "upcoming";
+
+
+            document.getElementById(
+                "electionModal"
+            ).classList.add("show");
+
+
+        } catch (error) {
+
+            console.error(
+                "EDIT ELECTION:",
+                error
+            );
+
+            showAdminToast(
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       DELETE ELECTION
+    ========================================================= */
+
+    async function deleteElection(electionId) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete this election?\n\nAll candidates and votes belonging to this election will also be deleted."
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/admin/elections/${electionId}`,
+                    {
+                        method: "DELETE",
+                        headers:
+                            getAuthHeaders()
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to delete election."
+                );
+
+            }
+
+
+            await loadAdminDashboard();
+
+
+            showAdminToast(
+                "Election deleted successfully.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "DELETE ELECTION:",
+                error
+            );
+
+            showAdminToast(
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       OPEN CANDIDATE MANAGER
+    ========================================================= */
+
+    async function openCandidateManager(electionId) {
+
+        managingElectionId =
+            Number(electionId);
+
+
+        resetCandidateForm();
+
+
+        document.getElementById(
+            "candidateModal"
+        ).classList.add("show");
+
+
+        document.getElementById(
+            "candidateList"
+        ).innerHTML = `
+            <div class="loading-box">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <div>Loading candidates...</div>
+            </div>
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/admin/elections/${electionId}`,
+                    {
+                        headers:
+                            getAuthHeaders()
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load election."
+                );
+
+            }
+
+
+            const election =
+                data.election ||
+                data;
+
+
+            document.getElementById(
+                "candidateElectionTitle"
+            ).textContent =
+                election.title ||
+                "Election";
+
+
+            let candidates =
+                election.candidates ||
+                [];
+
+
+            /*
+             * Some backend responses may not include
+             * candidates directly. In that case fetch
+             * them from the election candidates endpoint.
+             */
+
+            if (!Array.isArray(candidates)) {
+                candidates = [];
+            }
+
+
+            renderCandidates(candidates);
+
+
+        } catch (error) {
+
+            console.error(
+                "LOAD CANDIDATES:",
+                error
+            );
+
+
+            document.getElementById(
+                "candidateList"
+            ).innerHTML = `
+                <div class="empty-candidates">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <h4>
+                        Unable to load candidates
+                    </h4>
+
+                    <p>
+                        ${escapeHTML(error.message)}
+                    </p>
+
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       CLOSE CANDIDATE MANAGER
+    ========================================================= */
+
+    function closeCandidateModal() {
+
+        document.getElementById(
+            "candidateModal"
+        ).classList.remove("show");
+
+        managingElectionId = null;
+
+        resetCandidateForm();
+
+    }
+
+
+    /* =========================================================
+       LOAD CANDIDATES
+       Separate endpoint fallback
+    ========================================================= */
+
+    async function loadCandidatesForElection() {
+
+        if (!managingElectionId) {
+            return;
+        }
+
+
+        const response =
+            await fetch(
+                `${API_URL}/api/elections/${managingElectionId}/candidates`,
+                {
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load candidates."
+            );
+
+        }
+
+
+        const candidates =
+            data.candidates ||
+            [];
+
+
+        renderCandidates(candidates);
+
+    }
+
+
+    /* =========================================================
+       RENDER CANDIDATES
+    ========================================================= */
+
+    function renderCandidates(candidates) {
+
+        const list =
+            document.getElementById(
+                "candidateList"
+            );
+
+
+        document.getElementById(
+            "candidateCount"
+        ).textContent =
+            candidates.length;
+
+
+        if (!candidates.length) {
+
+            list.innerHTML = `
+                <div class="empty-candidates">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    <h4>
+                        No candidates yet
+                    </h4>
+
+                    <p>
+                        Add the first candidate using the form above.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        list.innerHTML =
+            candidates.map(
+                candidate => {
+
+                    const avatar =
+                        candidate.avatar ||
+                        "https://i.pravatar.cc/150?img=12";
+
+
+                    return `
+                        <div class="candidate-card">
+
+                            <img
+                                class="candidate-avatar"
+                                src="${escapeAttribute(avatar)}"
+                                alt="${escapeAttribute(candidate.name || "Candidate")}"
+                                onerror="this.src='https://i.pravatar.cc/150?img=12'"
+                            >
+
+
+                            <div class="candidate-info">
+
+                                <h4>
+                                    ${escapeHTML(
+                                        candidate.name || "Unnamed Candidate"
+                                    )}
+                                </h4>
+
+                                <div class="candidate-department">
+                                    ${escapeHTML(
+                                        candidate.department || "No department"
+                                    )}
+                                </div>
+
+                                <p class="candidate-description">
+                                    ${escapeHTML(
+                                        candidate.description || "No description provided."
+                                    )}
+                                </p>
+
+                                <div class="candidate-votes">
+                                    <i class="fa-solid fa-check-to-slot"></i>
+                                    ${Number(candidate.votes || 0)} votes
+                                </div>
+
+                            </div>
+
+
+                            <div class="candidate-actions">
+
+                                <button
+                                    type="button"
+                                    class="admin-btn secondary small"
+                                    onclick="editCandidate(${Number(candidate.id)}, ${JSON.stringify(candidate.name || "")}, ${JSON.stringify(candidate.department || "")}, ${JSON.stringify(candidate.description || "")}, ${JSON.stringify(candidate.avatar || "")})"
+                                >
+                                    <i class="fa-solid fa-pen"></i>
+                                    Edit
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="admin-btn danger small"
+                                    onclick="deleteCandidate(${Number(candidate.id)})"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    /* =========================================================
+       ADD / UPDATE CANDIDATE
+    ========================================================= */
+
+    document.getElementById(
+        "candidateForm"
+    ).addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            if (!managingElectionId) {
+
+                showAdminToast(
+                    "Please select an election first.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const candidateId =
+                document.getElementById(
+                    "candidateId"
+                ).value;
+
+
+            const name =
+                document.getElementById(
+                    "candidateName"
+                ).value.trim();
+
+
+            const department =
+                document.getElementById(
+                    "candidateDepartment"
+                ).value.trim();
+
+
+            const description =
+                document.getElementById(
+                    "candidateDescription"
+                ).value.trim();
+
+
+            const avatar =
+                document.getElementById(
+                    "candidateAvatar"
+                ).value.trim();
+
+
+            if (!name || !department) {
+
+                showAdminToast(
+                    "Candidate name and department are required.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const payload = {
+
+                name,
+
+                department,
+
+                description,
+
+                avatar
+
+            };
+
 
             try {
 
+                let url;
+                let method;
+
+
+                if (candidateId) {
+
+                    /*
+                     * UPDATE CANDIDATE
+                     */
+
+                    url =
+                        `${API_URL}/api/admin/candidates/${candidateId}`;
+
+                    method = "PUT";
+
+                } else {
+
+                    /*
+                     * CREATE CANDIDATE
+                     */
+
+                    url =
+                        `${API_URL}/api/admin/elections/${managingElectionId}/candidates`;
+
+                    method = "POST";
+
+                }
+
+
                 const response =
                     await fetch(
-                        `${API_URL}/api/admin/elections/${id}`,
+                        url,
                         {
+                            method,
                             headers:
-                                getAuthHeaders()
+                                getAuthHeaders(),
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
                         }
                     );
 
@@ -1807,486 +2401,522 @@
                     await response.json();
 
 
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
+                if (!response.ok) {
 
                     throw new Error(
                         data.message ||
-                        "Unable to load election."
+                        "Unable to save candidate."
                     );
 
                 }
 
 
-                const election =
-                    data.election;
+                resetCandidateForm();
 
 
-                document.getElementById(
-                    "modalTitle"
-                ).textContent =
-                    "Edit Election";
+                /*
+                 * Reload candidate list.
+                 */
+
+                await loadCandidatesForElection();
 
 
-                document.getElementById(
-                    "electionId"
-                ).value =
-                    election.id;
+                /*
+                 * Update election table
+                 * candidate count.
+                 */
+
+                await loadElections();
 
 
-                document.getElementById(
-                    "electionTitle"
-                ).value =
-                    election.title || "";
-
-
-                document.getElementById(
-                    "electionDescription"
-                ).value =
-                    election.description || "";
-
-
-                document.getElementById(
-                    "startDate"
-                ).value =
-                    toDateTimeLocal(
-                        election.start_date
-                    );
-
-
-                document.getElementById(
-                    "endDate"
-                ).value =
-                    toDateTimeLocal(
-                        election.end_date
-                    );
-
-
-                document.getElementById(
-                    "electionStatus"
-                ).value =
-                    election.status || "upcoming";
-
-
-                document.getElementById(
-                    "electionModal"
-                ).classList.add("show");
-
-
-            } catch (error) {
-
-                console.error(
-                    "Edit election error:",
-                    error
-                );
-
-
-                showNotification(
-                    error.message ||
-                    "Unable to load election.",
-                    "error"
-                );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           DELETE ELECTION
-        ===================================================== */
-
-        async function deleteElection(id) {
-
-            const confirmed =
-                confirm(
-                    "Are you sure you want to delete this election?\n\n" +
-                    "This action cannot be undone."
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            const token =
-                getToken();
-
-
-            if (!token) {
-
-                showNotification(
-                    "Please login again.",
-                    "error"
-                );
-
-                goToLogin();
-
-                return;
-
-            }
-
-
-            try {
-
-                console.log(
-                    "Deleting election:",
-                    id
-                );
-
-
-                const response =
-                    await fetch(
-                        `${API_URL}/api/admin/elections/${id}`,
-                        {
-                            method: "DELETE",
-
-                            headers:
-                                getAuthHeaders()
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                console.log(
-                    "DELETE ELECTION RESPONSE:",
-                    data
-                );
-
-
-                if (
-                    response.status === 401 ||
-                    response.status === 403
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Admin access required."
-                    );
-
-                }
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to delete election."
-                    );
-
-                }
-
-
-                showNotification(
-                    "Election deleted successfully.",
+                showAdminToast(
+                    candidateId
+                        ? "Candidate updated successfully."
+                        : "Candidate added successfully.",
                     "success"
                 );
 
 
-                await refreshAdminData();
-
-
             } catch (error) {
 
                 console.error(
-                    "Delete election error:",
+                    "SAVE CANDIDATE:",
                     error
                 );
 
-
-                showNotification(
-                    error.message ||
-                    "Unable to delete election.",
+                showAdminToast(
+                    error.message,
                     "error"
                 );
 
             }
 
         }
-
-
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
-
-        function logoutAdmin() {
-
-            localStorage.removeItem(
-                "accessToken"
-            );
-
-            localStorage.removeItem(
-                "loggedIn"
-            );
-
-            localStorage.removeItem(
-                "userId"
-            );
-
-            localStorage.removeItem(
-                "userName"
-            );
-
-            localStorage.removeItem(
-                "userEmail"
-            );
-
-            localStorage.removeItem(
-                "department"
-            );
-
-            localStorage.removeItem(
-                "isAdmin"
-            );
-
-            window.location.href =
-                "login.html";
-
-        }
-
-
-        /* =====================================================
-           HELPERS
-        ===================================================== */
-
-        function getStatusBadge(status) {
-
-            const safeStatus =
-                String(
-                    status || "inactive"
-                ).toLowerCase();
-
-
-            let className =
-                "status-inactive";
-
-
-            if (safeStatus === "active") {
-                className = "status-active";
-            }
-
-            else if (
-                safeStatus === "upcoming"
-            ) {
-                className = "status-upcoming";
-            }
-
-            else if (
-                safeStatus === "ended"
-            ) {
-                className = "status-ended";
-            }
-
-
-            return `
-                <span
-                    class="status-badge ${className}"
-                >
-                    <i class="fa-solid fa-circle"></i>
-                    ${escapeHTML(safeStatus)}
-                </span>
-            `;
-
-        }
-
-
-        function formatDate(value) {
-
-            if (!value) {
-                return "-";
-            }
-
-
-            const date =
-                new Date(value);
-
-
-            if (Number.isNaN(
-                date.getTime()
-            )) {
-
-                return escapeHTML(
-                    String(value)
-                );
-
-            }
-
-
-            return date.toLocaleString(
-                "en-IN",
-                {
-                    dateStyle: "medium",
-                    timeStyle: "short"
-                }
-            );
-
-        }
-
-
-        function toDateTimeLocal(value) {
-
-            if (!value) {
-                return "";
-            }
-
-
-            const date =
-                new Date(value);
-
-
-            if (Number.isNaN(
-                date.getTime()
-            )) {
-
-                return "";
-
-            }
-
-
-            const year =
-                date.getFullYear();
-
-
-            const month =
-                String(
-                    date.getMonth() + 1
-                ).padStart(2, "0");
-
-
-            const day =
-                String(
-                    date.getDate()
-                ).padStart(2, "0");
-
-
-            const hours =
-                String(
-                    date.getHours()
-                ).padStart(2, "0");
-
-
-            const minutes =
-                String(
-                    date.getMinutes()
-                ).padStart(2, "0");
-
-
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
-
-        }
-
-
-        function escapeHTML(value) {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-            div.textContent =
-                value ?? "";
-
-            return div.innerHTML;
-
-        }
-
-
-        function showNotification(
-            message,
-            type = "success"
-        ) {
-
-            const old =
-                document.querySelector(
-                    ".admin-notification"
-                );
-
-
-            if (old) {
-                old.remove();
-            }
-
-
-            const notification =
-                document.createElement(
-                    "div"
-                );
-
-
-            notification.className =
-                `admin-notification ${type}`;
-
-
-            let icon =
-                "fa-circle-check";
-
-
-            if (type === "error") {
-                icon =
-                    "fa-circle-exclamation";
-            }
-
-            else if (type === "warning") {
-                icon =
-                    "fa-triangle-exclamation";
-            }
-
-
-            notification.innerHTML = `
-                <i class="fa-solid ${icon}"></i>
-                <span>
-                    ${escapeHTML(message)}
-                </span>
-            `;
-
-
-            document.body.appendChild(
-                notification
-            );
-
-
-            setTimeout(
-                () => {
-                    notification.remove();
-                },
-                4000
-            );
-
-        }
-
-
-        /* =====================================================
-           CLOSE MODAL WHEN CLICKING OUTSIDE
-        ===================================================== */
+    );
+
+
+    /* =========================================================
+       EDIT CANDIDATE
+    ========================================================= */
+
+    function editCandidate(
+        id,
+        name,
+        department,
+        description,
+        avatar
+    ) {
 
         document.getElementById(
-            "electionModal"
-        ).addEventListener(
-            "click",
-            function(event) {
+            "candidateId"
+        ).value = id;
 
-                if (
-                    event.target ===
-                    this
-                ) {
 
-                    closeElectionModal();
+        document.getElementById(
+            "candidateName"
+        ).value = name || "";
 
-                }
 
+        document.getElementById(
+            "candidateDepartment"
+        ).value = department || "";
+
+
+        document.getElementById(
+            "candidateDescription"
+        ).value = description || "";
+
+
+        document.getElementById(
+            "candidateAvatar"
+        ).value = avatar || "";
+
+
+        document.getElementById(
+            "candidateFormTitle"
+        ).textContent =
+            "Edit Candidate";
+
+
+        document.getElementById(
+            "candidateSubmitButton"
+        ).innerHTML = `
+            <i class="fa-solid fa-floppy-disk"></i>
+            Update Candidate
+        `;
+
+
+        document.getElementById(
+            "cancelCandidateEditButton"
+        ).style.display =
+            "inline-flex";
+
+
+        document.getElementById(
+            "candidateName"
+        ).focus();
+
+    }
+
+
+    /* =========================================================
+       RESET CANDIDATE FORM
+    ========================================================= */
+
+    function resetCandidateForm() {
+
+        const form =
+            document.getElementById(
+                "candidateForm"
+            );
+
+
+        form.reset();
+
+
+        document.getElementById(
+            "candidateId"
+        ).value = "";
+
+
+        document.getElementById(
+            "candidateFormTitle"
+        ).textContent =
+            "Add Candidate";
+
+
+        document.getElementById(
+            "candidateSubmitButton"
+        ).innerHTML = `
+            <i class="fa-solid fa-plus"></i>
+            Add Candidate
+        `;
+
+
+        document.getElementById(
+            "cancelCandidateEditButton"
+        ).style.display =
+            "none";
+
+    }
+
+
+    /* =========================================================
+       DELETE CANDIDATE
+    ========================================================= */
+
+    async function deleteCandidate(candidateId) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete this candidate?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/admin/candidates/${candidateId}`,
+                    {
+                        method: "DELETE",
+                        headers:
+                            getAuthHeaders()
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to delete candidate."
+                );
+
+            }
+
+
+            await loadCandidatesForElection();
+
+            await loadElections();
+
+
+            showAdminToast(
+                "Candidate deleted successfully.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "DELETE CANDIDATE:",
+                error
+            );
+
+            showAdminToast(
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
+
+    function adminLogout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "accessToken"
+        );
+
+        localStorage.removeItem(
+            "loggedIn"
+        );
+
+        localStorage.removeItem(
+            "isAdmin"
+        );
+
+        localStorage.removeItem(
+            "userId"
+        );
+
+        localStorage.removeItem(
+            "userName"
+        );
+
+        localStorage.removeItem(
+            "userEmail"
+        );
+
+        localStorage.removeItem(
+            "department"
+        );
+
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+    /* =========================================================
+       DATE HELPERS
+    ========================================================= */
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "—";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (Number.isNaN(date.getTime())) {
+            return escapeHTML(String(value));
+        }
+
+
+        return date.toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
             }
         );
 
-    </script>
+    }
+
+
+    function toDateTimeLocal(value) {
+
+        if (!value) {
+            return "";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (Number.isNaN(date.getTime())) {
+            return "";
+        }
+
+
+        const year =
+            date.getFullYear();
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+
+        const hours =
+            String(
+                date.getHours()
+            ).padStart(2, "0");
+
+
+        const minutes =
+            String(
+                date.getMinutes()
+            ).padStart(2, "0");
+
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+
+    }
+
+
+    /* =========================================================
+       TOAST
+    ========================================================= */
+
+    function showAdminToast(
+        message,
+        type = "success"
+    ) {
+
+        const oldToast =
+            document.querySelector(
+                ".admin-toast"
+            );
+
+
+        if (oldToast) {
+            oldToast.remove();
+        }
+
+
+        const toast =
+            document.createElement(
+                "div"
+            );
+
+
+        toast.className =
+            `admin-toast ${type}`;
+
+
+        const icon =
+            type === "success"
+                ? "fa-circle-check"
+                : "fa-circle-exclamation";
+
+
+        toast.innerHTML = `
+            <i class="fa-solid ${icon}"></i>
+            <span>
+                ${escapeHTML(message)}
+            </span>
+        `;
+
+
+        document.body.appendChild(
+            toast
+        );
+
+
+        setTimeout(
+            () => {
+
+                toast.remove();
+
+            },
+            4000
+        );
+
+    }
+
+
+    /* =========================================================
+       SECURITY HELPERS
+    ========================================================= */
+
+    function escapeHTML(value) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.textContent =
+            value == null
+                ? ""
+                : String(value);
+
+        return div.innerHTML;
+
+    }
+
+
+    function escapeAttribute(value) {
+
+        return escapeHTML(value)
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    /* =========================================================
+       MODAL CLICK OUTSIDE
+    ========================================================= */
+
+    document.addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target.id ===
+                "electionModal"
+            ) {
+
+                closeElectionModal();
+
+            }
+
+
+            if (
+                event.target.id ===
+                "candidateModal"
+            ) {
+
+                closeCandidateModal();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       ESC KEY
+    ========================================================= */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key !== "Escape") {
+                return;
+            }
+
+
+            closeElectionModal();
+
+            closeCandidateModal();
+
+        }
+    );
+
+</script>
 
 </body>
 </html>
